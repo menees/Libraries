@@ -1,0 +1,15 @@
+# To learn more about .editorconfig see https://aka.ms/editorconfigdocs
+root = true
+
+# All files
+[*]
+indent_style = tab
+
+# IDE0063: Use simple 'using' statement
+csharp_prefer_simple_using_statement = false:silent
+
+# CS1574: XML comment has cref attribute that could not be resolved
+dotnet_diagnostic.CS1574.severity = none
+
+# IDE0057: Use range operator
+csharp_style_prefer_range_operator = true:silent

@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />
+	</ItemGroup>
+
+	<Choose>
+		<When Condition=" '$(TargetFramework)' == 'net45' ">
+			<ItemGroup>
+				<Reference Include="System.Management" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+</Project>

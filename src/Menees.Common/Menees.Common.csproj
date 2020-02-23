@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net45</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<RootNamespace>Menees</RootNamespace>
+	</PropertyGroup>
+
+	<Choose>
+		<When Condition=" '$(TargetFramework)' == 'net45' ">
+			<ItemGroup>
+				<Compile Remove="ApplicationInfo.Core.cs" />
+				<Content Include="ApplicationInfo.Core.cs" />
+
+				<Compile Remove="TextUtility.Core.cs" />
+				<Content Include="TextUtility.Core.cs" />
+
+				<!-- This includes the Entity Framework's PluralizationService. -->
+				<Reference Include="System.Data.Entity.Design" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<Compile Remove="ApplicationInfo.Framework.cs" />
+				<Content Include="ApplicationInfo.Framework.cs" />
+
+				<Compile Remove="CollectionUtility.Framework.cs" />
+				<Content Include="CollectionUtility.Framework.cs" />
+
+				<Compile Remove="TextUtility.Framework.cs" />
+				<Content Include="TextUtility.Framework.cs" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
+</Project>
