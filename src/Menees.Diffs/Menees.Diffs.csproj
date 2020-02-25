@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net45</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />
+	</ItemGroup>
+</Project>

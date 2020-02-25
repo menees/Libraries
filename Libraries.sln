@@ -5,7 +5,19 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Common", "src\Menees.Common\Menees.Common.csproj", "{D71969CE-87D4-44E8-B290-F37F2DEC0911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Menees.Windows", "src\Menees.Windows\Menees.Windows.csproj", "{0A656FBE-31F0-45F7-A0B6-51584FB66506}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows", "src\Menees.Windows\Menees.Windows.csproj", "{0A656FBE-31F0-45F7-A0B6-51584FB66506}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Diffs", "src\Menees.Diffs\Menees.Diffs.csproj", "{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{ED536F08-2F1B-4E29-B53E-FA3296800831}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +33,10 @@ Global
 		{0A656FBE-31F0-45F7-A0B6-51584FB66506}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A656FBE-31F0-45F7-A0B6-51584FB66506}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A656FBE-31F0-45F7-A0B6-51584FB66506}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
