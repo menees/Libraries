@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows", "src\Menee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Diffs", "src\Menees.Diffs\Menees.Diffs.csproj", "{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Config", "Config", "{ED536F08-2F1B-4E29-B53E-FA3296800831}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{ED536F08-2F1B-4E29-B53E-FA3296800831}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
