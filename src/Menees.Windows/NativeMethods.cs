@@ -226,6 +226,17 @@ namespace Menees
 			return result;
 		}
 
+		internal static void BringWindowForward(IntPtr hWnd)
+		{
+			if (IsIconic(hWnd))
+			{
+				const int SW_RESTORE = 9;
+				ShowWindowAsync(hWnd, SW_RESTORE);
+			}
+
+			SetForegroundWindow(hWnd);
+		}
+
 		#endregion
 
 		#region Private Methods
@@ -252,6 +263,19 @@ namespace Menees
 			IntPtr pbc,
 			ref Guid riid,
 			[MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool IsIconic(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		[SuppressMessage("", "CC0072", Justification = "The Async suffix comes from the Win32 API.")]
+		private static extern bool ShowWindowAsync(IntPtr hWnd, int commandShow);
 
 		#endregion
 

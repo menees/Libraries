@@ -13,6 +13,9 @@
 				<Compile Remove="ApplicationInfo.Core.cs" />
 				<Content Include="ApplicationInfo.Core.cs" />
 
+				<Compile Remove="CollectionUtility.Core.cs" />
+				<Content Include="CollectionUtility.Core.cs" />
+
 				<Compile Remove="TextUtility.Core.cs" />
 				<Content Include="TextUtility.Core.cs" />
 

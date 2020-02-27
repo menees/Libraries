@@ -1,0 +1,46 @@
+﻿<m:ExtendedDialog x:Class="Menees.Windows.Presentation.AboutBox" x:ClassModifier="internal"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:m="clr-namespace:Menees.Windows.Presentation"
+	mc:Ignorable="d"
+	Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" SizeToContent="WidthAndHeight">
+	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=banner, Mode=OneWay}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition MinWidth="110" Width="Auto"/>
+			<ColumnDefinition/>
+			<ColumnDefinition/>
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<Image x:Name="banner" Grid.ColumnSpan="3" Source="AboutBoxBanner.bmp" Stretch="None"/>
+		<Image x:Name="icon" Grid.Row="1" Height="32" Width="32" Grid.RowSpan="6" VerticalAlignment="Top" Margin="0,16,0,0" Stretch="None"/>
+		<TextBlock x:Name="productName" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontSize="18" FontWeight="SemiBold"
+				   Margin="0,8,12,0" Padding="0,5" TextWrapping="Wrap">
+			Product Name
+		</TextBlock>
+		<TextBlock x:Name="version" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
+			Version 1.0 – 64-bit
+		</TextBlock>
+		<TextBlock x:Name="copyright" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
+			Copyright © 2002-2013 Bill Menees
+		</TextBlock>
+		<m:HyperlinkButton Grid.Row="4" Grid.Column="1" Margin="0,5,12,5" Padding="0,5" Content="www.menees.com" Click="WebLink_Clicked" />
+		<m:HyperlinkButton Grid.Row="4" Grid.Column="2" Margin="0,5,12,5" Padding="0,5" Content="bill@menees.com" Click="EmailLink_Clicked" />
+		<TextBlock TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
+				This software is CharityWare.  If you use it, please donate at least $5 (US) to the charity of your choice.
+		</TextBlock>
+		<Separator Grid.Row="6" Grid.ColumnSpan="3" Margin="0,12,0,0" />
+		<Button Content="OK" Width="80" Grid.Row="7" Grid.Column="2" IsDefault="True" VerticalAlignment="Center" Padding="3" Margin="12" 
+					m:ExtendedDialog.DialogResult="True" HorizontalAlignment="Right" IsCancel="True"/>
+	</Grid>
+</m:ExtendedDialog>

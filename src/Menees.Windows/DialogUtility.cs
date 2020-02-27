@@ -13,7 +13,7 @@ namespace Menees.Windows
 	#endregion
 
 	/// <summary>
-	/// Methods for working with the Windows shell.
+	/// Methods for working with dialogs provided by the Windows shell.
 	/// </summary>
 	public static class DialogUtility
 	{

@@ -5,10 +5,28 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />
 	</ItemGroup>
+
+	<Choose>
+		<When Condition=" '$(TargetFramework)' == 'net45' ">
+			<ItemGroup>
+				<Compile Remove="VisualStudioInvoker.Core.cs" />
+				<Content Include="VisualStudioInvoker.Core.cs" />
+			</ItemGroup>
+		</When>
+		<Otherwise>
+			<ItemGroup>
+				<Compile Remove="VisualStudioInvoker.Framework.cs" />
+				<Content Include="VisualStudioInvoker.Framework.cs" />
+			</ItemGroup>
+		</Otherwise>
+	</Choose>
 
 	<Choose>
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
