@@ -21,11 +21,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		src\Directory.Build.props = src\Directory.Build.props
+		LICENSE = LICENSE
 		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
+		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Menees.Windows.Tests", "tests\Menees.Windows.Tests\Menees.Windows.Tests.csproj", "{1CBF5E70-9BF4-4A41-8852-94831454817B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Tests", "tests\Menees.Windows.Tests\Menees.Windows.Tests.csproj", "{1CBF5E70-9BF4-4A41-8852-94831454817B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,11 +3,21 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<Authors>Bill Menees</Authors>
 		<PackageProjectUrl>http://www.menees.com</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/bmenees/Libraries</RepositoryUrl>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<SignAssembly>true</SignAssembly>
+		<LangVersion>latest</LangVersion>
+
 		<!-- These paths must be relative to the projects that include the property (not to this .props file). -->
-		<CodeAnalysisRuleSet>..\Menees.Libraries.ruleset</CodeAnalysisRuleSet>
-		<AssemblyOriginatorKeyFile>..\Menees.Libraries.snk</AssemblyOriginatorKeyFile>
+		<CodeAnalysisRuleSet>../Menees.Libraries.ruleset</CodeAnalysisRuleSet>
+		<AssemblyOriginatorKeyFile>../Menees.Libraries.snk</AssemblyOriginatorKeyFile>
+
+		<!-- Make the assembly, file, and NuGet package versions the same. -->
+		<AssemblyVersion>4.9.0.0</AssemblyVersion>
+		<FileVersion>4.9.0.0</FileVersion>
+		<Version>4.9.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
