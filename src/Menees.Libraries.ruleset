@@ -10,6 +10,12 @@
     <Rule Id="CC0105" Action="None" />
     <Rule Id="CC0120" Action="None" />
   </Rules>
+  <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">
+    <Rule Id="MEN001" Action="Warning" />
+    <Rule Id="MEN006" Action="Warning" />
+    <Rule Id="MEN007" Action="Warning" />
+    <Rule Id="MEN010" Action="Warning" />
+  </Rules>
   <Rules AnalyzerId="Microsoft.CodeQuality.Analyzers" RuleNamespace="Microsoft.CodeQuality.Analyzers">
     <Rule Id="CA1062" Action="None" />
   </Rules>

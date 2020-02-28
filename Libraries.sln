@@ -9,7 +9,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows", "src\Menee
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Diffs", "src\Menees.Diffs\Menees.Diffs.csproj", "{F0B60CBC-5F0B-40F1-8454-168959F5F7CC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{ED536F08-2F1B-4E29-B53E-FA3296800831}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Forms", "src\Menees.Windows.Forms\Menees.Windows.Forms.csproj", "{DF857CDB-5C48-4412-90F8-F4BE9E947798}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Presentation", "src\Menees.Windows.Presentation\Menees.Windows.Presentation.csproj", "{5CFC4795-CF8D-4422-B5CE-1CA337AB8F43}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Common.Tests", "tests\Menees.Common.Tests\Menees.Common.Tests.csproj", "{F3005484-B2ED-4765-935A-A48C0E99A1F4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{008E4191-0453-4A3F-881F-1D8D5F54516B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
@@ -19,9 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "General", "General", "{ED53
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Forms", "src\Menees.Windows.Forms\Menees.Windows.Forms.csproj", "{DF857CDB-5C48-4412-90F8-F4BE9E947798}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Presentation", "src\Menees.Windows.Presentation\Menees.Windows.Presentation.csproj", "{5CFC4795-CF8D-4422-B5CE-1CA337AB8F43}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Menees.Windows.Tests", "tests\Menees.Windows.Tests\Menees.Windows.Tests.csproj", "{1CBF5E70-9BF4-4A41-8852-94831454817B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,14 @@ Global
 		{5CFC4795-CF8D-4422-B5CE-1CA337AB8F43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5CFC4795-CF8D-4422-B5CE-1CA337AB8F43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5CFC4795-CF8D-4422-B5CE-1CA337AB8F43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3005484-B2ED-4765-935A-A48C0E99A1F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3005484-B2ED-4765-935A-A48C0E99A1F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3005484-B2ED-4765-935A-A48C0E99A1F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3005484-B2ED-4765-935A-A48C0E99A1F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CBF5E70-9BF4-4A41-8852-94831454817B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CBF5E70-9BF4-4A41-8852-94831454817B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CBF5E70-9BF4-4A41-8852-94831454817B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CBF5E70-9BF4-4A41-8852-94831454817B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -148,7 +148,16 @@ namespace Menees
 							const int UnixTimeStartYear = 1970;
 							result = new System.DateTime(UnixTimeStartYear, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(timestamp);
 
-							// TODO: Deterministic builds insert a hash instead of a timestamp. Try to detect that. [Bill, 2/23/2020]
+							// If a DLL was built with /deterministic, then the header's timestamp field will actually be a hash.
+							// There's no header bit to detect that case though, so we'll try to infer it.
+							// https://stackoverflow.com/a/48102243/1882616
+							// https://blog.paranoidcoding.com/2016/04/05/deterministic-builds-in-roslyn.html
+							DateTime utcNow = DateTime.UtcNow;
+							const int MinBuildYear = 2002; // .Net 1.0 was released 13 February 2002.
+							if (result > utcNow || result < new DateTime(MinBuildYear, 1, 1, 0, 0, 0, DateTimeKind.Utc))
+							{
+								result = null;
+							}
 						}
 					}
 				}
