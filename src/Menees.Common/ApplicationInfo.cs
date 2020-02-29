@@ -137,6 +137,23 @@ namespace Menees
 
 		#endregion
 
+		#region Private Properties
+
+		private static bool IsWindowsUserRunningAsAdministrator
+		{
+			get
+			{
+				using (WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent())
+				{
+					WindowsPrincipal currentPrincipal = new WindowsPrincipal(currentIdentity);
+					bool result = currentPrincipal.IsInRole(WindowsBuiltInRole.Administrator);
+					return result;
+				}
+			}
+		}
+
+		#endregion
+
 		#region Public Methods
 
 		/// <summary>

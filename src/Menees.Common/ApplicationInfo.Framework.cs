@@ -20,18 +20,13 @@
 		/// <summary>
 		/// Gets whether the current user is running in the Windows "Administrator" role.
 		/// </summary>
-		public static bool IsUserRunningAsAdministrator
-		{
-			get
-			{
-				using (WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent())
-				{
-					WindowsPrincipal currentPrincipal = new WindowsPrincipal(currentIdentity);
-					bool result = currentPrincipal.IsInRole(WindowsBuiltInRole.Administrator);
-					return result;
-				}
-			}
-		}
+		public static bool IsUserRunningAsAdministrator => IsWindowsUserRunningAsAdministrator;
+
+		#endregion
+
+		#region Internal Properties
+
+		internal static bool IsWindows => true;
 
 		#endregion
 

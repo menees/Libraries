@@ -91,13 +91,15 @@ namespace Menees
 		[return: MarshalAs(UnmanagedType.Bool)]
 		internal static extern bool DeleteFile(string fileName);
 
-		internal static uint DisableShellModalErrorDialogs()
+		internal static void DisableShellModalErrorDialogs()
 		{
-			const ErrorModes newErrorMode = ErrorModes.SEM_FAILCRITICALERRORS |
-				ErrorModes.SEM_NOGPFAULTERRORBOX |
-				ErrorModes.SEM_NOOPENFILEERRORBOX;
-			ErrorModes oldErrorMode = SetErrorMode(newErrorMode);
-			return (uint)oldErrorMode;
+			if (ApplicationInfo.IsWindows)
+			{
+				const ErrorModes newErrorMode = ErrorModes.SEM_FAILCRITICALERRORS |
+					ErrorModes.SEM_NOGPFAULTERRORBOX |
+					ErrorModes.SEM_NOOPENFILEERRORBOX;
+				SetErrorMode(newErrorMode);
+			}
 		}
 
 		internal static string GetModuleFileName(IntPtr module)
@@ -247,6 +249,9 @@ namespace Menees
 
 			return result;
 		}
+
+		[DllImport("libc", EntryPoint = "getuid")]
+		internal static extern uint GetUid();
 
 		#endregion
 
