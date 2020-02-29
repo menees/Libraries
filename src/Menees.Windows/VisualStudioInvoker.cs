@@ -1,4 +1,4 @@
-namespace Menees.Windows.Forms
+namespace Menees.Windows
 {
 	#region Using Directives
 
@@ -11,7 +11,7 @@ namespace Menees.Windows.Forms
 	using System.Runtime.InteropServices;
 	using System.Text;
 	using System.Threading;
-	using Menees.Windows.Forms;
+	using Microsoft.CSharp.RuntimeBinder;
 
 	#endregion
 
@@ -26,7 +26,8 @@ namespace Menees.Windows.Forms
 	/// The bulk of the code for this class was shamelessly pulled from FxCop 1.35's
 	/// Microsoft.FxCop.UI.FxCopUI class (in FxCop.exe) using Reflector and the
 	/// FileDisassembler add-in.  Then it was updated to use C# 4's dynamic keyword
-	/// to make the run-time invocation easier.
+	/// to make the run-time invocation easier. Then I had to muck with it even more
+	/// to make it work in .NET Core 3.1.
 	/// </remarks>
 	public static partial class VisualStudioInvoker
 	{
@@ -51,7 +52,7 @@ namespace Menees.Windows.Forms
 				// We could execute Visual Studio by command-line and
 				// run the GotoLn command (like MegaBuild does), but that
 				// requires starting a new instance of VS for each file opened.
-				dynamic dte = GetVisualStudioInstance();
+				object dte = GetVisualStudioInstance();
 				if (dte != null)
 				{
 					OpenInVisualStudio(dte, fileName, fileLineNumber);
@@ -100,20 +101,18 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private static void OpenInVisualStudio(dynamic dte, string fileName, string line)
+		private static void OpenInVisualStudio(object dte, string fileName, string line)
 		{
-			dte.ExecuteCommand("File.OpenFile", TextUtility.EnsureQuotes(fileName));
-			dte.ExecuteCommand("Edit.Goto", line);
+			ExecuteCommand(dte, "File.OpenFile", TextUtility.EnsureQuotes(fileName));
+			ExecuteCommand(dte, "Edit.Goto", line);
 
-			dynamic mainWindow = dte.MainWindow;
-			IntPtr mainWindowHandle = (IntPtr)Convert.ToInt64(mainWindow.HWnd);
+			IntPtr mainWindowHandle = GetMainWindowHandle(dte);
 
 			NativeMethods.BringWindowForward(mainWindowHandle);
 			const int MillisecondsPerSecond = 1000;
 			Thread.Sleep(MillisecondsPerSecond);
 
-			mainWindow.Activate();
-			mainWindow.Visible = true;
+			ActivateMainWindow(dte);
 		}
 
 		#endregion

@@ -586,6 +586,32 @@ namespace Menees
 			return result;
 		}
 
+		private static string PreserveCase(string word, string plural)
+		{
+			string result;
+
+			if (word.All(ch => char.IsUpper(ch)))
+			{
+				result = plural.ToUpper();
+			}
+			else
+			{
+				StringBuilder sb = new StringBuilder(plural);
+				int n = Math.Min(word.Length, plural.Length);
+				for (int i = 0; i < n; i++)
+				{
+					if (char.IsUpper(word[i]))
+					{
+						sb[i] = char.ToUpper(sb[i]);
+					}
+				}
+
+				result = sb.ToString();
+			}
+
+			return result;
+		}
+
 		#endregion
 	}
 }

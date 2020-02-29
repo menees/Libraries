@@ -211,10 +211,6 @@ namespace Menees.Common.Tests
 			lowerActual.ShouldEqual(mixedExpected.ToLower());
 
 			string upperActual = TextUtility.MakePlural(mixedWord.ToUpper());
-#if NETFRAMEWORK
-			// The Framework pluralizer returns "CATs" for "CAT". :-(
-			upperActual = upperActual.ToUpper();
-#endif
 			upperActual.ShouldEqual(mixedExpected.ToUpper());
 		}
 	}

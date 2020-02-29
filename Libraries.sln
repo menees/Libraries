@@ -29,6 +29,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Tests", "tests\Menees.Windows.Tests\Menees.Windows.Tests.csproj", "{1CBF5E70-9BF4-4A41-8852-94831454817B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CEA0BA62-A50E-44C8-B476-EA713022DA85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F3005484-B2ED-4765-935A-A48C0E99A1F4} = {CEA0BA62-A50E-44C8-B476-EA713022DA85}
+		{1CBF5E70-9BF4-4A41-8852-94831454817B} = {CEA0BA62-A50E-44C8-B476-EA713022DA85}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {988437F2-A3AE-4772-A115-C381DC5FCA26}

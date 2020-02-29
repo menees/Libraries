@@ -16,6 +16,9 @@
 	<Choose>
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
 			<ItemGroup>
+				<Compile Remove="NativeMethods.Core.cs" />
+				<Content Include="NativeMethods.Core.cs" />
+
 				<Compile Remove="VisualStudioInvoker.Core.cs" />
 				<Content Include="VisualStudioInvoker.Core.cs" />
 			</ItemGroup>

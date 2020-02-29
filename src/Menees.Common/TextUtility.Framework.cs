@@ -23,18 +23,8 @@
 		public static string MakePlural(string word)
 		{
 			PluralizationService service = CreatePluralizationService();
-			string result = service.Pluralize(word);
-			return result;
-		}
-
-		/// <summary>
-		/// Gets the singular form of the specified word.
-		/// </summary>
-		/// <param name="word">The word to make singular.</param>
-		public static string MakeSingular(string word)
-		{
-			PluralizationService service = CreatePluralizationService();
-			string result = service.Singularize(word);
+			string plural = service.Pluralize(word);
+			string result = PreserveCase(word, plural);
 			return result;
 		}
 

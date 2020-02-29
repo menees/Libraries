@@ -1,4 +1,4 @@
-namespace Menees
+namespace Menees.Windows
 {
 	#region Using Directives
 
@@ -16,7 +16,7 @@ namespace Menees
 
 	#endregion
 
-	internal static class NativeMethods
+	internal static partial class NativeMethods
 	{
 		#region Private Data Members
 

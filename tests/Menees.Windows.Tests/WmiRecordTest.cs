@@ -5,7 +5,7 @@ using Menees.Windows.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareApproach.TestingExtensions;
 
-namespace Menees.Common.Tests
+namespace Menees.Windows.Tests
 {
 	[TestClass]
 	public class WmiRecordTest
