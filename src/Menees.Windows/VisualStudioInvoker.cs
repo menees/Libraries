@@ -52,7 +52,7 @@ namespace Menees.Windows
 				// We could execute Visual Studio by command-line and
 				// run the GotoLn command (like MegaBuild does), but that
 				// requires starting a new instance of VS for each file opened.
-				object dte = GetVisualStudioInstance();
+				dynamic dte = GetVisualStudioInstance();
 				if (dte != null)
 				{
 					OpenInVisualStudio(dte, fileName, fileLineNumber);
@@ -98,21 +98,24 @@ namespace Menees.Windows
 				}
 			}
 
+			result = EnsureDynamic(result);
 			return result;
 		}
 
-		private static void OpenInVisualStudio(object dte, string fileName, string line)
+		private static void OpenInVisualStudio(dynamic dte, string fileName, string line)
 		{
-			ExecuteCommand(dte, "File.OpenFile", TextUtility.EnsureQuotes(fileName));
-			ExecuteCommand(dte, "Edit.Goto", line);
+			dte.ExecuteCommand("File.OpenFile", TextUtility.EnsureQuotes(fileName));
+			dte.ExecuteCommand("Edit.Goto", line);
 
-			IntPtr mainWindowHandle = GetMainWindowHandle(dte);
+			dynamic mainWindow = dte.MainWindow;
+			IntPtr mainWindowHandle = (IntPtr)Convert.ToInt64(mainWindow.HWnd);
 
 			NativeMethods.BringWindowForward(mainWindowHandle);
 			const int MillisecondsPerSecond = 1000;
 			Thread.Sleep(MillisecondsPerSecond);
 
-			ActivateMainWindow(dte);
+			mainWindow.Activate();
+			mainWindow.Visible = true;
 		}
 
 		#endregion

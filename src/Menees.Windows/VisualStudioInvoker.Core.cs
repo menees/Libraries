@@ -14,31 +14,15 @@
 
 		private static object GetActiveObject(string progID) => NativeMethods.GetActiveObject(progID);
 
-		private static void ExecuteCommand(object dte, string command, string arg)
+		private static object EnsureDynamic(object value)
 		{
 			// .NET Core 3.x doesn't support dynamic for COM Interop.
 			// https://github.com/dotnet/runtime/issues/30502#issuecomment-518748077
-			// To get around that limitation we have to use reflection, at least until .NET 5.
+			// To get around that limitation until .NET 5, we have to use a DynamicObject.
 			// https://github.com/dotnet/runtime/issues/12587#issuecomment-585591984
 			// https://github.com/dotnet/runtime/issues/12587#issuecomment-534611966
-			dynamic comDte = new COMObject(dte);
-			comDte.ExecuteCommand(command, arg);
-		}
-
-		private static IntPtr GetMainWindowHandle(object dte)
-		{
-			dynamic comDte = new COMObject(dte);
-			dynamic mainWindow = comDte.MainWindow;
-			IntPtr result = (IntPtr)Convert.ToInt64(mainWindow.HWnd);
+			dynamic result = new COMObject(value);
 			return result;
-		}
-
-		private static void ActivateMainWindow(object dte)
-		{
-			dynamic comDte = new COMObject(dte);
-			dynamic mainWindow = comDte.MainWindow;
-			mainWindow.Activate();
-			mainWindow.Visible = true;
 		}
 
 		#endregion
@@ -110,6 +94,7 @@
 
 			#region Private Methods
 
+			// https://github.com/dotnet/runtime/issues/12587#issuecomment-578431424
 			private static object WrapIfRequired(object obj)
 			{
 				object result = obj;
