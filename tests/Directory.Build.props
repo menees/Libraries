@@ -1,0 +1,38 @@
+<Project>
+	<PropertyGroup>
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<!-- We can't list netstandard2.0 here because it doesn't have a runtime; it's just a spec. https://stackoverflow.com/a/44478400/1882616 -->
+		<!-- .NET 4.6.1 is the lowest Framework version "compatible" with netstandard2.0 per https://docs.microsoft.com/en-us/dotnet/standard/net-standard. -->
+		<TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
+
+		<NeutralLanguage>en-US</NeutralLanguage>
+		<Authors>Bill Menees</Authors>
+		<PackageProjectUrl>http://www.menees.com</PackageProjectUrl>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/bmenees/Libraries</RepositoryUrl>
+		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+		<LangVersion>latest</LangVersion>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+		<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<DefineConstants>TRACE</DefineConstants>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="2.1.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
+		<PackageReference Include="coverlet.collector" Version="1.2.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="SoftwareApproach.TestingExtensions" Version="2.0.0" />
+	</ItemGroup>
+</Project>

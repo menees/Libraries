@@ -1,18 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
-		<IsPackable>false</IsPackable>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.0.0" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
-		<PackageReference Include="coverlet.collector" Version="1.0.1" />
-		<PackageReference Include="SoftwareApproach.TestingExtensions" Version="2.0.0" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Menees.Windows\Menees.Windows.csproj" />
 	</ItemGroup>
