@@ -31,6 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Windows.Tests", "tes
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CEA0BA62-A50E-44C8-B476-EA713022DA85}"
 	ProjectSection(SolutionItems) = preProject
+		tests\.runsettings = tests\.runsettings
 		tests\Directory.Build.props = tests\Directory.Build.props
 	EndProjectSection
 EndProject

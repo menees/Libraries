@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+	<!-- https://superuser.com/a/1376408/430448 -->
+	<RunConfiguration>
+		<ResultsDirectory>%temp%\TestResults</ResultsDirectory>
+	</RunConfiguration>
+</RunSettings>
