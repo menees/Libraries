@@ -8,6 +8,7 @@
     <Rule Id="CC0048" Action="None" />
     <Rule Id="CC0097" Action="None" />
     <Rule Id="CC0105" Action="None" />
+    <Rule Id="CC0106" Action="None" />
     <Rule Id="CC0120" Action="None" />
   </Rules>
   <Rules AnalyzerId="Menees.Analyzers" RuleNamespace="Menees.Analyzers">

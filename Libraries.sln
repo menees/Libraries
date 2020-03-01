@@ -20,9 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		src\Directory.Build.props = src\Directory.Build.props
 		LICENSE = LICENSE
-		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
 		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
@@ -36,6 +34,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CEA0BA62
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Diffs.Tests", "tests\Menees.Diffs.Tests\Menees.Diffs.Tests.csproj", "{ACAE291B-B6C3-4B33-AF3D-603B7E720A92}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Diffs.Windows.Forms", "src\Menees.Diffs.Windows.Forms\Menees.Diffs.Windows.Forms.csproj", "{90D67611-5F40-44D1-A688-4B4EA9995568}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{65188B40-7F6F-4A58-B2FC-723E44125C34}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.props = src\Directory.Build.props
+		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +81,10 @@ Global
 		{ACAE291B-B6C3-4B33-AF3D-603B7E720A92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ACAE291B-B6C3-4B33-AF3D-603B7E720A92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ACAE291B-B6C3-4B33-AF3D-603B7E720A92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90D67611-5F40-44D1-A688-4B4EA9995568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D67611-5F40-44D1-A688-4B4EA9995568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D67611-5F40-44D1-A688-4B4EA9995568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D67611-5F40-44D1-A688-4B4EA9995568}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
