@@ -55,7 +55,7 @@ namespace Menees.Diffs
 		};
 
 		private readonly bool ignoreCase;
-		private readonly bool ignoreWhiteSpace;
+		private readonly bool ignoreOuterWhiteSpace;
 		private readonly HashType hashType;
 		private readonly int leadingCharactersToIgnore;
 		private readonly Dictionary<string, int> uniqueTable;
@@ -64,11 +64,11 @@ namespace Menees.Diffs
 
 		#region Constructors
 
-		public StringHasher(HashType hashType, bool ignoreCase, bool ignoreWhiteSpace, int leadingCharactersToIgnore)
+		public StringHasher(HashType hashType, bool ignoreCase, bool ignoreOuterWhiteSpace, int leadingCharactersToIgnore)
 		{
 			this.hashType = hashType;
 			this.ignoreCase = ignoreCase;
-			this.ignoreWhiteSpace = ignoreWhiteSpace;
+			this.ignoreOuterWhiteSpace = ignoreOuterWhiteSpace;
 			this.leadingCharactersToIgnore = leadingCharactersToIgnore;
 
 			if (this.hashType == HashType.Unique)
@@ -83,7 +83,7 @@ namespace Menees.Diffs
 
 		public int GetHashCode(string line)
 		{
-			if (this.ignoreWhiteSpace)
+			if (this.ignoreOuterWhiteSpace)
 			{
 				line = line.Trim();
 			}

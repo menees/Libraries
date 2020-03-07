@@ -16,16 +16,16 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void AreFilesDifferentTest()
 		{
-			using TempFile a1 = new TempFile("1234");
-			using TempFile a2 = new TempFile("1234");
-			using TempFile b = new TempFile("12345");
-			using TempFile c = new TempFile("12045");
-
 			static void Test(TempFile f1, TempFile f2, bool expected, string message)
 			{
 				DiffUtility.AreFilesDifferent(f1.FileName, f2.FileName).ShouldEqual(expected, message);
 				DiffUtility.AreFilesDifferent(f1.Info, f2.Info).ShouldEqual(expected, message);
 			}
+
+			using TempFile a1 = new TempFile("1234");
+			using TempFile a2 = new TempFile("1234");
+			using TempFile b = new TempFile("12345");
+			using TempFile c = new TempFile("12045");
 
 			Test(a1, a2, false, "a1==a2");
 			Test(a1, b, true, "a1!=b");
@@ -41,16 +41,16 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void GetFileTextLinesTest()
 		{
-			using TempFile a = new TempFile("Line1");
-			using TempFile b = new TempFile("Line1\nLine2");
-			using TempFile c = new TempFile("Line1\r\nLine2\r\n");
-			using TempFile d = new TempFile("Line1\r\nLine2\r\nLine3");
-
 			static void TestLines(TempFile f, params string[] expected)
 			{
 				IList<string> actual = DiffUtility.GetFileTextLines(f.FileName);
 				AreEquivalent(actual, expected);
 			}
+
+			using TempFile a = new TempFile("Line1");
+			using TempFile b = new TempFile("Line1\nLine2");
+			using TempFile c = new TempFile("Line1\r\nLine2\r\n");
+			using TempFile d = new TempFile("Line1\r\nLine2\r\nLine3");
 
 			TestLines(a, "Line1");
 			TestLines(b, "Line1", "Line2");

@@ -9,7 +9,7 @@ namespace Menees.Diffs
 
 	#endregion
 
-	[DebuggerDisplay("Type = {Type}, StartA = {StartA}, StartB = {StartB}, Length = {Length}")]
+	[DebuggerDisplay("Type = {EditType}, StartA = {StartA}, StartB = {StartB}, Length = {Length}")]
 	public sealed class Edit
 	{
 		#region Private Data Members

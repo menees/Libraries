@@ -23,14 +23,14 @@ namespace Menees.Diffs
 
 		#region Constructors
 
-		public TextDiff(HashType hashType, bool ignoreCase, bool ignoreWhiteSpace)
-			: this(hashType, ignoreCase, ignoreWhiteSpace, 0, true)
+		public TextDiff(HashType hashType, bool ignoreCase, bool ignoreOuterWhiteSpace)
+			: this(hashType, ignoreCase, ignoreOuterWhiteSpace, 0, true)
 		{
 		}
 
-		public TextDiff(HashType hashType, bool ignoreCase, bool ignoreWhiteSpace, int leadingCharactersToIgnore, bool supportChangeEditType)
+		public TextDiff(HashType hashType, bool ignoreCase, bool ignoreOuterWhiteSpace, int leadingCharactersToIgnore, bool supportChangeEditType)
 		{
-			this.hasher = new StringHasher(hashType, ignoreCase, ignoreWhiteSpace, leadingCharactersToIgnore);
+			this.hasher = new StringHasher(hashType, ignoreCase, ignoreOuterWhiteSpace, leadingCharactersToIgnore);
 			this.supportChangeEditType = supportChangeEditType;
 		}
 
