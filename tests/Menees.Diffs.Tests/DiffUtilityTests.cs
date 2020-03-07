@@ -6,6 +6,7 @@ using System.Text;
 using SoftwareApproach.TestingExtensions;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace Menees.Diffs.Tests
 {
@@ -32,6 +33,11 @@ namespace Menees.Diffs.Tests
 			Test(b, c, true, "b!=c");
 		}
 
+		private static void AreEquivalent(IList<string> actual, params string[] expected)
+		{
+			CollectionAssert.AreEquivalent(expected, actual.ToArray());
+		}
+
 		[TestMethod]
 		public void GetFileTextLinesTest()
 		{
@@ -43,7 +49,7 @@ namespace Menees.Diffs.Tests
 			static void TestLines(TempFile f, params string[] expected)
 			{
 				IList<string> actual = DiffUtility.GetFileTextLines(f.FileName);
-				CollectionAssert.AreEquivalent(expected, actual.ToArray());
+				AreEquivalent(actual, expected);
 			}
 
 			TestLines(a, "Line1");
@@ -58,7 +64,7 @@ namespace Menees.Diffs.Tests
 			static void TestLines(string text, params string[] expected)
 			{
 				IList<string> actual = DiffUtility.GetStringTextLines(text);
-				CollectionAssert.AreEquivalent(expected, actual.ToArray());
+				AreEquivalent(actual, expected);
 			}
 
 			TestLines("");
@@ -74,19 +80,36 @@ namespace Menees.Diffs.Tests
 			using TempFile f = new TempFile("Line1\r\nLine2\r\nLine3");
 			using TextReader reader = new StreamReader(f.FileName);
 			IList<string> actual = DiffUtility.GetTextLines(reader);
-			CollectionAssert.AreEquivalent(new[] { "Line1", "Line2", "Line3" }, actual.ToArray());
+			AreEquivalent(actual, "Line1", "Line2", "Line3");
 		}
 
 		[TestMethod]
 		public void GetXmlTextLinesTest()
 		{
-			throw new NotImplementedException(); // TODO: Write test. [2/29/20]
+			XElement element = XElement.Parse("<a>\n\t<b>\n\n\t\t<c/>\n\t</b>\n</a>");
+			using TempFile a = new TempFile("");
+			element.Save(a.FileName);
+
+			const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
+
+			// Ignoring insignificant whitespace still makes the parser skip the extra blank line after <b>, but it keeps our tabs as-is.
+			AreEquivalent(DiffUtility.GetXmlTextLines(a.FileName, ignoreInsignificantWhiteSpace: true), Header, "<a>", "\t<b>", "\t\t<c />", "\t</b>", "</a>");
+
+			// Not ignoring insignificant whitespace makes the parser skip the extra blank line and convert tabs to spaces.
+			AreEquivalent(DiffUtility.GetXmlTextLines(a.FileName, ignoreInsignificantWhiteSpace: false), Header, "<a>", "  <b>", "    <c />", "  </b>", "</a>");
 		}
 
 		[TestMethod]
 		public void GetXmlTextLinesFromXmlTest()
 		{
-			throw new NotImplementedException(); // TODO: Write test. [2/29/20]
+			const string Xml = "<a>\n\t<b>\n\n\t\t<c/>\n\t</b>\n</a>";
+			const string Header = "<?xml version=\"1.0\" encoding=\"utf-16\"?>";
+
+			// Ignoring insignificant whitespace still makes the parser skip the extra blank line after <b>, but it keeps our tabs as-is.
+			AreEquivalent(DiffUtility.GetXmlTextLinesFromXml(Xml, ignoreInsignificantWhiteSpace: true), Header, "<a>", "\t<b>", "\t\t<c />", "\t</b>", "</a>");
+
+			// Not ignoring insignificant whitespace makes the parser include the extra blank line.
+			AreEquivalent(DiffUtility.GetXmlTextLinesFromXml(Xml, ignoreInsignificantWhiteSpace: false), Header, "<a>", "\t<b>", "", "\t\t<c />", "\t</b>", "</a>");
 		}
 
 		[TestMethod]
