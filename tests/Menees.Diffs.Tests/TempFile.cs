@@ -20,16 +20,11 @@
 		#region Constructors
 
 		public TempFile(string content)
-			: this(content != null ? Encoding.UTF8.GetBytes(content) : null)
-		{
-		}
-
-		public TempFile(byte[] content)
 		{
 			this.FileName = Path.GetTempFileName();
 			if (content != null)
 			{
-				File.WriteAllBytes(this.FileName, content);
+				File.WriteAllBytes(this.FileName, Encoding.UTF8.GetBytes(content));
 			}
 		}
 

@@ -41,10 +41,8 @@ namespace Menees.Diffs.Tests
 			diff.FootprintLength = footprintLength;
 			diff.TableSize = tableSize;
 
-			using TempFile a = new TempFile(aContent);
-			using TempFile b = new TempFile(bContent);
-			using Stream aStream = File.OpenRead(a.FileName);
-			using Stream bStream = File.OpenRead(b.FileName);
+			using Stream aStream = new MemoryStream(Encoding.UTF8.GetBytes(aContent));
+			using Stream bStream = new MemoryStream(Encoding.UTF8.GetBytes(bContent));
 			AddCopyCollection result = diff.Execute(aStream, bStream);
 
 			result.TotalByteLength.ShouldEqual((int)bStream.Length);

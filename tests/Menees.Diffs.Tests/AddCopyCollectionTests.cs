@@ -19,11 +19,12 @@ namespace Menees.Diffs.Tests
 			using MemoryStream memory = new MemoryStream();
 			ac.GDiff(memory);
 			byte[] gdiff = memory.ToArray();
+			gdiff.Length.ShouldEqual(13);
 
 			// It always starts with "d1ff d1ff 4" (magic numbers and version).
 			Check(gdiff, 0, 0xd1, 0xff, 0xd1, 0xff, 0x04);
 
-			// Copy 6 bytes ("Creati").
+			// Copy (code 249) 6 bytes ("Creati").
 			Check(gdiff, 5, 249, 0, 0, 6);
 
 			// Add 2 bytes ("ng") and then EOF.
