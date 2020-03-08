@@ -177,7 +177,7 @@ namespace Menees.Diffs.Controls
 			else
 			{
 				DirectoryDiffFileFilter filter = results.Filter;
-				this.lblFilter.Text = string.Format("{0}: {1}", filter.Include ? "Includes" : "Excludes", filter.FilterString);
+				this.lblFilter.Text = string.Format("{0}: {1}", filter.Include ? "Includes" : "Excludes", filter.Filters);
 			}
 
 			this.UpdateButtons();

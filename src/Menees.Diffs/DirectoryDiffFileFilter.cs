@@ -20,11 +20,12 @@ namespace Menees.Diffs
 
 		#region Constructors
 
-		public DirectoryDiffFileFilter(string filter, bool include)
+		public DirectoryDiffFileFilter(string filters, bool include)
 		{
-			this.concatenatedFilters = filter;
+			Conditions.RequireString(filters, nameof(filters));
+			this.concatenatedFilters = filters;
 			this.include = include;
-			this.individualFilters = filter.Split(';');
+			this.individualFilters = filters.Split(';');
 			for (int i = 0; i < this.individualFilters.Length; i++)
 			{
 				this.individualFilters[i] = this.individualFilters[i].Trim();
@@ -35,7 +36,7 @@ namespace Menees.Diffs
 
 		#region Public Properties
 
-		public string FilterString => this.concatenatedFilters;
+		public string Filters => this.concatenatedFilters;
 
 		public bool Include => this.include;
 
@@ -60,7 +61,7 @@ namespace Menees.Diffs
 			FileInfo previousFile = null;
 			for (int i = 0; i < files.Count; /*Incremented in the loop*/)
 			{
-				FileInfo currentFile = (FileInfo)files[i];
+				FileInfo currentFile = files[i];
 				if (previousFile != null && FileSystemInfoComparer.Comparer.Compare(currentFile, previousFile) == 0)
 				{
 					files.RemoveAt(i);
@@ -95,7 +96,7 @@ namespace Menees.Diffs
 					FileInfo fileA = allFiles[a];
 					if (e < numExcludes)
 					{
-						FileInfo fileE = (FileInfo)files[e];
+						FileInfo fileE = files[e];
 						compareResult = FileSystemInfoComparer.Comparer.Compare(fileA, fileE);
 					}
 

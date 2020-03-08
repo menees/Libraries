@@ -220,7 +220,7 @@ namespace Menees.Diffs
 
 		private static double GetSimilarity(int lengthA, int lengthB, int lengthLcs)
 		{
-			double result = (2.0 * lengthLcs) / (double)(lengthA + lengthB);
+			double result = (2.0 * lengthLcs) / (lengthA + lengthB);
 			return result;
 		}
 
