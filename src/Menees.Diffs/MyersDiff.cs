@@ -139,13 +139,10 @@ namespace Menees.Diffs
 				Debug.Assert(false, "This code should be unreachable.");
 				return -1;
 			}
-			else if (this.listA.Count == 0)
-			{
-				return this.listB.Count;
-			}
 			else
 			{
-				return this.listA.Count;
+				int aCount = this.listA.Count;
+				return aCount == 0 ? this.listB.Count : aCount;
 			}
 		}
 
@@ -193,13 +190,10 @@ namespace Menees.Diffs
 				Debug.Assert(false, "This code should be unreachable.");
 				return -1;
 			}
-			else if (this.listA.Count == 0)
-			{
-				return this.listB.Count;
-			}
 			else
 			{
-				return this.listA.Count;
+				int aCount = this.listA.Count;
+				return aCount == 0 ? this.listB.Count : aCount;
 			}
 		}
 

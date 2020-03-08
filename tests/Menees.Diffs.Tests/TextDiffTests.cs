@@ -47,10 +47,7 @@ namespace Menees.Diffs.Tests
 
 			EditScript edits = Diff(a, b, false, false, false);
 			Check(edits, EditType.Delete);
-			Edit edit = edits[0];
-			edit.Length.ShouldEqual(2);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
+			Check(edits[0], 2, 1, 1);
 		}
 
 		[TestMethod]
@@ -61,10 +58,7 @@ namespace Menees.Diffs.Tests
 
 			EditScript edits = Diff(a, b, false, false, false);
 			Check(edits, EditType.Insert);
-			Edit edit = edits[0];
-			edit.Length.ShouldEqual(2);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
+			Check(edits[0], 2, 1, 1);
 		}
 
 		[TestMethod]
@@ -75,10 +69,7 @@ namespace Menees.Diffs.Tests
 
 			EditScript edits = Diff(a, b, false, false, true);
 			Check(edits, EditType.Change);
-			Edit edit = edits[0];
-			edit.Length.ShouldEqual(2);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
+			Check(edits[0], 2, 1, 1);
 		}
 
 		[TestMethod]
@@ -89,14 +80,8 @@ namespace Menees.Diffs.Tests
 
 			EditScript edits = Diff(a, b, false, false, false);
 			Check(edits, EditType.Insert, EditType.Delete);
-			Edit edit = edits[0];
-			edit.Length.ShouldEqual(1);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
-			edit = edits[1];
-			edit.Length.ShouldEqual(1);
-			edit.StartA.ShouldEqual(2);
-			edit.StartB.ShouldEqual(3);
+			Check(edits[0], 1, 1, 1);
+			Check(edits[1], 1, 2, 3);
 		}
 
 		[TestMethod]
@@ -107,17 +92,11 @@ namespace Menees.Diffs.Tests
 
 			EditScript edits = Diff(a, b, false, false, false);
 			Check(edits, EditType.Delete, EditType.Insert);
-			Edit edit = edits[0];
-			edit.Length.ShouldEqual(1);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
-			edit = edits[1];
-			edit.Length.ShouldEqual(1);
-			edit.StartA.ShouldEqual(1);
-			edit.StartB.ShouldEqual(1);
+			Check(edits[0], 1, 1, 1);
+			Check(edits[1], 1, 1, 1);
 		}
 
-		private static EditScript Diff(string left, string right, bool ignoreCase, bool ignoreOuterWhiteSpace, bool supportChangeEditType = true)
+		internal static EditScript Diff(string left, string right, bool ignoreCase, bool ignoreOuterWhiteSpace, bool supportChangeEditType = true)
 		{
 			IList<string> leftLines = DiffUtility.GetStringTextLines(left);
 			IList<string> rightLines = DiffUtility.GetStringTextLines(right);
@@ -140,7 +119,7 @@ namespace Menees.Diffs.Tests
 			return edits;
 		}
 
-		private static void Check(EditScript edits, params EditType[] expectedEditTypes)
+		internal static void Check(EditScript edits, params EditType[] expectedEditTypes)
 		{
 			edits.Count.ShouldEqual(expectedEditTypes.Length, nameof(edits.Count));
 			for (int i = 0; i < expectedEditTypes.Length; i++)
@@ -148,6 +127,13 @@ namespace Menees.Diffs.Tests
 				Edit edit = edits[i];
 				edit.EditType.ShouldEqual(expectedEditTypes[i]);
 			}
+		}
+
+		internal static void Check(Edit edit, int expectedLength, int expectedStartA, int expectedStartB)
+		{
+			edit.Length.ShouldEqual(expectedLength);
+			edit.StartA.ShouldEqual(expectedStartA);
+			edit.StartB.ShouldEqual(expectedStartB);
 		}
 	}
 }
