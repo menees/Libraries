@@ -9,8 +9,14 @@ using System.IO;
 
 namespace Menees.Diffs.Tests
 {
-	[TestClass]
+#if NETFRAMEWORK
+	// Per https://github.com/microsoft/testfx/issues/295#issuecomment-344861842,
+	// using DeploymentItem prevents System.* assemblies from being deployed.
+	// Also, DeploymentItem shouldn't be used in .NET Core. What a pain.
 	[DeploymentItem("Data", "Data")]
+	[DeploymentItem("System.IO.dll")]
+#endif
+	[TestClass]
 	public class DirectoryDiffTests
 	{
 		public TestContext TestContext { get; set; }
