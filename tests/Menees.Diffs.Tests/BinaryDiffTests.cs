@@ -46,6 +46,8 @@ namespace Menees.Diffs.Tests
 			using Stream aStream = File.OpenRead(a.FileName);
 			using Stream bStream = File.OpenRead(b.FileName);
 			AddCopyCollection result = diff.Execute(aStream, bStream);
+
+			result.TotalByteLength.ShouldEqual((int)bStream.Length);
 			return result;
 		}
 
