@@ -9,42 +9,59 @@ using System.IO;
 
 namespace Menees.Diffs.Tests
 {
-#if NETFRAMEWORK
-	// Per https://github.com/microsoft/testfx/issues/295#issuecomment-344861842,
-	// using DeploymentItem prevents System.* assemblies from being deployed.
-	// Also, DeploymentItem shouldn't be used in .NET Core. What a pain.
-	[DeploymentItem("Data", "Data")]
-	[DeploymentItem("System.IO.dll")]
-#endif
 	[TestClass]
 	public class DirectoryDiffTests
 	{
-		public TestContext TestContext { get; set; }
+		private static DirectoryInfo DataDir { get; set; }
 
-		private DirectoryInfo ADir { get; set; }
+		private static DirectoryInfo ADir { get; set; }
 
-		private DirectoryInfo BDir { get; set; }
+		private static DirectoryInfo BDir { get; set; }
 
-		private DirectoryDiffFileFilter Filter { get; set; }
+		private static DirectoryDiffFileFilter Filter { get; set; }
 
-		[TestInitialize]
-		public void TestInitialize()
+		[ClassInitialize]
+		public static void ClassInitialize(TestContext context)
 		{
-			// The unit testing framework will set this property.
-			this.TestContext.ShouldNotBeNull();
+			context.ShouldNotBeNull();
 
-			string rootDir = this.TestContext.DeploymentDirectory;
+			string rootDir = context.TestRunDirectory;
 			rootDir.ShouldNotBeEmpty();
 
-			string dataDir = Path.Combine(rootDir, "Data");
-			Directory.Exists(dataDir).ShouldBeTrue("Data");
+			DataDir = new DirectoryInfo(Path.Combine(rootDir, "Data"));
+			DataDir.Create();
 
-			this.ADir = new DirectoryInfo(Path.Combine(dataDir, "A"));
-			this.ADir.Exists.ShouldBeTrue("ADir");
-			this.BDir = new DirectoryInfo(Path.Combine(dataDir, "B"));
-			this.BDir.Exists.ShouldBeTrue("BDir");
+			ADir = new DirectoryInfo(Path.Combine(DataDir.FullName, "A"));
+			ADir.Create();
 
-			this.Filter = new DirectoryDiffFileFilter("*.txt", true);
+			BDir = new DirectoryInfo(Path.Combine(DataDir.FullName, "B"));
+			BDir.Create();
+
+			Filter = new DirectoryDiffFileFilter("*.txt", true);
+
+			static void Write(DirectoryInfo directory, string fileName, string content)
+				=> File.WriteAllText(Path.Combine(directory.FullName, fileName), content);
+
+			Write(ADir, "1.txt", "One");
+			Write(BDir, "1.txt", "One");
+
+			Write(ADir, "2.txt", "Two");
+			Write(BDir, "3.txt", "Three");
+
+			Write(ADir, "4.txt", "Four");
+			Write(BDir, "4.txt", "Four");
+
+			Write(ADir, "5.txt", "Five");
+			Write(BDir, "5.txt", "5");
+		}
+
+		[ClassCleanup]
+		public static void ClassCleanup()
+		{
+			if (DataDir.Exists)
+			{
+				DataDir.Delete(true);
+			}
 		}
 
 		static void Check(DirectoryDiffEntry entry, string expectedName, bool expectInA, bool expectInB)
@@ -58,8 +75,8 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowOnlyInATest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(true, false, false, false, false, false, this.Filter);
-			DirectoryDiffResults results = diff.Execute(this.ADir, this.BDir);
+			DirectoryDiff diff = new DirectoryDiff(true, false, false, false, false, false, Filter);
+			DirectoryDiffResults results = diff.Execute(ADir, BDir);
 			results.Entries.Count.ShouldEqual(1);
 			Check(results.Entries[0], "2.txt", true, false);
 		}
@@ -67,8 +84,8 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowOnlyInBTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, true, false, false, false, false, this.Filter);
-			DirectoryDiffResults results = diff.Execute(this.ADir, this.BDir);
+			DirectoryDiff diff = new DirectoryDiff(false, true, false, false, false, false, Filter);
+			DirectoryDiffResults results = diff.Execute(ADir, BDir);
 			results.Entries.Count.ShouldEqual(1);
 			Check(results.Entries[0], "3.txt", false, true);
 		}
@@ -76,8 +93,8 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowDifferentTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, false, true, false, false, false, this.Filter);
-			DirectoryDiffResults results = diff.Execute(this.ADir, this.BDir);
+			DirectoryDiff diff = new DirectoryDiff(false, false, true, false, false, false, Filter);
+			DirectoryDiffResults results = diff.Execute(ADir, BDir);
 			results.Entries.Count.ShouldEqual(1);
 			Check(results.Entries[0], "5.txt", true, true);
 		}
@@ -85,8 +102,8 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowSameTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, false, false, true, false, false, this.Filter);
-			DirectoryDiffResults results = diff.Execute(this.ADir, this.BDir);
+			DirectoryDiff diff = new DirectoryDiff(false, false, false, true, false, false, Filter);
+			DirectoryDiffResults results = diff.Execute(ADir, BDir);
 			results.Entries.Count.ShouldEqual(2);
 			Check(results.Entries[0], "1.txt", true, true);
 			Check(results.Entries[1], "4.txt", true, true);
@@ -95,8 +112,8 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowNotSameTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(true, true, true, false, false, false, this.Filter);
-			DirectoryDiffResults results = diff.Execute(this.ADir, this.BDir);
+			DirectoryDiff diff = new DirectoryDiff(true, true, true, false, false, false, Filter);
+			DirectoryDiffResults results = diff.Execute(ADir, BDir);
 			results.Entries.Count.ShouldEqual(3);
 			Check(results.Entries[0], "2.txt", true, false);
 			Check(results.Entries[1], "3.txt", false, true);

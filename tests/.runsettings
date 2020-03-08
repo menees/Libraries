@@ -6,4 +6,8 @@
 		<ResultsDirectory>%temp%\TestResults</ResultsDirectory>
 		<TargetPlatform>x64</TargetPlatform>
 	</RunConfiguration>
+
+	<MSTest>
+		<DeploymentEnabled>False</DeploymentEnabled>
+	</MSTest>
 </RunSettings>
