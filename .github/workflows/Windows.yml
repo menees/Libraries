@@ -22,11 +22,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     
-    - name: Add msbuild to PATH
+    - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.0
-      with:
-        vs-version: 16.4
-            
+      
+    - name: Restore NuGet packages
+      run: msbuild Libraries.sln /p:Configuration=Release /t:Restore
+      
     - name: Run MSBuild on solution
       run: msbuild Libraries.sln /p:Configuration=Release
 
