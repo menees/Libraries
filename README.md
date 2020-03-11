@@ -1,7 +1,4 @@
-
-![GitHub last commit](https://img.shields.io/github/last-commit/bmenees/Libraries)
-![Windows Build & Test](https://github.com/bmenees/Libraries/workflows/Windows%20Build%20&%20Test/badge.svg)
-![GitHub top language](https://img.shields.io/github/languages/top/bmenees/Libraries)
+![windows build & test](https://github.com/bmenees/Libraries/workflows/windows%20build%20&%20test/badge.svg)
 ![GitHub repo size](https://img.shields.io/github/repo-size/bmenees/Libraries)
 
 # Libraries
