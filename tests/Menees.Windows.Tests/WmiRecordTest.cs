@@ -51,13 +51,27 @@ namespace Menees.Windows.Tests
 				{
 					foundRecord = true;
 
-					// DST should always be enabled in the Central time zone.  DST may not be in effect though.
-					// But these tests also need to run on GitHub servers, and we don't know their time zone.
 					TimeZoneInfo local = TimeZoneInfo.Local;
-					record.GetBoolean("EnableDaylightSavingsTime").ShouldEqual(local.SupportsDaylightSavingTime);
-					bool? daylightInEffect = record.GetBooleanN("DaylightInEffect");
-					daylightInEffect.ShouldNotBeNull("DaylightInEffect");
-					daylightInEffect.ShouldEqual(local.IsDaylightSavingTime(DateTime.Now));
+					record.GetBoolean("EnableDaylightSavingsTime").ShouldBeTrue("EnableDaylightSavingsTime");
+					if (local.Id == "Central Standard Time")
+					{
+						// DST should always be enabled in the Central time zone.  DST may not be in effect though.
+						bool? daylightInEffect = record.GetBooleanN("DaylightInEffect");
+						daylightInEffect.ShouldNotBeNull("DaylightInEffect");
+						daylightInEffect.ShouldEqual(local.IsDaylightSavingTime(DateTime.Now));
+					}
+					else if (local.Id == "UTC")
+					{
+						// When these tests run on GitHub servers, it's usually in UTC. UTC reports true for
+						// EnableDaylightSavingsTime, but it returns null for DaylightInEffect. To see what it was
+						// doing I added the following lines to my GitHub Actions YAML workflow:
+						//		[TimeZoneInfo]::Local
+						//		[TimeZoneInfo]::Local.IsDaylightSavingTime([DateTime]::Now)
+						// Then I changed my time zone to UTC on my local machine to debug.
+						record.GetBoolean("EnableDaylightSavingsTime").ShouldBeTrue("EnableDaylightSavingsTime");
+						bool? daylightInEffect = record.GetBooleanN("DaylightInEffect");
+						daylightInEffect.ShouldBeNull("DaylightInEffect");
+					}
 				});
 			foundRecord.ShouldBeTrue("Found second record");
 			result.ShouldBeTrue("Second query");
