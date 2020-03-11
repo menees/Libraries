@@ -33,9 +33,12 @@ jobs:
 
     - name: Setup VSTest.console.exe
       uses: darenm/Setup-VSTest@v1
-
+    
+    - name: Find release unit tests assemblies
+      run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host $_ }
+    
     - name: Run release build unit tests
-      run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host $_; vstest.console.exe $_ /Platform:X64 }
+      run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host "`n`n***** $_ *****"; vstest.console.exe $_ /Platform:X64 }
       
     # Runs a set of commands using the runner's shell
     #- name: Run a multi-line script
