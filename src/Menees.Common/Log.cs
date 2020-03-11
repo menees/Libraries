@@ -55,7 +55,7 @@ namespace Menees
 		private Log(string category)
 		{
 			this.category = category;
-			this.traceSource = new TraceSource(category, ApplicationInfo.IsDebugBuild ? SourceLevels.All : SourceLevels.Information);
+			this.traceSource = new TraceSource(category, SourceLevels.All);
 
 			// If this trace source only has the default listener, then use the global trace listeners instead.
 			// This makes it much easier to configure global listeners that apply to all categories/sources.
