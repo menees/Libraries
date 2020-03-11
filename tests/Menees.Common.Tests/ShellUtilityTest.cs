@@ -31,7 +31,13 @@ namespace Menees.Common.Tests
 			DateTime? built = ReflectionUtility.GetBuildTime(asm);
 
 			// Runtime bitness check from https://stackoverflow.com/a/3782556/1882616.
-			actual.ShouldEqual("Version 1.2.3 – " + built.Value.ToLocalTime().ToShortDateString() + " – " + 8*IntPtr.Size + "-bit");
+			string expected = "Version 1.2.3 – " + built.Value.ToLocalTime().ToShortDateString() + " – " + 8 * IntPtr.Size + "-bit";
+			if (ApplicationInfo.IsUserRunningAsAdministrator)
+			{
+				expected += " – Administrator";
+			}
+
+			actual.ShouldEqual(expected);
 		}
 
 		[TestMethod]

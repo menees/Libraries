@@ -52,9 +52,12 @@ namespace Menees.Windows.Tests
 					foundRecord = true;
 
 					// DST should always be enabled in the Central time zone.  DST may not be in effect though.
-					record.GetBoolean("EnableDaylightSavingsTime").ShouldBeTrue("EnableDaylightSavingsTime");
-					record.GetBoolean("DaylightInEffect").ShouldEqual(TimeZoneInfo.Local.IsDaylightSavingTime(DateTime.Now));
-					record.GetBooleanN("DaylightInEffect").ShouldNotBeNull("DaylightInEffect");
+					// But these tests also need to run on GitHub servers, and we don't know their time zone.
+					TimeZoneInfo local = TimeZoneInfo.Local;
+					record.GetBoolean("EnableDaylightSavingsTime").ShouldEqual(local.SupportsDaylightSavingTime);
+					bool? daylightInEffect = record.GetBooleanN("DaylightInEffect");
+					daylightInEffect.ShouldNotBeNull("DaylightInEffect");
+					daylightInEffect.ShouldEqual(local.IsDaylightSavingTime(DateTime.Now));
 				});
 			foundRecord.ShouldBeTrue("Found second record");
 			result.ShouldBeTrue("Second query");
