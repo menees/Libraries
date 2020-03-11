@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Windows Build
+name: Windows Build & Test
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
 # events but only for the master branch
@@ -31,6 +31,12 @@ jobs:
     - name: Run MSBuild on solution
       run: msbuild Libraries.sln /p:Configuration=Release
 
+    - name: Setup VSTest.console.exe
+      uses: darenm/Setup-VSTest@v1
+
+    - name: Run release build unit tests
+      run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host $_; vstest.console.exe $_ /Platform:X64 }
+      
     # Runs a set of commands using the runner's shell
     #- name: Run a multi-line script
     #  run: |
