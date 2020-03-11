@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Windows Build & Test
 
 # Controls when the action will run. Triggers the workflow on push or pull request 
@@ -15,7 +13,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: [windows-latest]
+    runs-on: windows-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -31,7 +29,7 @@ jobs:
     - name: Run MSBuild on solution
       run: msbuild Libraries.sln /p:Configuration=Release
 
-    - name: Setup VSTest.console.exe
+    - name: Add VSTest.Console.exe to PATH
       uses: darenm/Setup-VSTest@v1
     
     - name: Report release build unit tests
@@ -42,9 +40,3 @@ jobs:
     
     - name: Run release build unit tests
       run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host "`n`n***** $_ *****"; vstest.console.exe $_ /Platform:X64 }
-      
-    # Runs a set of commands using the runner's shell
-    #- name: Run a multi-line script
-    #  run: |
-    #   echo Add other actions to build,
-    #   echo test, and deploy your project.
