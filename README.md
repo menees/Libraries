@@ -1,3 +1,9 @@
+
+![GitHub last commit](https://img.shields.io/github/last-commit/bmenees/Libraries)
+![Windows Build & Test](https://github.com/bmenees/Libraries/workflows/Windows%20Build%20&%20Test/badge.svg)
+![GitHub top language](https://img.shields.io/github/languages/top/bmenees/Libraries)
+![GitHub repo size](https://img.shields.io/github/repo-size/bmenees/Libraries)
+
 # Libraries
 .NET libraries used in Menees utilities.
 
