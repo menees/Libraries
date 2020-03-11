@@ -22,11 +22,10 @@
 		/// </summary>
 		public static bool IsUserRunningAsAdministrator => IsWindowsUserRunningAsAdministrator;
 
-		#endregion
-
-		#region Internal Properties
-
-		internal static bool IsWindows => true;
+		/// <summary>
+		/// Gets whether the current application is running on a Windows OS.
+		/// </summary>
+		public static bool IsWindows => true;
 
 		#endregion
 

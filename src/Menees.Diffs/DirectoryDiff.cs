@@ -19,6 +19,7 @@ namespace Menees.Diffs
 		private readonly bool showOnlyInB;
 		private readonly bool showSame;
 		private readonly DirectoryDiffFileFilter filter;
+		private readonly FileSystemInfoComparer comparer;
 
 		#endregion
 
@@ -32,6 +33,27 @@ namespace Menees.Diffs
 			bool recursive,
 			bool ignoreDirectoryComparison,
 			DirectoryDiffFileFilter filter)
+			: this(
+				showOnlyInA,
+				showOnlyInB,
+				showDifferent,
+				showSame,
+				recursive,
+				ignoreDirectoryComparison,
+				filter,
+				DefaultNameComparison)
+		{
+		}
+
+		public DirectoryDiff(
+			bool showOnlyInA,
+			bool showOnlyInB,
+			bool showDifferent,
+			bool showSame,
+			bool recursive,
+			bool ignoreDirectoryComparison,
+			DirectoryDiffFileFilter filter,
+			StringComparison nameComparison)
 		{
 			this.showOnlyInA = showOnlyInA;
 			this.showOnlyInB = showOnlyInB;
@@ -40,7 +62,17 @@ namespace Menees.Diffs
 			this.recursive = recursive;
 			this.ignoreDirectoryComparison = ignoreDirectoryComparison;
 			this.filter = filter;
+			this.comparer = FileSystemInfoComparer.Get(nameComparison);
 		}
+
+		#endregion
+
+		#region Public Properties
+
+		// At https://docs.microsoft.com/en-us/dotnet/standard/base-types/best-practices-strings, Microsoft says,
+		// "The string behavior of the file system, registry keys and values, and environment variables is best represented
+		// by StringComparison.OrdinalIgnoreCase." That's true on Windows, but on Linux and Mac, Ordinal is better.
+		public static StringComparison DefaultNameComparison => ApplicationInfo.IsWindows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
 
 		#endregion
 
@@ -54,7 +86,7 @@ namespace Menees.Diffs
 			DirectoryDiffEntry entry = new DirectoryDiffEntry(string.Empty, false, true, true, false);
 
 			// If the base paths are the same, we don't need to check for file differences.
-			bool checkIfFilesAreDifferent = string.Compare(directoryA.FullName, directoryB.FullName, true) != 0;
+			bool checkIfFilesAreDifferent = string.Compare(directoryA.FullName, directoryB.FullName, this.comparer.Comparison) != 0;
 
 			this.Execute(directoryA, directoryB, entry, checkIfFilesAreDifferent);
 
@@ -77,7 +109,7 @@ namespace Menees.Diffs
 				FileSystemInfo infoA = infosA[indexA];
 				FileSystemInfo infoB = infosB[indexB];
 
-				int compareResult = string.Compare(infoA.Name, infoB.Name, true);
+				int compareResult = this.comparer.Compare(infoA, infoB);
 				if (compareResult == 0)
 				{
 					// The item is in both directories
@@ -196,8 +228,8 @@ namespace Menees.Diffs
 				filesB = directoryB.GetFiles();
 
 				// Sort them
-				Array.Sort(filesA, FileSystemInfoComparer.FileComparer);
-				Array.Sort(filesB, FileSystemInfoComparer.FileComparer);
+				Array.Sort(filesA, this.comparer);
+				Array.Sort(filesB, this.comparer);
 			}
 			else
 			{
@@ -213,8 +245,8 @@ namespace Menees.Diffs
 			DirectoryInfo[] directoriesB = directoryB.GetDirectories();
 
 			// Sort them
-			Array.Sort(directoriesA, FileSystemInfoComparer.DirectoryComparer);
-			Array.Sort(directoriesB, FileSystemInfoComparer.DirectoryComparer);
+			Array.Sort(directoriesA, this.comparer);
+			Array.Sort(directoriesB, this.comparer);
 
 			// Diff them
 			this.DiffFileSystemInfos(directoriesA, directoriesB, entry, false, checkIfFilesAreDifferent);

@@ -11,31 +11,60 @@ namespace Menees.Diffs
 
 	#endregion
 
-	internal class FileSystemInfoComparer : IComparer<FileSystemInfo>, IComparer<FileInfo>, IComparer<DirectoryInfo>
+	internal class FileSystemInfoComparer : IComparer<FileSystemInfo>
 	{
-		#region Public Fields
+		#region Private Data Members
 
-		public static readonly FileSystemInfoComparer Comparer = new FileSystemInfoComparer();
+		private static readonly FileSystemInfoComparer CurrentCultureComparer =
+			new FileSystemInfoComparer(StringComparison.CurrentCulture);
 
-		public static readonly IComparer<DirectoryInfo> DirectoryComparer = Comparer;
+		private static readonly FileSystemInfoComparer CurrentCultureIgnoreCaseComparer =
+			new FileSystemInfoComparer(StringComparison.CurrentCultureIgnoreCase);
 
-		public static readonly IComparer<FileInfo> FileComparer = Comparer;
+		private static readonly FileSystemInfoComparer InvariantCultureComparer =
+			new FileSystemInfoComparer(StringComparison.InvariantCulture);
+
+		private static readonly FileSystemInfoComparer InvariantCultureIgnoreCaseComparer =
+			new FileSystemInfoComparer(StringComparison.InvariantCultureIgnoreCase);
+
+		private static readonly FileSystemInfoComparer OrdinalComparer =
+			new FileSystemInfoComparer(StringComparison.Ordinal);
+
+		private static readonly FileSystemInfoComparer OrdinalIgnoreCaseComparer =
+			new FileSystemInfoComparer(StringComparison.OrdinalIgnoreCase);
+
+		#endregion
+
+		#region Constructors
+
+		private FileSystemInfoComparer(StringComparison comparison)
+		{
+			this.Comparison = comparison;
+		}
+
+		#endregion
+
+		#region Public Properties
+
+		public StringComparison Comparison { get; }
 
 		#endregion
 
 		#region Public Methods
 
-		public int Compare(FileSystemInfo x, FileSystemInfo y) => CompareInfo(x, y);
+		public static FileSystemInfoComparer Get(StringComparison comparison)
+			=> comparison switch
+			{
+				StringComparison.CurrentCulture => CurrentCultureComparer,
+				StringComparison.CurrentCultureIgnoreCase => CurrentCultureIgnoreCaseComparer,
+				StringComparison.InvariantCulture => InvariantCultureComparer,
+				StringComparison.InvariantCultureIgnoreCase => InvariantCultureIgnoreCaseComparer,
+				StringComparison.Ordinal => OrdinalComparer,
+				StringComparison.OrdinalIgnoreCase => OrdinalIgnoreCaseComparer,
+				_ => CurrentCultureComparer,
+			};
 
-		public int Compare(FileInfo x, FileInfo y) => CompareInfo(x, y);
-
-		public int Compare(DirectoryInfo x, DirectoryInfo y) => CompareInfo(x, y);
-
-		#endregion
-
-		#region Private Methods
-
-		private static int CompareInfo(FileSystemInfo x, FileSystemInfo y) => string.Compare(x.Name, y.Name, true);
+		public int Compare(FileSystemInfo x, FileSystemInfo y) => string.Compare(x.Name, y.Name, this.Comparison);
 
 		#endregion
 	}

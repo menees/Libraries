@@ -36,11 +36,10 @@
 			}
 		}
 
-		#endregion
-
-		#region Internal Properties
-
-		internal static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+		/// <summary>
+		/// Gets whether the current application is running on a Windows OS.
+		/// </summary>
+		public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		#endregion
 

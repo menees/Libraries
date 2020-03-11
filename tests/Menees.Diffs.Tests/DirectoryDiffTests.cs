@@ -75,49 +75,76 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void ExecuteShowOnlyInATest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(true, false, false, false, false, false, Filter);
-			DirectoryDiffResults results = diff.Execute(ADir, BDir);
-			results.Entries.Count.ShouldEqual(1);
-			Check(results.Entries[0], "2.txt", true, false);
+			// The first pass will use DirectoryDiff.DefaultNameComparison, which is OrdinalIgnoreCase on Windows.
+			// The second pass will always use an Ordinal comparison.
+			for (int pass = 1; pass <= 2; pass++)
+			{
+				DirectoryDiff diff = pass == 1
+					? new DirectoryDiff(true, false, false, false, false, false, Filter)
+					: new DirectoryDiff(true, false, false, false, false, false, Filter, StringComparison.Ordinal);
+				DirectoryDiffResults results = diff.Execute(ADir, BDir);
+				results.Entries.Count.ShouldEqual(1);
+				Check(results.Entries[0], "2.txt", true, false);
+			}
 		}
 
 		[TestMethod]
 		public void ExecuteShowOnlyInBTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, true, false, false, false, false, Filter);
-			DirectoryDiffResults results = diff.Execute(ADir, BDir);
-			results.Entries.Count.ShouldEqual(1);
-			Check(results.Entries[0], "3.txt", false, true);
+			for (int pass = 1; pass <= 2; pass++)
+			{
+				DirectoryDiff diff = pass == 1
+					? new DirectoryDiff(false, true, false, false, false, false, Filter)
+					: new DirectoryDiff(false, true, false, false, false, false, Filter, StringComparison.Ordinal);
+				DirectoryDiffResults results = diff.Execute(ADir, BDir);
+				results.Entries.Count.ShouldEqual(1);
+				Check(results.Entries[0], "3.txt", false, true);
+			}
 		}
 
 		[TestMethod]
 		public void ExecuteShowDifferentTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, false, true, false, false, false, Filter);
-			DirectoryDiffResults results = diff.Execute(ADir, BDir);
-			results.Entries.Count.ShouldEqual(1);
-			Check(results.Entries[0], "5.txt", true, true);
+			for (int pass = 1; pass <= 2; pass++)
+			{
+				DirectoryDiff diff = pass == 1
+					? new DirectoryDiff(false, false, true, false, false, false, Filter)
+					: new DirectoryDiff(false, false, true, false, false, false, Filter, StringComparison.Ordinal);
+				DirectoryDiffResults results = diff.Execute(ADir, BDir);
+				results.Entries.Count.ShouldEqual(1);
+				Check(results.Entries[0], "5.txt", true, true);
+			}
 		}
 
 		[TestMethod]
 		public void ExecuteShowSameTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(false, false, false, true, false, false, Filter);
-			DirectoryDiffResults results = diff.Execute(ADir, BDir);
-			results.Entries.Count.ShouldEqual(2);
-			Check(results.Entries[0], "1.txt", true, true);
-			Check(results.Entries[1], "4.txt", true, true);
+			for (int pass = 1; pass <= 2; pass++)
+			{
+				DirectoryDiff diff = pass == 1
+					? new DirectoryDiff(false, false, false, true, false, false, Filter)
+					: new DirectoryDiff(false, false, false, true, false, false, Filter, StringComparison.Ordinal);
+				DirectoryDiffResults results = diff.Execute(ADir, BDir);
+				results.Entries.Count.ShouldEqual(2);
+				Check(results.Entries[0], "1.txt", true, true);
+				Check(results.Entries[1], "4.txt", true, true);
+			}
 		}
 
 		[TestMethod]
 		public void ExecuteShowNotSameTest()
 		{
-			DirectoryDiff diff = new DirectoryDiff(true, true, true, false, false, false, Filter);
-			DirectoryDiffResults results = diff.Execute(ADir, BDir);
-			results.Entries.Count.ShouldEqual(3);
-			Check(results.Entries[0], "2.txt", true, false);
-			Check(results.Entries[1], "3.txt", false, true);
-			Check(results.Entries[2], "5.txt", true, true);
+			for (int pass = 1; pass <= 2; pass++)
+			{
+				DirectoryDiff diff = pass == 1
+					? new DirectoryDiff(true, true, true, false, false, false, Filter)
+					: new DirectoryDiff(true, true, true, false, false, false, Filter, StringComparison.Ordinal);
+				DirectoryDiffResults results = diff.Execute(ADir, BDir);
+				results.Entries.Count.ShouldEqual(3);
+				Check(results.Entries[0], "2.txt", true, false);
+				Check(results.Entries[1], "3.txt", false, true);
+				Check(results.Entries[2], "5.txt", true, true);
+			}
 		}
 	}
 }

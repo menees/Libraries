@@ -15,12 +15,18 @@ namespace Menees.Diffs
 		private readonly string concatenatedFilters;
 		private readonly string[] individualFilters;
 		private readonly bool include;
+		private readonly FileSystemInfoComparer comparer;
 
 		#endregion
 
 		#region Constructors
 
 		public DirectoryDiffFileFilter(string filters, bool include)
+			: this(filters, include, DirectoryDiff.DefaultNameComparison)
+		{
+		}
+
+		public DirectoryDiffFileFilter(string filters, bool include, StringComparison nameComparison)
 		{
 			Conditions.RequireString(filters, nameof(filters));
 			this.concatenatedFilters = filters;
@@ -30,6 +36,8 @@ namespace Menees.Diffs
 			{
 				this.individualFilters[i] = this.individualFilters[i].Trim();
 			}
+
+			this.comparer = FileSystemInfoComparer.Get(nameComparison);
 		}
 
 		#endregion
@@ -55,14 +63,14 @@ namespace Menees.Diffs
 			}
 
 			// Sort them
-			files.Sort(FileSystemInfoComparer.Comparer);
+			files.Sort(this.comparer);
 
 			// Throw out duplicates
 			FileInfo previousFile = null;
 			for (int i = 0; i < files.Count; /*Incremented in the loop*/)
 			{
 				FileInfo currentFile = files[i];
-				if (previousFile != null && FileSystemInfoComparer.Comparer.Compare(currentFile, previousFile) == 0)
+				if (previousFile != null && this.comparer.Compare(currentFile, previousFile) == 0)
 				{
 					files.RemoveAt(i);
 
@@ -84,7 +92,7 @@ namespace Menees.Diffs
 			else
 			{
 				FileInfo[] allFiles = directory.GetFiles();
-				Array.Sort(allFiles, FileSystemInfoComparer.FileComparer);
+				Array.Sort(allFiles, this.comparer);
 
 				List<FileInfo> filesToInclude = new List<FileInfo>();
 				int numExcludes = files.Count;
@@ -97,7 +105,7 @@ namespace Menees.Diffs
 					if (e < numExcludes)
 					{
 						FileInfo fileE = files[e];
-						compareResult = FileSystemInfoComparer.Comparer.Compare(fileA, fileE);
+						compareResult = this.comparer.Compare(fileA, fileE);
 					}
 
 					if (compareResult == 0)
