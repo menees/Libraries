@@ -6,6 +6,8 @@ namespace Menees
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
+	using System.Globalization;
+	using System.IO;
 	using System.Linq;
 	using System.Runtime.ExceptionServices;
 	using System.Text;
@@ -185,6 +187,103 @@ namespace Menees
 			if (int.TryParse(value, out int parsed))
 			{
 				result = parsed;
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Converts a sequence of bytes into hexadecimal nibbles with an optional "0x" prefix.
+		/// </summary>
+		/// <param name="value">The sequence of bytes to convert.</param>
+		/// <param name="options">Options affecting a "0x" prefix and whether to use lowercase hex characters.</param>
+		/// <returns>The encoded hex bytes.</returns>
+		public static string ToHex(IEnumerable<byte> value, ToHexOptions options = ToHexOptions.None)
+		{
+			string result = null;
+
+			if (value != null)
+			{
+				string prefix = options.HasFlag(ToHexOptions.Include0xPrefix) ? "0x" : string.Empty;
+				StringBuilder sb = new StringBuilder(prefix, prefix.Length + (2 * value.Count()));
+
+				string format = options.HasFlag(ToHexOptions.Lowercase) ? "{0:x2}" : "{0:X2}";
+				foreach (byte entry in value)
+				{
+					sb.AppendFormat(CultureInfo.InvariantCulture, format, entry);
+				}
+
+				result = sb.ToString();
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Tries to parse a string of hexadecimal characters into a byte array.
+		/// </summary>
+		/// <param name="value">A string of hex characters. This can optionally
+		/// start with a "0x" prefix and contain colons or whitespace.</param>
+		/// <param name="throwOnError">Whether an exception should be thrown for invalid input.
+		/// If false, then a null result will be returned for invalid input.
+		/// </param>
+		/// <exception cref="ArgumentException">Thrown if the input is invalid and
+		/// <paramref name="throwOnError"/> is true.</exception>
+		/// <returns>A byte array if <paramref name="value"/> can be parsed.
+		/// Or null if <paramref name="value"/>can't be parsed and <paramref name="throwOnError"/> is false.</returns>
+		public static byte[] FromHex(string value, bool throwOnError = true)
+		{
+			byte[] result = null;
+
+			if (value != null)
+			{
+				string errorMessage = null;
+
+				// Ignore leading and trailing whitespace, embedded whitespace, and colon separators (used in certificate hashes).
+				List<char> chars = value.Where(ch => !char.IsWhiteSpace(ch) && ch != ':').ToList();
+
+				// Skip a "0x" prefix.
+				int charCount = chars.Count;
+				int startIndex = (charCount >= 2 && chars[0] == '0' && (chars[1] == 'x' || chars[1] == 'X')) ? 2 : 0;
+
+				// If we see an odd number of nibbles (e.g., in 0x123), then add a leading 0 to make it 0x0123.
+				if (charCount % 2 != 0)
+				{
+					chars.Insert(startIndex, '0');
+					charCount++;
+				}
+
+				// Use a MemoryStream instead of List<byte> so we can grab its internal buffer at the end
+				// without a realloc if we specify an initial capacity that matches its final length.
+				int capacity = (charCount - startIndex) / 2;
+				using (MemoryStream stream = new MemoryStream(capacity))
+				{
+					byte[] buffer = new byte[1];
+					for (int i = startIndex; i < charCount; i += 2)
+					{
+						// This isn't super-efficient, but it's simple to understand.
+						string byteText = $"{chars[i]}{chars[i + 1]}";
+						if (!byte.TryParse(byteText, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out buffer[0]))
+						{
+							errorMessage = "Invalid hex byte representation: " + byteText;
+							break;
+						}
+						else
+						{
+							stream.Write(buffer, 0, 1);
+						}
+					}
+
+					if (string.IsNullOrEmpty(errorMessage))
+					{
+						result = (stream.Length == stream.Capacity) ? stream.GetBuffer() : stream.ToArray();
+					}
+				}
+
+				if (!string.IsNullOrEmpty(errorMessage) && throwOnError)
+				{
+					throw Exceptions.NewArgumentException(errorMessage);
+				}
 			}
 
 			return result;

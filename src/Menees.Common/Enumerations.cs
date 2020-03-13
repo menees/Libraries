@@ -10,6 +10,32 @@ namespace Menees
 
 	#endregion
 
+	#region Public ToHexOptions
+
+	/// <summary>
+	/// Options for <see cref="ConvertUtility.ToHex"/>.
+	/// </summary>
+	[Flags]
+	public enum ToHexOptions
+	{
+		/// <summary>
+		/// Default formatting (uppercase with no 0x prefix)
+		/// </summary>
+		None = 0,
+
+		/// <summary>
+		/// Use lowercase hex characters
+		/// </summary>
+		Lowercase = 1,
+
+		/// <summary>
+		/// Adds a "0x" prefix to the output.
+		/// </summary>
+		Include0xPrefix = 2,
+	}
+
+	#endregion
+
 	#region Public ValidPathOptions
 
 	/// <summary>
