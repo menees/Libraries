@@ -191,16 +191,29 @@ namespace Menees.Common.Tests
 			Assert.AreEqual("Non-quoted", actual);
 		}
 
+		[DataRow("Application", "Applications")]
+		[DataRow("Extension", "Extensions")]
+		[DataRow("File", "Files")]
+		[DataRow("Document", "Documents")]
+		[DataRow("Library", "Libraries")]
+		[DataRow("Folder", "Folders")]
+		[DataRow("Driver", "Drivers")]
+		[DataRow("Script", "Scripts")]
+		[DataRow("Definition", "Definitions")]
+		[DataRow("Source", "Sources")]
+		[DataRow("License", "Licenses")]
 		[DataRow("Cat", "Cats")]
 		[DataRow("Cats", "Cats")]
 		[DataRow("Deer", "Deer")]
-		[DataRow("Source", "Sources")]
 		[DataRow("Tooth", "Teeth")]
 		[DataRow("Matrix", "Matrices")]
 		[DataRow("Compass", "Compasses")]
 		[DataRow("Church", "Churches")]
 		[DataRow("Bee", "Bees")]
-		[DataRow("License", "Licenses")]
+		[DataRow("Man", "Men")]
+		[DataRow("Woman", "Women")]
+		[DataRow("Toy", "Toys")]
+		[DataRow("Cherry", "Cherries")]
 		[DataTestMethod]
 		public void MakePluralTest(string mixedWord, string mixedExpected)
 		{

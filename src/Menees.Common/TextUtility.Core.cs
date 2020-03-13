@@ -39,11 +39,13 @@
 
 			#region Public Methods
 
-			// I don't want to pull in a whole other library for this. This code works fine for the cases I know of.
+			// I don't want to pull in a whole other library for this. This code works fine for the cases I need it for,
+			// which are item types on a PC's file system. Here are some heavier weight alternatives:
 			// https://www.nuget.org/packages/Pluralize.NET.Core/
 			// https://stackoverflow.com/a/47410837
-			// https://github.com/Microsoft/referencesource/blob/master/System.Data.Entity.Design/System/Data/Entity/Design/PluralizationService/...
-			// ... EnglishPluralizationService.cs
+			// http://users.monash.edu/~damian/papers/HTML/Plurals.html
+			// https://github.com/Microsoft/referencesource/blob/master/System.Data.Entity.Design/...
+			//  ... System/Data/Entity/Design/PluralizationService/EnglishPluralizationService.cs
 			[SuppressMessage("Design", "MEN010:Avoid magic numbers", Justification = "The length values are clear in context.")]
 			public static string MakePlural(string word)
 			{
@@ -59,47 +61,27 @@
 				{
 					result = plural;
 				}
-				else if (Equals(Right(word, 3), "rix"))
-				{
-					result = Left(word, length - 1) + "ces";
-				}
-				else if (In(Right(word, 3), "dex", "tex"))
-				{
-					result = Left(word, length - 2) + "ices";
-				}
-				else if (Equals(Right(word, 3), "man"))
-				{
-					result = Left(word, length - 2) + "en";
-				}
-				else if (Equals(Right(word, 4), "ouse") && In(Left(word, 1), "l", "m"))
-				{
-					result = Left(word, length - 4) + "ice";
-				}
-				else if (Equals(Right(word, 5), "goose"))
-				{
-					result = Left(word, length - 4) + "eese";
-				}
-				else if (Equals(Right(word, 4), "ocus"))
-				{
-					result = Left(word, length - 2) + "i";
-				}
-				else if (In(Right(word, 2), "ax", "ex", "ix", "ox", "ux", "ch", "sh", "as", "ss", "us"))
+				else if (IsSuffix(word, "ss", "ch"))
 				{
 					result = word + "es";
 				}
-				else if (In(Right(word, 1), "c", "z"))
+				else if (IsSuffix(word, "rix", "dex"))
 				{
-					result = word + "es";
+					result = Prefix(word, -2) + "ices";
 				}
-				else if (In(Right(word, 2), "ay", "ey", "iy", "oy", "uy", "ae", "ee", "ie", "oe", "ue"))
+				else if (IsSuffix(word, "man"))
+				{
+					result = Prefix(word, -2) + "en";
+				}
+				else if (IsSuffix(word, "ay", "ey", "iy", "oy", "uy"))
 				{
 					result = word + "s";
 				}
-				else if (Equals(Right(word, 1), "y"))
+				else if (IsSuffix(word, "y"))
 				{
-					result = Left(word, length - 1) + "ies";
+					result = Prefix(word, -1) + "ies";
 				}
-				else if (!In(Right(word, 1), "s", "x"))
+				else if (!IsSuffix(word, "s"))
 				{
 					result = word + "s";
 				}
@@ -116,13 +98,10 @@
 
 			#region Private Methods
 
-			private static bool Equals(string left, string right) => string.Equals(left, right, StringComparison.OrdinalIgnoreCase);
+			private static string Prefix(string value, int count) => value.Substring(0, count < 0 ? (value.Length + count) : count);
 
-			private static bool In(string left, params string[] right) => right.Any(value => Equals(left, value));
-
-			private static string Left(string value, int count) => count < value.Length ? value.Substring(0, count) : value;
-
-			private static string Right(string value, int count) => count < value.Length ? value.Substring(value.Length - count) : value;
+			private static bool IsSuffix(string value, params string[] options)
+				=> options.Any(option => value.EndsWith(option, StringComparison.OrdinalIgnoreCase));
 
 			#endregion
 		}
