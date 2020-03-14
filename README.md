@@ -1,5 +1,4 @@
 ![windows build & test](https://github.com/bmenees/Libraries/workflows/windows%20build%20&%20test/badge.svg)
-![GitHub repo size](https://img.shields.io/github/repo-size/bmenees/Libraries)
 
 # Libraries
 .NET libraries used in Menees utilities.
