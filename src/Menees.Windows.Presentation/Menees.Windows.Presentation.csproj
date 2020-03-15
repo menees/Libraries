@@ -10,4 +10,9 @@
 	  <ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />
 	  <ProjectReference Include="..\Menees.Windows\Menees.Windows.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+		<Resource Include="..\Menees.Windows.Forms\Images\AboutBoxBanner.bmp">
+			<Link>AboutBoxBanner.bmp</Link>
+		</Resource>
+	</ItemGroup>
 </Project>

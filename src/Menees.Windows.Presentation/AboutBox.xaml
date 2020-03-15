@@ -1,7 +1,7 @@
 ﻿<m:ExtendedDialog x:Class="Menees.Windows.Presentation.AboutBox" x:ClassModifier="internal"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:m="clr-namespace:Menees.Windows.Presentation"
 	mc:Ignorable="d"
@@ -37,10 +37,10 @@
 		<m:HyperlinkButton Grid.Row="4" Grid.Column="1" Margin="0,5,12,5" Padding="0,5" Content="www.menees.com" Click="WebLink_Clicked" />
 		<m:HyperlinkButton Grid.Row="4" Grid.Column="2" Margin="0,5,12,5" Padding="0,5" Content="bill@menees.com" Click="EmailLink_Clicked" />
 		<TextBlock TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
-				This software is CharityWare.  If you use it, please donate at least $5 (US) to the charity of your choice.
+				This software is CharityWare.  If you use it, please donate something to the charity of your choice.
 		</TextBlock>
 		<Separator Grid.Row="6" Grid.ColumnSpan="3" Margin="0,12,0,0" />
-		<Button Content="OK" Width="80" Grid.Row="7" Grid.Column="2" IsDefault="True" VerticalAlignment="Center" Padding="3" Margin="12" 
+		<Button Content="OK" Width="80" Grid.Row="7" Grid.Column="2" IsDefault="True" VerticalAlignment="Center" Padding="3" Margin="12"
 					m:ExtendedDialog.DialogResult="True" HorizontalAlignment="Right" IsCancel="True"/>
 	</Grid>
 </m:ExtendedDialog>

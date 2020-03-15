@@ -149,7 +149,7 @@
 			this.charityWare.Name = "charityWare";
 			this.charityWare.Size = new System.Drawing.Size(331, 42);
 			this.charityWare.TabIndex = 6;
-			this.charityWare.Text = "This software is CharityWare.  If you use it, please donate at least $5 (US) to t" +
+			this.charityWare.Text = "This software is CharityWare.  If you use it, please donate something to t" +
     "he charity of your choice.";
 			// 
 			// AboutBox

@@ -17,6 +17,11 @@
 	  </COMReference>
 	</ItemGroup>
 	<ItemGroup>
+	  <EmbeddedResource Include="Images\FormSaver.bmp" />
+	  <EmbeddedResource Include="Images\OutputWindow.bmp" />
+	  <EmbeddedResource Include="Images\RecentItemList.bmp" />
+	</ItemGroup>
+	<ItemGroup>
 	  <ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />
 	  <ProjectReference Include="..\Menees.Windows\Menees.Windows.csproj" />
 	</ItemGroup>
