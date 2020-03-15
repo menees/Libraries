@@ -16,9 +16,7 @@
 		<AssemblyOriginatorKeyFile>../Menees.Libraries.snk</AssemblyOriginatorKeyFile>
 
 		<!-- Make the assembly, file, and NuGet package versions the same. -->
-		<AssemblyVersion>4.9.0.0</AssemblyVersion>
-		<FileVersion>4.9.0.0</FileVersion>
-		<Version>4.9.0</Version>
+		<Version>4.9.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
