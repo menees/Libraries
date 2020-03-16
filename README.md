@@ -23,4 +23,12 @@ This repo contains the source code for several .NET libraries used in Menees uti
 |[Menees.Windows.Presentation](src/Menees.Windows.Presentation)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Presentation)](https://www.nuget.org/packages/Menees.Windows.Presentation/)|
 
 ## Used By
+* [Diff.Net](http://www.menees.com/Diff.Net.htm)
+* [DiskUsage](http://www.menees.com/Miscellaneous.htm)
+* [Gizmos](http://www.menees.com/Gizmos.htm)
 * [Hasher](https://github.com/bmenees/Hasher)
+* [MegaBuild](http://www.menees.com/MegaBuild.htm)
+* [Menees VS Tools](http://www.menees.com/VSTools.htm)
+* [RPN Calc 3.0](http://www.menees.com/RPNCalc3.htm)
+* [SharpScript](http://www.menees.com/SharpScript.htm)
+* [WorkBreak](http://www.menees.com/Miscellaneous.htm)
