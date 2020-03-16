@@ -3,6 +3,7 @@
 		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net45</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>Differencing algorithms for text files, binary files, and directories</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

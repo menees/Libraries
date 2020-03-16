@@ -5,6 +5,7 @@
 		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<UseWindowsForms>true</UseWindowsForms>
+		<Description>Windows Forms controls for showing diffs of text, files, and directories</Description>
 	</PropertyGroup>
 
 	<ItemGroup>

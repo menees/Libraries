@@ -5,6 +5,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<UseWPF>true</UseWPF>
+		<Description>WPF helpers and custom controls</Description>
 	</PropertyGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Menees.Common\Menees.Common.csproj" />

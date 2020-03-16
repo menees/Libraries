@@ -4,6 +4,7 @@
 		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Description>Windows-specific helpers for WMI, shell dialogs, and Visual Studio invocation</Description>
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

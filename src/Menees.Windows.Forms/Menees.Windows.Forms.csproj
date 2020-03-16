@@ -5,6 +5,7 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<UseWindowsForms>true</UseWindowsForms>
+		<Description>Windows Forms helpers and custom controls</Description>
 	</PropertyGroup>
 	<ItemGroup>
 	  <COMReference Include="tom.dll">
