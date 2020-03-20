@@ -85,7 +85,7 @@ namespace Menees.Windows
 			try
 			{
 				// See if there's a running instance of VS.
-				result = GetActiveObject(VisualStudioProgId);
+				result = ComUtility.GetActiveObject(VisualStudioProgId);
 			}
 			catch (COMException)
 			{
@@ -98,7 +98,7 @@ namespace Menees.Windows
 				}
 			}
 
-			result = EnsureDynamic(result);
+			result = ComUtility.EnsureDynamic(result);
 			return result;
 		}
 
