@@ -18,33 +18,33 @@
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
 			<ItemGroup>
 				<Compile Remove="NativeMethods.Core.cs" />
-				<Content Include="NativeMethods.Core.cs" />
+				<Content Include="NativeMethods.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="ComObject.Core.cs" />
-				<Content Include="ComObject.Core.cs" />
+				<Content Include="ComObject.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="ComUtility.Core.cs" />
-				<Content Include="ComUtility.Core.cs" />
-			</ItemGroup>
-		</When>
-		<Otherwise>
-			<ItemGroup>
-				<Compile Remove="ComUtility.Framework.cs" />
-				<Content Include="ComUtility.Framework.cs" />
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+				<Content Include="ComUtility.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
-	<Choose>
-		<When Condition=" '$(TargetFramework)' == 'net45' ">
-			<ItemGroup>
 				<Reference Include="System.Management" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
+				<Compile Remove="ComUtility.Framework.cs" />
+				<Content Include="ComUtility.Framework.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
+
 				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
+
 </Project>

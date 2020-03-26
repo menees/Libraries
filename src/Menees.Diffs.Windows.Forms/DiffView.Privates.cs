@@ -1,4 +1,4 @@
-﻿namespace Menees.Diffs.Controls
+﻿namespace Menees.Diffs.Windows.Forms
 {
 	#region Using Directives
 
@@ -12,7 +12,7 @@
 	using System.Linq;
 	using System.Text;
 	using System.Windows.Forms;
-	using Menees.Diffs.Controls;
+	using Menees.Diffs.Windows.Forms;
 	using Menees.Windows.Forms;
 
 	#endregion

@@ -12,13 +12,19 @@
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
 			<ItemGroup>
 				<Compile Remove="ApplicationInfo.Core.cs" />
-				<Content Include="ApplicationInfo.Core.cs" />
+				<Content Include="ApplicationInfo.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="CollectionUtility.Core.cs" />
-				<Content Include="CollectionUtility.Core.cs" />
+				<Content Include="CollectionUtility.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="TextUtility.Core.cs" />
-				<Content Include="TextUtility.Core.cs" />
+				<Content Include="TextUtility.Core.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<!-- This includes the Entity Framework's PluralizationService. -->
 				<Reference Include="System.Data.Entity.Design" />
@@ -27,13 +33,19 @@
 		<Otherwise>
 			<ItemGroup>
 				<Compile Remove="ApplicationInfo.Framework.cs" />
-				<Content Include="ApplicationInfo.Framework.cs" />
+				<Content Include="ApplicationInfo.Framework.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="CollectionUtility.Framework.cs" />
-				<Content Include="CollectionUtility.Framework.cs" />
+				<Content Include="CollectionUtility.Framework.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<Compile Remove="TextUtility.Framework.cs" />
-				<Content Include="TextUtility.Framework.cs" />
+				<Content Include="TextUtility.Framework.cs">
+					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+				</Content>
 
 				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
 			</ItemGroup>

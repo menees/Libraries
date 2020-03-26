@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using Menees.Windows.Forms;
-namespace Menees.Diffs.Controls
+namespace Menees.Diffs.Windows.Forms
 {
 	partial class GoToDialog
 	{

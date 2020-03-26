@@ -1,4 +1,4 @@
-namespace Menees.Diffs.Controls
+namespace Menees.Diffs.Windows.Forms
 {
 	#region Using Directives
 

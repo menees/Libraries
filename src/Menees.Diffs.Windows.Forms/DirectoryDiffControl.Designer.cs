@@ -4,7 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using Menees.Windows.Forms;
-namespace Menees.Diffs.Controls
+namespace Menees.Diffs.Windows.Forms
 {
 	partial class DirectoryDiffControl
 	{
@@ -21,14 +21,14 @@ namespace Menees.Diffs.Controls
 			this.Images = new System.Windows.Forms.ImageList(this.components);
 			this.pnlBottom = new System.Windows.Forms.Panel();
 			this.pnlRight = new System.Windows.Forms.Panel();
-			this.TreeB = new Menees.Diffs.Controls.DirectoryDiffTreeView();
+			this.TreeB = new Menees.Diffs.Windows.Forms.DirectoryDiffTreeView();
 			this.CtxMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.mnuView = new System.Windows.Forms.ToolStripMenuItem();
 			this.mnuShowDifferences = new System.Windows.Forms.ToolStripMenuItem();
 			this.edtB = new System.Windows.Forms.TextBox();
 			this.Splitter = new System.Windows.Forms.Splitter();
 			this.pnlLeft = new System.Windows.Forms.Panel();
-			this.TreeA = new Menees.Diffs.Controls.DirectoryDiffTreeView();
+			this.TreeA = new Menees.Diffs.Windows.Forms.DirectoryDiffTreeView();
 			this.edtA = new System.Windows.Forms.TextBox();
 			this.ToolBar = new System.Windows.Forms.ToolStrip();
 			this.btnView = new System.Windows.Forms.ToolStripButton();
@@ -116,7 +116,7 @@ namespace Menees.Diffs.Controls
 			//
 			// mnuView
 			//
-			this.mnuView.Image = global::Menees.Diffs.Controls.Properties.Resources.View;
+			this.mnuView.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.View;
 			this.mnuView.ImageTransparentColor = System.Drawing.Color.Fuchsia;
 			this.mnuView.Name = "mnuView";
 			this.mnuView.Size = new System.Drawing.Size(158, 22);
@@ -126,7 +126,7 @@ namespace Menees.Diffs.Controls
 			//
 			// mnuShowDifferences
 			//
-			this.mnuShowDifferences.Image = global::Menees.Diffs.Controls.Properties.Resources.ShowDifferences;
+			this.mnuShowDifferences.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.ShowDifferences;
 			this.mnuShowDifferences.ImageTransparentColor = System.Drawing.Color.Fuchsia;
 			this.mnuShowDifferences.Name = "mnuShowDifferences";
 			this.mnuShowDifferences.Size = new System.Drawing.Size(158, 22);
@@ -219,7 +219,7 @@ namespace Menees.Diffs.Controls
 			// btnView
 			//
 			this.btnView.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btnView.Image = global::Menees.Diffs.Controls.Properties.Resources.View;
+			this.btnView.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.View;
 			this.btnView.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnView.Name = "btnView";
 			this.btnView.Size = new System.Drawing.Size(23, 22);
@@ -230,7 +230,7 @@ namespace Menees.Diffs.Controls
 			// btnShowDifferences
 			//
 			this.btnShowDifferences.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btnShowDifferences.Image = global::Menees.Diffs.Controls.Properties.Resources.ShowDifferences;
+			this.btnShowDifferences.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.ShowDifferences;
 			this.btnShowDifferences.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnShowDifferences.Name = "btnShowDifferences";
 			this.btnShowDifferences.Size = new System.Drawing.Size(23, 22);
@@ -249,7 +249,7 @@ namespace Menees.Diffs.Controls
 			this.lblDelete.AutoSize = false;
 			this.lblDelete.BackColor = System.Drawing.Color.Pink;
 			this.lblDelete.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.lblDelete.Image = global::Menees.Diffs.Controls.Properties.Resources.Deleted;
+			this.lblDelete.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.Deleted;
 			this.lblDelete.ImageTransparentColor = System.Drawing.Color.Fuchsia;
 			this.lblDelete.Name = "lblDelete";
 			this.lblDelete.Size = new System.Drawing.Size(22, 22);
@@ -262,7 +262,7 @@ namespace Menees.Diffs.Controls
 			this.lblChange.AutoSize = false;
 			this.lblChange.BackColor = System.Drawing.Color.PaleGreen;
 			this.lblChange.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.lblChange.Image = global::Menees.Diffs.Controls.Properties.Resources.Changed;
+			this.lblChange.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.Changed;
 			this.lblChange.ImageTransparentColor = System.Drawing.Color.Fuchsia;
 			this.lblChange.Name = "lblChange";
 			this.lblChange.Size = new System.Drawing.Size(22, 22);
@@ -275,7 +275,7 @@ namespace Menees.Diffs.Controls
 			this.lblInsert.AutoSize = false;
 			this.lblInsert.BackColor = System.Drawing.Color.PaleTurquoise;
 			this.lblInsert.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.lblInsert.Image = global::Menees.Diffs.Controls.Properties.Resources.Inserted;
+			this.lblInsert.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.Inserted;
 			this.lblInsert.ImageTransparentColor = System.Drawing.Color.Fuchsia;
 			this.lblInsert.Name = "lblInsert";
 			this.lblInsert.Size = new System.Drawing.Size(22, 22);
@@ -299,7 +299,7 @@ namespace Menees.Diffs.Controls
 			// btnRecompare
 			//
 			this.btnRecompare.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.btnRecompare.Image = global::Menees.Diffs.Controls.Properties.Resources.Recompare;
+			this.btnRecompare.Image = global::Menees.Diffs.Windows.Forms.Properties.Resources.Recompare;
 			this.btnRecompare.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.btnRecompare.Name = "btnRecompare";
 			this.btnRecompare.Size = new System.Drawing.Size(23, 22);
@@ -373,8 +373,8 @@ namespace Menees.Diffs.Controls
 		private ToolStripSeparator tsSep1;
 		private ToolStripSeparator tsSep2;
 		private ToolStripSeparator tsSep3;
-		private Menees.Diffs.Controls.DirectoryDiffTreeView TreeA;
-		private Menees.Diffs.Controls.DirectoryDiffTreeView TreeB;
+		private Menees.Diffs.Windows.Forms.DirectoryDiffTreeView TreeA;
+		private Menees.Diffs.Windows.Forms.DirectoryDiffTreeView TreeB;
 	}
 }
 

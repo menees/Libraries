@@ -23,7 +23,7 @@ namespace Menees.Windows.Forms
 	/// <summary>
 	/// Methods and properties for Windows applications.
 	/// </summary>
-	public static class WindowsUtility
+	public static partial class WindowsUtility
 	{
 		#region Private Data Members
 
@@ -138,6 +138,7 @@ namespace Menees.Windows.Forms
 #pragma warning restore CC0004 // Catch block cannot be empty
 
 			// Set some style settings that all Windows Forms apps should use now.
+			SetHighDpiMode();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 		}
@@ -343,6 +344,12 @@ namespace Menees.Windows.Forms
 				NativeMethods.SetBorderStyle(mdiClient, borderStyle);
 			}
 		}
+
+		#endregion
+
+		#region Private Methods
+
+		static partial void SetHighDpiMode();
 
 		#endregion
 	}
