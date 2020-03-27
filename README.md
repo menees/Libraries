@@ -31,4 +31,4 @@ This repo contains the source code for several .NET libraries used in Menees uti
 * [Menees VS Tools](http://www.menees.com/VSTools.htm)
 * [RPN Calc 3.0](https://github.com/bmenees/RpnCalc)
 * [SharpScript](http://www.menees.com/SharpScript.htm)
-* [WorkBreak](http://www.menees.com/Miscellaneous.htm)
+* [WorkBreak](https://github.com/bmenees/WorkBreak)
