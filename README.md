@@ -24,7 +24,7 @@ This repo contains the source code for several .NET libraries used in Menees uti
 
 ## Used By
 * [Diff.Net](https://github.com/bmenees/Diff.Net)
-* [DiskUsage](http://www.menees.com/Miscellaneous.htm)
+* [DiskUsage](https://github.com/bmenees/DiskUsage)
 * [Gizmos](https://github.com/bmenees/Gizmos)
 * [Hasher](https://github.com/bmenees/Hasher)
 * [MegaBuild](http://www.menees.com/MegaBuild.htm)
