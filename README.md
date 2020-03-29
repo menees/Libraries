@@ -27,7 +27,7 @@ This repo contains the source code for several .NET libraries used in Menees uti
 * [DiskUsage](https://github.com/bmenees/DiskUsage)
 * [Gizmos](https://github.com/bmenees/Gizmos)
 * [Hasher](https://github.com/bmenees/Hasher)
-* [MegaBuild](http://www.menees.com/MegaBuild.htm)
+* [MegaBuild](https://github.com/bmenees/MegaBuild)
 * [Menees VS Tools](http://www.menees.com/VSTools.htm)
 * [RPN Calc 3.0](https://github.com/bmenees/RpnCalc)
 * [SharpScript](http://www.menees.com/SharpScript.htm)
