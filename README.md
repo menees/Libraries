@@ -1,4 +1,4 @@
-![windows build & test](https://github.com/bmenees/Libraries/workflows/windows%20build%20&%20test/badge.svg)
+![windows build & test](https://github.com/menees/Libraries/workflows/windows%20build%20&%20test/badge.svg)
 
 # Libraries
 This repo contains the source code for several .NET libraries used in Menees utilities.
@@ -23,12 +23,12 @@ This repo contains the source code for several .NET libraries used in Menees uti
 |[Menees.Windows.Presentation](src/Menees.Windows.Presentation)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Presentation)](https://www.nuget.org/packages/Menees.Windows.Presentation/)|
 
 ## Used By
-* [Diff.Net](https://github.com/bmenees/Diff.Net)
-* [DiskUsage](https://github.com/bmenees/DiskUsage)
-* [Gizmos](https://github.com/bmenees/Gizmos)
-* [Hasher](https://github.com/bmenees/Hasher)
-* [MegaBuild](https://github.com/bmenees/MegaBuild)
+* [Diff.Net](https://github.com/menees/Diff.Net)
+* [DiskUsage](https://github.com/menees/DiskUsage)
+* [Gizmos](https://github.com/menees/Gizmos)
+* [Hasher](https://github.com/menees/Hasher)
+* [MegaBuild](https://github.com/menees/MegaBuild)
 * [Menees VS Tools](http://www.menees.com/VSTools.htm)
-* [RPN Calc 3.0](https://github.com/bmenees/RpnCalc)
-* [SharpScript](http://www.menees.com/SharpScript.htm)
-* [WorkBreak](https://github.com/bmenees/WorkBreak)
+* [RPN Calc 3.0](https://github.com/menees/RpnCalc)
+* [SharpScript](https://github.com/menees/SharpScript)
+* [WorkBreak](https://github.com/menees/WorkBreak)
