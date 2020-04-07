@@ -14,7 +14,7 @@ namespace Menees.Windows.Tests
 	{
 		// Change the parameter to 1 to make this test do something.
 		// It's off by default because I don't want every test run messing with VS's active file.
-		private static readonly bool AffectUI = Convert.ToBoolean(1);
+		private static readonly bool AffectUI = Convert.ToBoolean(0);
 
 		[TestMethod]
 		public void OpenFileTest()
