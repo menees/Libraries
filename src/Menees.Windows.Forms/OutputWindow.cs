@@ -356,7 +356,7 @@
 				if (File.Exists(path) || Directory.Exists(path))
 				{
 					// If we have line information assume it came from a Visual Studio build.
-					if (lineNumber.Length == 0 || !(result = VisualStudioInvoker.OpenFile(path, lineNumber)))
+					if (lineNumber.Length == 0 || !(result = VisualStudioUtility.OpenFile(path, lineNumber)))
 					{
 						result = WindowsUtility.ShellExecute(owner, path);
 					}
