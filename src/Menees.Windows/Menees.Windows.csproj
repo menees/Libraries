@@ -21,19 +21,13 @@
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
 			<ItemGroup>
 				<Compile Remove="NativeMethods.Core.cs" />
-				<Content Include="NativeMethods.Core.cs">
-					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-				</Content>
+				<None Include="NativeMethods.Core.cs" />
 
 				<Compile Remove="ComObject.Core.cs" />
-				<Content Include="ComObject.Core.cs">
-					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-				</Content>
+				<None Include="ComObject.Core.cs" />
 
 				<Compile Remove="ComUtility.Core.cs" />
-				<Content Include="ComUtility.Core.cs">
-					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-				</Content>
+				<None Include="ComUtility.Core.cs" />
 
 				<Reference Include="System.Management" />
 			</ItemGroup>
@@ -41,9 +35,7 @@
 		<Otherwise>
 			<ItemGroup>
 				<Compile Remove="ComUtility.Framework.cs" />
-				<Content Include="ComUtility.Framework.cs">
-					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-				</Content>
+				<None Include="ComUtility.Framework.cs" />
 
 				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
 			</ItemGroup>

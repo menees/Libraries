@@ -45,9 +45,7 @@
 		<When Condition=" '$(TargetFramework)' == 'net45' ">
 			<ItemGroup>
 				<Compile Remove="WindowsUtility.Core.cs" />
-				<Content Include="WindowsUtility.Core.cs">
-					<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-				</Content>
+				<None Include="WindowsUtility.Core.cs" />
 			</ItemGroup>
 		</When>
 	</Choose>
