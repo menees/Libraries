@@ -23,12 +23,6 @@ namespace Menees.Windows.Presentation
 	/// </summary>
 	public static class WindowsUtility
 	{
-		#region Private Data Members
-
-		private static int showingUnhandledExceptionErrorMessage;
-
-		#endregion
-
 		#region Public Properties
 
 		/// <summary>
@@ -114,45 +108,17 @@ namespace Menees.Windows.Presentation
 		/// <param name="applicationName">The name of the application to pass to <see cref="ApplicationInfo.Initialize"/>.</param>
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError(Window,string)"/> to be called.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException)
+		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
+		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly applicationAssembly = null)
 		{
-			ApplicationInfo.Initialize(applicationName);
+			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly());
 
 			Application.Current.DispatcherUnhandledException += (sender, e) =>
 			{
 				e.Handled = true;
 				Exception ex = e.Exception;
 				Log.Error(typeof(WindowsUtility), "An unhandled exception occurred in a Windows thread.", ex);
-
-				// Only let the first thread in show a message box.
-				int showing = Interlocked.Increment(ref showingUnhandledExceptionErrorMessage);
-				try
-				{
-					if (showing == 1)
-					{
-						if (showException != null)
-						{
-							showException(ex);
-						}
-						else
-						{
-							StringBuilder sb = new StringBuilder();
-							sb.AppendLine(Exceptions.GetMessage(ex));
-							if (ApplicationInfo.IsDebugBuild)
-							{
-								// Show the root exception's type and call stack in debug builds.
-								sb.AppendLine().AppendLine(ex.ToString());
-							}
-
-							string message = sb.ToString().Trim();
-							e.Dispatcher.BeginInvoke(new Action(() => ShowError(null, message)));
-						}
-					}
-				}
-				finally
-				{
-					Interlocked.Decrement(ref showingUnhandledExceptionErrorMessage);
-				}
+				ApplicationInfo.ShowUnhandledException(ex, message => e.Dispatcher.BeginInvoke(new Action(() => ShowError(null, message))), showException);
 			};
 		}
 

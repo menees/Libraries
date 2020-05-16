@@ -28,7 +28,6 @@ namespace Menees.Windows.Forms
 		#region Private Data Members
 
 		private static readonly Size SmallIconSize = SystemInformation.SmallIconSize;
-		private static int showingUnhandledExceptionErrorMessage;
 
 		#endregion
 
@@ -83,43 +82,16 @@ namespace Menees.Windows.Forms
 		/// <param name="applicationName">The name of the application to pass to <see cref="ApplicationInfo.Initialize"/>.</param>
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError"/> to be called.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException)
+		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
+		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly applicationAssembly = null)
 		{
-			ApplicationInfo.Initialize(applicationName);
+			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly());
 
 			Application.ThreadException += (sender, e) =>
 			{
 				Exception ex = e.Exception;
 				Log.Error(typeof(WindowsUtility), "An unhandled exception occurred in a Windows Forms thread.", ex);
-
-				// Only let the first thread in show a message box.
-				int showing = Interlocked.Increment(ref showingUnhandledExceptionErrorMessage);
-				try
-				{
-					if (showing == 1)
-					{
-						if (showException != null)
-						{
-							showException(ex);
-						}
-						else
-						{
-							StringBuilder sb = new StringBuilder();
-							sb.AppendLine(Exceptions.GetMessage(ex));
-							if (ApplicationInfo.IsDebugBuild)
-							{
-								// Show the root exception's type and call stack in debug builds.
-								sb.AppendLine().AppendLine(ex.ToString());
-							}
-
-							ShowError(null, sb.ToString().Trim());
-						}
-					}
-				}
-				finally
-				{
-					Interlocked.Decrement(ref showingUnhandledExceptionErrorMessage);
-				}
+				ApplicationInfo.ShowUnhandledException(ex, message => ShowError(null, message), showException);
 			};
 
 			// Setup the current thread and any other Windows Forms threads to route unhandled

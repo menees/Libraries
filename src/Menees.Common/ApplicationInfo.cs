@@ -14,6 +14,7 @@ namespace Menees
 	using System.Runtime;
 	using System.Security.Principal;
 	using System.Text;
+	using System.Threading;
 	using System.Threading.Tasks;
 	using System.Xml.Linq;
 	using Menees.Diagnostics;
@@ -25,33 +26,6 @@ namespace Menees
 	/// </summary>
 	public static partial class ApplicationInfo
 	{
-		#region Public Read-Only Fields
-
-		/// <summary>
-		/// Gets whether the current build is a debug build (i.e., whether the "DEBUG" constant is defined).
-		/// </summary>
-		/// <devnote>
-		/// This is a static readonly field instead of a const because code needs to check the run-time
-		/// value instead of the compile-time value.  Visual Studio doesn't allow per-configuration assembly
-		/// references, so all projects reference the debug assemblies.  If we made IsDebugBuild a const,
-		/// then this would always be considered true by other assemblies, even if they were built in
-		/// release mode because release mode builds still reference the debug version of this assembly.
-		/// At run-time, release mode assemblies will load a release build of this assembly, and they can get
-		/// the correct/expected value from this field.
-		/// </devnote>
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1802:UseLiteralsWhereAppropriate",
-			Justification = "See the devnote comments above for a detailed explanation.")]
-		public static readonly bool IsDebugBuild
-#if DEBUG
-			= Convert.ToBoolean(1);
-#else
-			= Convert.ToBoolean(0);
-#endif
-
-		#endregion
-
 		#region Private Data Members
 
 		private static readonly Lazy<int> LazyProcessId = new Lazy<int>(() =>
@@ -63,6 +37,8 @@ namespace Menees
 			});
 
 		private static string applicationName;
+		private static int showingUnhandledExceptionErrorMessage;
+		private static bool? isDebugBuild;
 
 		#endregion
 
@@ -135,6 +111,15 @@ namespace Menees
 			}
 		}
 
+		/// <summary>
+		/// Gets whether the current application is running a debug build.
+		/// </summary>
+		/// <remarks>
+		/// This depends on the applicationAssembly parameter passed to <see cref="Initialize"/>.
+		/// If <see cref="Initialize"/>, hasn't been called, then this depends on the current assembly.
+		/// </remarks>
+		public static bool IsDebugBuild => isDebugBuild ?? IsDebugAssembly(typeof(ApplicationInfo).Assembly);
+
 		#endregion
 
 		#region Private Properties
@@ -160,8 +145,9 @@ namespace Menees
 		/// Used to initialize the application's name, error handling, etc.
 		/// </summary>
 		/// <param name="applicationName">Pass null to use the current AppDomain's friendly name.</param>
+		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void Initialize(string applicationName)
+		public static void Initialize(string applicationName, Assembly applicationAssembly = null)
 		{
 			// Try to log when unhandled or unobserved exceptions occur.  This info can be very useful if the process crashes.
 			// Note: Windows Forms unhandled exceptions are logged via Menees.Windows.Forms.WindowsUtility.InitializeApplication.
@@ -185,6 +171,11 @@ namespace Menees
 				Log.GlobalContext.SetApplicationName(applicationName);
 			}
 
+			// Since apps refer to this library via NuGet references, they'll always use the release build of this library.
+			// So we'll check the main assembly's build configuration via reflection instead of using a compile-time constant.
+			Assembly assembly = applicationAssembly ?? Assembly.GetEntryAssembly() ?? typeof(ApplicationInfo).Assembly;
+			isDebugBuild = IsDebugAssembly(assembly);
+
 			// Call SetErrorMode to disable the display of Windows Shell modal error dialogs for
 			// file not found, Windows Error Reporting, and other errors.  From SetErrorMode docs
 			// at http://msdn.microsoft.com/en-us/library/ms680621.aspx:
@@ -202,11 +193,67 @@ namespace Menees
 		/// <returns>A new settings store.</returns>
 		public static ISettingsStore CreateUserSettingsStore() => new FileSettingsStore();
 
+		/// <summary>
+		/// Shows a single unhandled exception at a time.
+		/// </summary>
+		/// <param name="ex">The exception to show</param>
+		/// <param name="showExceptionMessage">The action to invoke for a simple "MessageBox" display.</param>
+		/// <param name="showExceptionCustom">The action to invoke for a custom exception display.</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void ShowUnhandledException(
+			Exception ex,
+			Action<string> showExceptionMessage,
+			Action<Exception> showExceptionCustom = null)
+		{
+			// Only let the first thread in show a message box.
+			int showing = Interlocked.Increment(ref showingUnhandledExceptionErrorMessage);
+			try
+			{
+				if (showing == 1)
+				{
+					if (showExceptionCustom != null)
+					{
+						showExceptionCustom(ex);
+					}
+					else if (showExceptionMessage != null)
+					{
+						StringBuilder sb = new StringBuilder();
+						sb.AppendLine(Exceptions.GetMessage(ex));
+						if (IsDebugBuild)
+						{
+							// Show the root exception's type and call stack in debug builds.
+							sb.AppendLine().AppendLine(ex.ToString());
+						}
+
+						string message = sb.ToString().Trim();
+						showExceptionMessage(message);
+					}
+				}
+			}
+			finally
+			{
+				Interlocked.Decrement(ref showingUnhandledExceptionErrorMessage);
+			}
+		}
+
 		#endregion
 
 		#region Private Methods
 
 		static partial void InitializeTargetFramework();
+
+		private static bool IsDebugAssembly(Assembly assembly)
+		{
+			bool result = false;
+
+			if (assembly != null)
+			{
+				var configuration = (AssemblyConfigurationAttribute)assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute));
+				result = configuration?.Configuration?.Contains("Debug") ?? false;
+			}
+
+			return result;
+		}
 
 		#endregion
 	}
