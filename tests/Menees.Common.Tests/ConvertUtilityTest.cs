@@ -109,5 +109,14 @@ namespace Menees.Common.Tests
 			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix).ShouldEqual("0x8BADBEEF");
 			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix | ToHexOptions.Lowercase).ShouldEqual("0x8badbeef");
 		}
+
+		[TestMethod]
+		public void TruncateToSecondsTest()
+		{
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.0)).ShouldEqual(TimeSpan.FromSeconds(1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.5)).ShouldEqual(TimeSpan.FromSeconds(1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldEqual(TimeSpan.FromSeconds(-1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldEqual(TimeSpan.FromSeconds(-1));
+		}
 	}
 }

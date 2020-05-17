@@ -289,6 +289,13 @@ namespace Menees
 			return result;
 		}
 
+		/// <summary>
+		/// Removes the fractional seconds from a TimeSpan value.
+		/// </summary>
+		/// <param name="value">The value to truncate.</param>
+		/// <returns>The value truncated to whole seconds.</returns>
+		public static TimeSpan TruncateToSeconds(TimeSpan value) => TimeSpan.FromTicks(value.Ticks - (value.Ticks % TimeSpan.TicksPerSecond));
+
 		#endregion
 
 		#region Internal Methods
