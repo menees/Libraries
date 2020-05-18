@@ -111,6 +111,19 @@ namespace Menees.Common.Tests
 		}
 
 		[TestMethod]
+		public void RoundToSecondsTest()
+		{
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.0)).ShouldEqual(TimeSpan.FromSeconds(1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.4)).ShouldEqual(TimeSpan.FromSeconds(1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.5)).ShouldEqual(TimeSpan.FromSeconds(2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.6)).ShouldEqual(TimeSpan.FromSeconds(2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldEqual(TimeSpan.FromSeconds(-1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.4)).ShouldEqual(TimeSpan.FromSeconds(-1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldEqual(TimeSpan.FromSeconds(-2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.6)).ShouldEqual(TimeSpan.FromSeconds(-2));
+		}
+
+		[TestMethod]
 		public void TruncateToSecondsTest()
 		{
 			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.0)).ShouldEqual(TimeSpan.FromSeconds(1));

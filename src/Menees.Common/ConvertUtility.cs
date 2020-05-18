@@ -290,6 +290,24 @@ namespace Menees
 		}
 
 		/// <summary>
+		/// Rounds the fractional seconds from a TimeSpan value to the nearest whole second.
+		/// </summary>
+		/// <param name="value">The value to truncate.</param>
+		/// <returns>The value truncated to whole seconds.</returns>
+		public static TimeSpan RoundToSeconds(TimeSpan value)
+		{
+			long fractionalTicks = value.Ticks % TimeSpan.TicksPerSecond;
+
+			TimeSpan result = TruncateToSeconds(value);
+			if (Math.Abs(fractionalTicks) >= (TimeSpan.TicksPerSecond / 2))
+			{
+				result += TimeSpan.FromSeconds(1 * Math.Sign(fractionalTicks));
+			}
+
+			return result;
+		}
+
+		/// <summary>
 		/// Removes the fractional seconds from a TimeSpan value.
 		/// </summary>
 		/// <param name="value">The value to truncate.</param>
