@@ -1,0 +1,27 @@
+﻿<local:ExtendedDialog x:Class="Menees.Windows.Presentation.InputDialog"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:Menees.Windows.Presentation"
+		mc:Ignorable="d"
+		Title="Input Box" Width="400" SizeToContent="Height" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+		FocusManager.FocusedElement="{Binding ElementName=value}"
+		x:ClassModifier="internal">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<StackPanel Margin="8">
+			<Label Target="{Binding ElementName=value, Mode=OneWay}">
+				<TextBlock x:Name="prompt" TextWrapping="Wrap" Text="Edit the comment for the Local Router peer group failure that started at 5/19/2020 12:00:00 PM:"/>
+			</Label>
+			<TextBox x:Name="value" TabIndex="0"/>
+		</StackPanel>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="_OK" Width="60" Margin="8,8,0,8" IsDefault="True" Click="OKClicked"/>
+			<Button Content="_Cancel" Width="60" Margin="8" IsCancel="True"/>
+		</StackPanel>
+	</Grid>
+</local:ExtendedDialog>

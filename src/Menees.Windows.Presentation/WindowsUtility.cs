@@ -343,6 +343,70 @@ namespace Menees.Windows.Presentation
 			}
 		}
 
+		/// <summary>
+		/// Displays a yes/no question in a MessageBox.
+		/// </summary>
+		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
+		/// <param name="yesNoQuestion">The yes/no question to display.</param>
+		/// <param name="caption">The caption to use as the dialog's title.</param>
+		public static bool ShowQuestion(Window owner, string yesNoQuestion, string caption = null)
+		{
+			if (caption == null)
+			{
+				caption = ApplicationInfo.ApplicationName;
+			}
+
+			// WPF's stupid MessageBox implementation throws an ArgumentNullException if we pass it a null owner.
+			MessageBoxResult mbResult;
+			if (owner != null)
+			{
+				mbResult = MessageBox.Show(owner, yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+			}
+			else
+			{
+				mbResult = MessageBox.Show(yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+			}
+
+			bool result = mbResult == MessageBoxResult.Yes;
+			return result;
+		}
+
+		/// <summary>
+		/// Shows an input box for a single value with validation.
+		/// </summary>
+		/// <param name="owner">The owner of the displayed modal dialog.</param>
+		/// <param name="prompt">The message to prompt with (up to 4 lines long).</param>
+		/// <param name="title">The caption of the displayed dialog.  This can be null
+		/// to use the application name as the title.</param>
+		/// <param name="defaultValue">The initial value of the input field.</param>
+		/// <param name="maxLength">The maximum length of the input field in characters.
+		/// This can be null to use the default maximum length limit.</param>
+		/// <param name="validate">An optional function to validate the input.  This can be null.
+		/// The function should return a null if the input passes validation, and it should return an error
+		/// message to display to the end user if the input fails validation.</param>
+		/// <returns>The user-entered value if they pressed OK, or null if Cancel was pressed.</returns>
+		public static string ShowInputBox(
+			Window owner,
+			string prompt,
+			string title,
+			string defaultValue,
+			int? maxLength = null,
+			Func<string, string> validate = null)
+		{
+			InputDialog dialog = new InputDialog();
+			if (string.IsNullOrEmpty(title))
+			{
+				dialog.Title = ApplicationInfo.ApplicationName;
+			}
+			else
+			{
+				dialog.Title = title;
+			}
+
+			string result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
+			return result;
+		}
+
 		#endregion
 	}
 }
