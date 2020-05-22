@@ -349,22 +349,25 @@ namespace Menees.Windows.Presentation
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="yesNoQuestion">The yes/no question to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title.</param>
-		public static bool ShowQuestion(Window owner, string yesNoQuestion, string caption = null)
+		/// <param name="defaultYes">Whether the default button should be Yes (instead of No).</param>
+		public static bool ShowQuestion(Window owner, string yesNoQuestion, string caption = null, bool defaultYes = true)
 		{
 			if (caption == null)
 			{
 				caption = ApplicationInfo.ApplicationName;
 			}
 
+			MessageBoxResult defaultResult = defaultYes ? MessageBoxResult.Yes : MessageBoxResult.No;
+
 			// WPF's stupid MessageBox implementation throws an ArgumentNullException if we pass it a null owner.
 			MessageBoxResult mbResult;
 			if (owner != null)
 			{
-				mbResult = MessageBox.Show(owner, yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+				mbResult = MessageBox.Show(owner, yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question, defaultResult);
 			}
 			else
 			{
-				mbResult = MessageBox.Show(yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question);
+				mbResult = MessageBox.Show(yesNoQuestion, caption, MessageBoxButton.YesNo, MessageBoxImage.Question, defaultResult);
 			}
 
 			bool result = mbResult == MessageBoxResult.Yes;
