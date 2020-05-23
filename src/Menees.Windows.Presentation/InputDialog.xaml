@@ -5,23 +5,25 @@
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:Menees.Windows.Presentation"
 		mc:Ignorable="d"
-		Title="Input Box" Width="400" SizeToContent="Height" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"
+		Title="Input Box" Width="400" SizeToContent="Height"
 		FocusManager.FocusedElement="{Binding ElementName=value}"
 		x:ClassModifier="internal">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition/>
-			<RowDefinition Height="Auto"/>
-		</Grid.RowDefinitions>
-		<StackPanel Margin="12,6,12,0">
-			<Label Target="{Binding ElementName=value, Mode=OneWay}">
-				<TextBlock x:Name="prompt" TextWrapping="Wrap" Text="Edit the comment for the Local Router peer group failure that started at 5/19/2020 12:00:00 PM:"/>
-			</Label>
-			<TextBox x:Name="value" TabIndex="0"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Margin="12,6,12,12">
+            <Label Target="{Binding ElementName=value, Mode=OneWay}">
+                <TextBlock x:Name="prompt" TextWrapping="Wrap" Text="Edit the comment for the Local Router peer group failure that started at 5/19/2020 12:00:00 PM:"/>
+            </Label>
+            <TextBox x:Name="value" TabIndex="0"/>
+        </StackPanel>
+		<StackPanel Grid.Row="1" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button Content="_OK" Width="60" Margin="12,12,0,12" IsDefault="True" Click="OKClicked"/>
+				<Button Content="_Cancel" Width="60" Margin="12" IsCancel="True"/>
+			</StackPanel>
 		</StackPanel>
-		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-			<Button Content="_OK" Width="60" Margin="12,12,0,12" IsDefault="True" Click="OKClicked"/>
-			<Button Content="_Cancel" Width="60" Margin="12" IsCancel="True"/>
-		</StackPanel>
-	</Grid>
+   </Grid>
 </local:ExtendedDialog>

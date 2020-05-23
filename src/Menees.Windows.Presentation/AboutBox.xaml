@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:m="clr-namespace:Menees.Windows.Presentation"
 	mc:Ignorable="d"
-	Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" SizeToContent="WidthAndHeight">
+	SizeToContent="WidthAndHeight">
 	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=banner, Mode=OneWay}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition MinWidth="110" Width="Auto"/>
@@ -13,7 +13,6 @@
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -39,8 +38,9 @@
 		<TextBlock TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
 				This software is CharityWare.  If you use it, please donate something to the charity of your choice.
 		</TextBlock>
-		<Separator Grid.Row="6" Grid.ColumnSpan="3" Margin="0,12,0,0" />
-		<Button Content="OK" Width="80" Grid.Row="7" Grid.Column="2" IsDefault="True" VerticalAlignment="Center" Padding="3" Margin="12"
+		<StackPanel Margin="0,12,0,0" Grid.Row="6" Grid.ColumnSpan="3" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+			<Button Content="OK" Width="80" IsDefault="True" VerticalAlignment="Center" Padding="3" Margin="12"
 					m:ExtendedDialog.DialogResult="True" HorizontalAlignment="Right" IsCancel="True"/>
+		</StackPanel>
 	</Grid>
 </m:ExtendedDialog>
