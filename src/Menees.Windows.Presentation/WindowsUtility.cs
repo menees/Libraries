@@ -12,7 +12,9 @@ namespace Menees.Windows.Presentation
 	using System.Text;
 	using System.Threading;
 	using System.Windows;
+	using System.Windows.Controls;
 	using System.Windows.Interop;
+	using System.Windows.Media;
 	using System.Windows.Threading;
 	using Menees.Shell;
 
@@ -263,9 +265,10 @@ namespace Menees.Windows.Presentation
 		/// <param name="dependencyObject">A dependency object that can be used to find the owner window.
 		/// This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
-		public static void ShowError(DependencyObject dependencyObject, string message)
+		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
+		public static void ShowError(DependencyObject dependencyObject, string message, string caption = null)
 		{
-			ShowError(GetWindow(dependencyObject), message);
+			ShowError(GetWindow(dependencyObject), message, caption);
 		}
 
 		/// <summary>
@@ -273,16 +276,22 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
-		public static void ShowError(Window owner, string message)
+		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
+		public static void ShowError(Window owner, string message, string caption = null)
 		{
+			if (caption == null)
+			{
+				caption = ApplicationInfo.ApplicationName;
+			}
+
 			// WPF's stupid MessageBox implementation throws an ArgumentNullException if we pass it a null owner.
 			if (owner != null)
 			{
-				MessageBox.Show(owner, message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(owner, message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			else
 			{
-				MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 
@@ -292,19 +301,8 @@ namespace Menees.Windows.Presentation
 		/// <param name="dependencyObject">A dependency object that can be used to find the owner window.
 		/// This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
-		public static void ShowInfo(DependencyObject dependencyObject, string message)
-		{
-			ShowInfo(GetWindow(dependencyObject), message);
-		}
-
-		/// <summary>
-		/// Displays an information message in a MessageBox.
-		/// </summary>
-		/// <param name="dependencyObject">A dependency object that can be used to find the owner window.
-		/// This can be null to use the desktop as the owner.</param>
-		/// <param name="message">The message to display.</param>
-		/// <param name="caption">The caption to use as the dialog's title.</param>
-		public static void ShowInfo(DependencyObject dependencyObject, string message, string caption)
+		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
+		public static void ShowInfo(DependencyObject dependencyObject, string message, string caption = null)
 		{
 			ShowInfo(GetWindow(dependencyObject), message, caption);
 		}
@@ -314,18 +312,8 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
-		public static void ShowInfo(Window owner, string message)
-		{
-			ShowInfo(owner, message, null);
-		}
-
-		/// <summary>
-		/// Displays an information message in a MessageBox.
-		/// </summary>
-		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
-		/// <param name="message">The message to display.</param>
-		/// <param name="caption">The caption to use as the dialog's title.</param>
-		public static void ShowInfo(Window owner, string message, string caption)
+		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
+		public static void ShowInfo(Window owner, string message, string caption = null)
 		{
 			if (caption == null)
 			{
@@ -348,7 +336,7 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="yesNoQuestion">The yes/no question to display.</param>
-		/// <param name="caption">The caption to use as the dialog's title.</param>
+		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
 		/// <param name="defaultYes">Whether the default button should be Yes (instead of No).</param>
 		public static bool ShowQuestion(Window owner, string yesNoQuestion, string caption = null, bool defaultYes = true)
 		{
@@ -408,6 +396,43 @@ namespace Menees.Windows.Presentation
 
 			string result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
 			return result;
+		}
+
+		/// <summary>
+		/// Gets the distinct set of <see cref="ValidationError"/> instances from the specified object's visual tree.
+		/// </summary>
+		/// <param name="dependencyObject">An object with a visual tree that can contain child items with
+		/// validation errors (e.g., a DataGrid).</param>
+		/// <returns>The unique ValidationError instances</returns>
+		/// <remarks>
+		/// This adds errors to an ISet because the same error can show up multiple times in the same visual tree.
+		/// For example, when a DataGridRow has an error in a TextBox, both will report the same ValidationError.
+		/// </remarks>
+		public static ISet<ValidationError> GetValidationErrors(DependencyObject dependencyObject)
+		{
+			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
+			HashSet<ValidationError> result = new HashSet<ValidationError>();
+			GetValidationErrors(dependencyObject, result);
+			return result;
+		}
+
+		#endregion
+
+		#region Private Methods
+
+		private static void GetValidationErrors(DependencyObject parent, ISet<ValidationError> errors)
+		{
+			foreach (ValidationError error in Validation.GetErrors(parent))
+			{
+				errors.Add(error);
+			}
+
+			int visualChildCount = VisualTreeHelper.GetChildrenCount(parent);
+			for (int i = 0; i < visualChildCount; i++)
+			{
+				DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+				GetValidationErrors(child, errors);
+			}
 		}
 
 		#endregion
