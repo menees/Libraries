@@ -29,7 +29,7 @@
 				}
 				else
 				{
-					result = NativeMethods.GetUid() != 0;
+					result = NativeMethods.GetUid() == 0;
 				}
 
 				return result;
@@ -42,6 +42,5 @@
 		public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
 		#endregion
-
 	}
 }
