@@ -54,17 +54,36 @@
 		/// <param name="callerMemberName">The name of the caller. Normally, you shouldn't pass anything
 		/// for this parameter. If omitted, the C# compiler will inject the caller's property name automatically
 		/// using the <see cref="CallerMemberNameAttribute"/>.</param>
-		protected void Update<T>(ref T member, T value, [CallerMemberName] string callerMemberName = null)
+		/// <returns>True if the member was updated. False if the member wasn't updated.</returns>
+		protected bool Update<T>(ref T member, T value, [CallerMemberName] string callerMemberName = null)
 		{
+			bool result = false;
+
 			if (!EqualityComparer<T>.Default.Equals(member, value))
 			{
 				member = value;
-				PropertyChangedEventHandler handler = this.PropertyChanged;
-				if (handler != null)
-				{
-					PropertyChangedEventArgs args = new PropertyChangedEventArgs(callerMemberName);
-					handler(this, args);
-				}
+				result = true;
+				this.OnPropertyChanged(callerMemberName);
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Raises the <see cref="PropertyChanged"/> event.
+		/// </summary>
+		/// <param name="propertyName">The name of the property that has changed.</param>
+		/// <remarks>
+		/// This method is useful when setting one property via <see cref="Update"/>
+		/// also causes a dependent "read-only" property to be updated.
+		/// </remarks>
+		protected void OnPropertyChanged(string propertyName)
+		{
+			PropertyChangedEventHandler handler = this.PropertyChanged;
+			if (handler != null)
+			{
+				PropertyChangedEventArgs args = new PropertyChangedEventArgs(propertyName);
+				handler(this, args);
 			}
 		}
 
