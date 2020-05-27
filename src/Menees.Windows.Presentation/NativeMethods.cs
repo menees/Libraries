@@ -21,6 +21,7 @@ namespace Menees.Windows.Presentation
 
 		private const int SW_SHOWNORMAL = 1;
 		private const int SW_SHOWMINIMIZED = 2;
+		private const int SW_SHOWMAXIMIZED = 3;
 		private const int SWP_NOSIZE = 0x0001;
 		private const int SWP_NOMOVE = 0x0002;
 
@@ -66,7 +67,7 @@ namespace Menees.Windows.Presentation
 			SetWindowPos(hwnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
 		}
 
-		public static void LoadWindowPlacement(Window window, ISettingsNode node)
+		public static void LoadWindowPlacement(Window window, ISettingsNode node, WindowState? stateOverride)
 		{
 			// Most of this logic came from:
 			// http://blogs.msdn.com/b/davidrickard/archive/2010/03/09/saving-window-size-and-location-in-wpf-and-winforms.aspx
@@ -75,10 +76,28 @@ namespace Menees.Windows.Presentation
 			WINDOWPLACEMENT placement = WINDOWPLACEMENT.Create();
 			placement.Load(node);
 
-			// If the window was previously minimized, then show it as normal.
-			if (placement.showCmd == SW_SHOWMINIMIZED)
+			switch (stateOverride)
 			{
-				placement.showCmd = SW_SHOWNORMAL;
+				case WindowState.Normal:
+					placement.showCmd = SW_SHOWNORMAL;
+					break;
+
+				case WindowState.Maximized:
+					placement.showCmd = SW_SHOWMAXIMIZED;
+					break;
+
+				case WindowState.Minimized:
+					placement.showCmd = SW_SHOWMINIMIZED;
+					break;
+
+				default:
+					// If the window was previously minimized, then show it as normal.
+					if (placement.showCmd == SW_SHOWMINIMIZED)
+					{
+						placement.showCmd = SW_SHOWNORMAL;
+					}
+
+					break;
 			}
 
 			if (!SetWindowPlacement(GetHandle(window), ref placement))
@@ -101,7 +120,9 @@ namespace Menees.Windows.Presentation
 
 		public static IntPtr GetHandle(Window window)
 		{
-			IntPtr result = new WindowInteropHelper(window).Handle;
+			var helper = new WindowInteropHelper(window);
+			helper.EnsureHandle();
+			IntPtr result = helper.Handle;
 			return result;
 		}
 

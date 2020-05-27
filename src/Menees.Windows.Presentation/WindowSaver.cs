@@ -64,6 +64,7 @@ namespace Menees.Windows.Presentation
 
 		/// <summary>
 		/// Gets or sets the node where settings should be saved.  This can be empty to save to the root node.
+		/// This defaults to "Window Placement".
 		/// </summary>
 		public string SettingsNodeName { get; set; }
 
@@ -71,6 +72,12 @@ namespace Menees.Windows.Presentation
 		/// Gets the window to save the settings for.
 		/// </summary>
 		public Window Window { get; }
+
+		/// <summary>
+		/// Gets or sets a window state to use during <see cref="Load"/> instead of any prior state loaded from settings.
+		/// This defaults to null, which means "don't use an override".
+		/// </summary>
+		public WindowState? LoadStateOverride { get; set; }
 
 		#endregion
 
@@ -91,8 +98,12 @@ namespace Menees.Windows.Presentation
 					ISettingsNode settingsNode = this.GetSettingsNode(store, false);
 					if (settingsNode != null)
 					{
-						NativeMethods.LoadWindowPlacement(this.Window, settingsNode);
+						NativeMethods.LoadWindowPlacement(this.Window, settingsNode, this.LoadStateOverride);
 						result = true;
+					}
+					else if (this.LoadStateOverride != null)
+					{
+						this.Window.WindowState = this.LoadStateOverride.Value;
 					}
 
 					this.LoadSettings?.Invoke(this, new SettingsEventArgs(store.RootNode));
