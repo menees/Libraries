@@ -22,6 +22,9 @@ This repo contains the source code for several .NET libraries used in Menees uti
 |[Menees.Windows.Forms](src/Menees.Windows.Forms)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Forms)](https://www.nuget.org/packages/Menees.Windows.Forms/)|
 |[Menees.Windows.Presentation](src/Menees.Windows.Presentation)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Presentation)](https://www.nuget.org/packages/Menees.Windows.Presentation/)|
 
+## Dependencies
+![Dependencies](http://www.menees.com/Images/LibrariesDependencies.png)
+
 ## Used By
 * [Diff.Net](https://github.com/menees/Diff.Net)
 * [DiskUsage](https://github.com/menees/DiskUsage)
@@ -31,4 +34,5 @@ This repo contains the source code for several .NET libraries used in Menees uti
 * [Menees VS Tools](https://github.com/menees/VsTools)
 * [RPN Calc 3.0](https://github.com/menees/RpnCalc)
 * [SharpScript](https://github.com/menees/SharpScript)
+* [WirePeep](https://github.com/menees/WirePeep)
 * [WorkBreak](https://github.com/menees/WorkBreak)
