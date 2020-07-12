@@ -125,7 +125,7 @@ namespace Menees.Windows.Forms
 		public static string SelectFolder(IWin32Window owner, string title, string initialFolder)
 		{
 			IntPtr? ownerHandle = owner != null ? owner.Handle : (IntPtr?)null;
-			string result = DialogUtility.SelectFolder(ownerHandle, title, initialFolder);
+			string result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);
 			return result;
 		}
 

@@ -160,7 +160,7 @@ namespace Menees.Windows.Presentation
 				ownerHandle = NativeMethods.GetHandle(owner);
 			}
 
-			string result = DialogUtility.SelectFolder(ownerHandle, title, initialFolder);
+			string result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);
 			return result;
 		}
 

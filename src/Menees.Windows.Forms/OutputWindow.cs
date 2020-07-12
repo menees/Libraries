@@ -25,9 +25,11 @@
 		#region Private Data Members
 
 		private const string DefaultFindCaption = "Find In Output";
+		private const int RichTextBoxDefaultTabStopWidth = 36; // From ITextDocument.DefaultTabStop
 
 		private readonly List<int> highlights = new List<int>();
 		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new Dictionary<Guid, int>();
+		private int indentWidth;
 
 		#endregion
 
@@ -42,6 +44,7 @@
 			this.InitializeComponent();
 			base.BorderStyle = BorderStyle.Fixed3D;
 			this.output.BorderStyle = BorderStyle.None;
+			this.IndentWidth = RichTextBoxDefaultTabStopWidth;
 		}
 
 		#endregion
@@ -177,6 +180,32 @@
 		/// and before the line's file reference is parsed and opened.
 		/// </summary>
 		public Func<string, string> RemoveLinePrefix { get; set; }
+
+		/// <summary>
+		/// Gets or sets the pixel width of each output window indent and tab stop.
+		/// </summary>
+		[DefaultValue(RichTextBoxDefaultTabStopWidth)]
+		public int IndentWidth
+		{
+			get => this.indentWidth;
+
+			set
+			{
+				Conditions.RequireArgument(value > 0, nameof(this.IndentWidth) + " must be positive.");
+				if (this.indentWidth != value)
+				{
+					this.indentWidth = value;
+
+					// The RichTextBox.SelectionTabs property supports a maximum of 32 elements.
+					const int MaxTabStops = 32;
+					int[] tabStops = new int[MaxTabStops];
+					for (int i = 1; i <= MaxTabStops; i++)
+					{
+						tabStops[i - 1] = value * i;
+					}
+				}
+			}
+		}
 
 		#endregion
 
@@ -491,8 +520,7 @@
 			this.output.SelectionColor = color;
 
 			// Indent
-			const int RichTextBoxDefaultTabStopWidth = 36; // From ITextDocument.DefaultTabStop
-			this.output.SelectionIndent = RichTextBoxDefaultTabStopWidth * Math.Max(indentLevel, 0);
+			this.output.SelectionIndent = this.IndentWidth * Math.Max(indentLevel, 0);
 
 			// Message
 			if (message != null)
@@ -532,7 +560,7 @@
 								{
 									if (para.Ref != null)
 									{
-										para.Ref.SetIndents(0, doc.Ref.DefaultTabStop * Math.Max(0, indentLevel), 0);
+										para.Ref.SetIndents(0, this.IndentWidth * Math.Max(0, indentLevel), 0);
 										setIndents = true;
 									}
 								}
