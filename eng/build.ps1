@@ -79,6 +79,6 @@ if ($publish)
 
     if ($published)
     {
-        Write-Host "`n`n****** REMEMBER TO INCREMENT THE VERSION ELEMENTS IN $versionFile AFTER TAGGING! ******"
+		Write-Host "`n`n****** REMEMBER TO ADD A GITHUB RELEASE! ******"
     }
 }
