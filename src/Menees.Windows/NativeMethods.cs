@@ -237,6 +237,9 @@ namespace Menees.Windows
 			SetForegroundWindow(hWnd);
 		}
 
+		internal static bool PostShowWindowCommand(IntPtr hWnd, ShowWindowCommand command)
+			=> ShowWindowAsync(hWnd, (int)command);
+
 		#endregion
 
 		#region Private Methods

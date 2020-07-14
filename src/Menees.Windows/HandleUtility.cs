@@ -24,10 +24,14 @@ namespace Menees.Windows
 		#region Public Methods
 
 		/// <summary>
-		/// Asynchronously restores a window if it's minimized and then makes it the foreground window.
+		/// Sets the show state of a window without waiting for the operation to complete by
+		/// posting a ShowWindow command to the message queue of the given window.
 		/// </summary>
-		/// <param name="hWnd">The handle of the window to display.</param>
-		public static void BringWindowForward(IntPtr hWnd) => NativeMethods.BringWindowForward(hWnd);
+		/// <param name="hWnd">The handle of the window to post to.</param>
+		/// <param name="command">The command to post.</param>
+		/// <returns>True if the command was posted; false otherwise.</returns>
+		public static bool PostShowWindowCommand(IntPtr hWnd, ShowWindowCommand command)
+			=> NativeMethods.PostShowWindowCommand(hWnd, command);
 
 		/// <summary>
 		/// Selects a file system path and allows the user to type in a path if necessary.
