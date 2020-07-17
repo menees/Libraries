@@ -16,6 +16,7 @@ namespace Menees.Windows.Forms
 	using System.Threading;
 	using System.Windows.Forms;
 	using System.Windows.Forms.VisualStyles;
+	using Menees.Diagnostics;
 	using Menees.Shell;
 
 	#endregion
@@ -315,6 +316,40 @@ namespace Menees.Windows.Forms
 			{
 				NativeMethods.SetBorderStyle(mdiClient, borderStyle);
 			}
+		}
+
+		/// <summary>
+		/// Check if the repository's latest version is newer than the assembly's version
+		/// and handles the standard UI if necessary.
+		/// </summary>
+		/// <param name="assembly">The assembly to compare to. This is required.</param>
+		/// <param name="ownerWindow">An optional owner window if a newer release's web page should be opened.</param>
+		/// <param name="repository">The name of a GitHub repository. If null, then <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
+		/// <param name="repositoryOwner">The owner of the GitHub repository.</param>
+		/// <returns>True if an update is available. False if the assembly is up-to-date. Null if no release info was found.</returns>
+		public static bool? CheckForUpdate(
+			Assembly assembly,
+			IWin32Window ownerWindow,
+			string repository = null,
+			string repositoryOwner = "menees")
+		{
+			bool? result = Release.CheckForUpdate(
+				assembly,
+				ownerWindow?.Handle,
+				msg =>
+				{
+					if (ownerWindow == null)
+					{
+						MessageBox.Show(msg, ApplicationInfo.ApplicationName);
+					}
+					else
+					{
+						MessageBox.Show(ownerWindow, msg, ApplicationInfo.ApplicationName);
+					}
+				},
+				repository,
+				repositoryOwner);
+			return result;
 		}
 
 		#endregion

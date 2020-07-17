@@ -16,6 +16,7 @@ namespace Menees.Windows.Presentation
 	using System.Windows.Interop;
 	using System.Windows.Media;
 	using System.Windows.Threading;
+	using Menees.Diagnostics;
 	using Menees.Shell;
 
 	#endregion
@@ -153,16 +154,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user cancelled).</returns>
 		public static string SelectFolder(Window owner, string title, string initialFolder)
-		{
-			IntPtr? ownerHandle = null;
-			if (owner != null)
-			{
-				ownerHandle = NativeMethods.GetHandle(owner);
-			}
-
-			string result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);
-			return result;
-		}
+			=> HandleUtility.SelectFolder(TryGetHandle(owner), title, initialFolder);
 
 		/// <summary>
 		/// Moves the window behind other top-level windows.
@@ -230,16 +222,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
 		public static Process ShellExecute(Window owner, string fileName, string verb)
-		{
-			IntPtr? ownerHandle = null;
-			if (owner != null)
-			{
-				ownerHandle = NativeMethods.GetHandle(owner);
-			}
-
-			Process result = ShellUtility.ShellExecute(ownerHandle, fileName, verb);
-			return result;
-		}
+			=> ShellUtility.ShellExecute(TryGetHandle(owner), fileName, verb);
 
 		/// <summary>
 		/// Displays a standard "About" dialog for the current application assembly.
@@ -416,6 +399,27 @@ namespace Menees.Windows.Presentation
 			return result;
 		}
 
+		/// <summary>
+		/// Check if the repository's latest version is newer than the assembly's version
+		/// and handles the standard UI if necessary.
+		/// </summary>
+		/// <param name="assembly">The assembly to compare to. This is required.</param>
+		/// <param name="ownerWindow">An optional owner window if a newer release's web page should be opened.</param>
+		/// <param name="repository">The name of a GitHub repository. If null, then <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
+		/// <param name="repositoryOwner">The owner of the GitHub repository.</param>
+		/// <returns>True if an update is available. False if the assembly is up-to-date. Null if no release info was found.</returns>
+		public static bool? CheckForUpdate(
+			Assembly assembly,
+			Window ownerWindow,
+			string repository = null,
+			string repositoryOwner = "menees")
+			=> Release.CheckForUpdate(
+				assembly,
+				TryGetHandle(ownerWindow),
+				msg => ShowInfo(ownerWindow, msg),
+				repository,
+				repositoryOwner);
+
 		#endregion
 
 		#region Private Methods
@@ -433,6 +437,18 @@ namespace Menees.Windows.Presentation
 				DependencyObject child = VisualTreeHelper.GetChild(parent, i);
 				GetValidationErrors(child, errors);
 			}
+		}
+
+		private static IntPtr? TryGetHandle(Window window)
+		{
+			IntPtr? result = null;
+
+			if (window != null)
+			{
+				result = NativeMethods.GetHandle(window);
+			}
+
+			return result;
 		}
 
 		#endregion

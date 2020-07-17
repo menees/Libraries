@@ -43,6 +43,18 @@ namespace Menees
 		}
 
 		/// <summary>
+		/// Gets the assembly's version.
+		/// </summary>
+		/// <param name="assembly">The assembly to get the version from</param>
+		/// <returns>The assembly version</returns>
+		public static Version GetVersion(Assembly assembly)
+		{
+			Conditions.RequireReference(assembly, nameof(assembly));
+			Version result = assembly.GetName(false).Version;
+			return result;
+		}
+
+		/// <summary>
 		/// Gets the name of the item returned by <paramref name="expression"/>.
 		/// </summary>
 		/// <param name="expression">An expression that returns a member, method call, or variable.</param>

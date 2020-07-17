@@ -18,6 +18,17 @@ namespace Menees.Common.Tests
 		}
 
 		[TestMethod]
+		public void GetVersionTest()
+		{
+			Assembly asm = Assembly.GetExecutingAssembly();
+			Version actual = ReflectionUtility.GetVersion(asm);
+			actual.ShouldEqual(Version.Parse("1.2.3.0"));
+
+			actual = ReflectionUtility.GetVersion(typeof(ReflectionUtility).Assembly);
+			actual.CompareTo(Version.Parse("4.9.10")).ShouldBeGreaterThanOrEqualTo(0, "Common Version >= 4.9.10");
+		}
+
+		[TestMethod]
 		public void GetNameOfTest()
 		{
 			GetNameOfTester test = new GetNameOfTester();

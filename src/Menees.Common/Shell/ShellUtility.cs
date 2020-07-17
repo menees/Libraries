@@ -84,7 +84,7 @@ namespace Menees.Shell
 			StringBuilder sb = new StringBuilder("Version ");
 
 			// Show at least Major.Minor, but only show Build and Revision if they're non-zero.
-			Version displayVersion = assembly.GetName(false).Version;
+			Version displayVersion = ReflectionUtility.GetVersion(assembly);
 			const int MaxVersionFields = 4;
 			int versionFieldsToDisplay = MaxVersionFields;
 			if (displayVersion.Revision == 0)
