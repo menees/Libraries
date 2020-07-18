@@ -19,6 +19,7 @@
 	using System.Windows.Media.Imaging;
 	using System.Windows.Navigation;
 	using System.Windows.Shapes;
+	using Menees.Diagnostics;
 	using Menees.Shell;
 	using IconImage = System.Drawing.Icon;
 
@@ -29,17 +30,28 @@
 	/// </summary>
 	internal partial class AboutBox : ExtendedDialog
 	{
+		#region Private Data Members
+
+		private readonly Assembly callingAssembly;
+		private readonly string repository;
+
+		#endregion
+
 		#region Constructors
 
-		public AboutBox(Assembly callingAssembly)
+		public AboutBox(Assembly callingAssembly, string repository)
 		{
 			this.InitializeComponent();
+
+			this.callingAssembly = callingAssembly;
+			this.repository = repository ?? ApplicationInfo.ApplicationName.Replace(" ", string.Empty);
 
 			string applicationName = ApplicationInfo.ApplicationName;
 			this.Title = "About " + applicationName;
 			this.productName.Text = applicationName;
 			this.version.Text = ShellUtility.GetVersionInfo(callingAssembly);
 			this.copyright.Text = ShellUtility.GetCopyrightInfo(callingAssembly);
+			this.updateLink.Visibility = Visibility.Hidden;
 		}
 
 		#endregion
@@ -116,6 +128,32 @@
 		private void WebLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			if (WindowsUtility.ShellExecute(this, "http://www.menees.com"))
+			{
+				FinishLink(sender, e);
+			}
+
+			e.Handled = true;
+		}
+
+		private async void ExtendedDialog_Loaded(object sender, RoutedEventArgs e)
+		{
+			string repository = this.repository;
+			Release latest = await Task.Run(() => Release.FindGithubLatest(repository)).ConfigureAwait(true);
+			if (latest != null && this.IsLoaded)
+			{
+				Version appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
+				if (latest.Version > appVersion)
+				{
+					this.updateLink.Tag = latest;
+					this.updateLink.Content = $"★ Version {latest.Version} update available!";
+					this.updateLink.Visibility = Visibility.Visible;
+				}
+			}
+		}
+
+		private void UpdateLink_Clicked(object sender, RoutedEventArgs e)
+		{
+			if (this.updateLink.Tag is Release latest && WindowsUtility.ShellExecute(this, latest.HtmlUri.ToString()))
 			{
 				FinishLink(sender, e);
 			}

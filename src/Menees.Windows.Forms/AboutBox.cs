@@ -12,17 +12,28 @@
 	using System.Runtime.InteropServices;
 	using System.Text;
 	using System.Windows.Forms;
+	using Menees.Diagnostics;
 	using Menees.Shell;
 
 	#endregion
 
 	internal partial class AboutBox : ExtendedForm
 	{
+		#region Private Data Members
+
+		private readonly Assembly callingAssembly;
+		private readonly string repository;
+
+		#endregion
+
 		#region Constructors
 
-		public AboutBox(Assembly callingAssembly)
+		public AboutBox(Assembly callingAssembly, string repository)
 		{
 			this.InitializeComponent();
+
+			this.callingAssembly = callingAssembly;
+			this.repository = repository ?? ApplicationInfo.ApplicationName.Replace(" ", string.Empty);
 
 			string applicationName = ApplicationInfo.ApplicationName;
 			this.Text = "About " + applicationName;
@@ -95,12 +106,17 @@
 
 		#region Private Methods
 
+		private void VisitLink(LinkLabel linkLabel, string linkUrl = null)
+		{
+			if (WindowsUtility.ShellExecute(this, linkUrl ?? linkLabel.Text))
+			{
+				linkLabel.Links[0].Visited = true;
+			}
+		}
+
 		private void WebLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			if (WindowsUtility.ShellExecute(this, this.webLink.Text))
-			{
-				this.webLink.Links[0].Visited = true;
-			}
+			this.VisitLink(this.webLink);
 		}
 
 		private void EmailLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -108,9 +124,42 @@
 			// UriBuilder always adds a '/' after the email address, which shows up in the opened
 			// mail message's To field.  So we'll manually build a mailto-compatible Uri.
 			string link = string.Format("mailto:{0}?subject={1} {2}", this.emailLink.Text, this.productName.Text, this.version.Text);
-			if (WindowsUtility.ShellExecute(this, link))
+			this.VisitLink(this.emailLink, link);
+		}
+
+		private void AboutBox_Shown(object sender, EventArgs e)
+		{
+			this.updateChecker.RunWorkerAsync();
+		}
+
+		private void UpdateChecker_DoWork(object sender, DoWorkEventArgs e)
+		{
+			Release latest = Release.FindGithubLatest(this.repository);
+			if (latest != null)
 			{
-				this.emailLink.Links[0].Visited = true;
+				Version appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
+				if (latest.Version > appVersion)
+				{
+					e.Result = latest;
+				}
+			}
+		}
+
+		private void UpdateChecker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			if (e.Error == null && e.Result is Release latest && !this.updateLink.Disposing && !this.Disposing)
+			{
+				this.updateLink.Tag = latest;
+				this.updateLink.Text = $"★ Version {latest.Version} update available!";
+				this.updateLink.Visible = true;
+			}
+		}
+
+		private void UpdateLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			if (this.updateLink.Tag is Release latest)
+			{
+				this.VisitLink(this.updateLink, latest.HtmlUri.ToString());
 			}
 		}
 

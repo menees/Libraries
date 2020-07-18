@@ -187,10 +187,12 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The owner of the displayed modal dialog.</param>
 		/// <param name="mainAssembly">The main assembly for the application,
 		/// which the version and copyright information will be read from.</param>
-		public static void ShowAboutBox(IWin32Window owner, Assembly mainAssembly)
+		/// <param name="repository">The name of a GitHub repository. If null, then
+		/// <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
+		public static void ShowAboutBox(IWin32Window owner, Assembly mainAssembly, string repository = null)
 		{
 			// If an assembly wasn't provided, then we want the version of the calling assembly not the current assembly.
-			using (AboutBox dialog = new AboutBox(mainAssembly ?? Assembly.GetCallingAssembly()))
+			using (AboutBox dialog = new AboutBox(mainAssembly ?? Assembly.GetCallingAssembly(), repository))
 			{
 				dialog.Execute(owner);
 			}
@@ -316,40 +318,6 @@ namespace Menees.Windows.Forms
 			{
 				NativeMethods.SetBorderStyle(mdiClient, borderStyle);
 			}
-		}
-
-		/// <summary>
-		/// Check if the repository's latest version is newer than the assembly's version
-		/// and handles the standard UI if necessary.
-		/// </summary>
-		/// <param name="assembly">The assembly to compare to. This is required.</param>
-		/// <param name="ownerWindow">An optional owner window if a newer release's web page should be opened.</param>
-		/// <param name="repository">The name of a GitHub repository. If null, then <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
-		/// <param name="repositoryOwner">The owner of the GitHub repository.</param>
-		/// <returns>True if an update is available. False if the assembly is up-to-date. Null if no release info was found.</returns>
-		public static bool? CheckForUpdate(
-			Assembly assembly,
-			IWin32Window ownerWindow,
-			string repository = null,
-			string repositoryOwner = "menees")
-		{
-			bool? result = Release.CheckForUpdate(
-				assembly,
-				ownerWindow?.Handle,
-				msg =>
-				{
-					if (ownerWindow == null)
-					{
-						MessageBox.Show(msg, ApplicationInfo.ApplicationName);
-					}
-					else
-					{
-						MessageBox.Show(ownerWindow, msg, ApplicationInfo.ApplicationName);
-					}
-				},
-				repository,
-				repositoryOwner);
-			return result;
 		}
 
 		#endregion

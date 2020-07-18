@@ -72,6 +72,10 @@
 
 			Release result = null;
 
+			// GitHub requires at least TLS 1.2. It's on by default in .NET 4.6 and up, but we have to enable it for .NET 4.5.
+			// See https://stackoverflow.com/a/58195987/1882616 and https://stackoverflow.com/a/50977774/1882616.
+			ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+
 			// HttpWebRequest works in .NET Framework and .NET Core.
 			HttpWebRequest request = WebRequest.CreateHttp(new Uri($"https://api.github.com/repos/{repositoryOwner}/{repository}/releases/latest"));
 
@@ -112,86 +116,6 @@
 			catch (WebException ex)
 			{
 				Log.Error(typeof(Release), "Error from GitHub API request.", ex);
-			}
-
-			return result;
-		}
-
-		/// <summary>
-		/// Checks if the requested repository's <see cref="Version"/> is newer than the assembly's version
-		/// and shows the updated release web page and message if necessary.
-		/// </summary>
-		/// <param name="assembly">The assembly to compare to. This is required.</param>
-		/// <param name="ownerHandle">An optional owner window handle if a newer release's web page should be opened.</param>
-		/// <param name="showMessage">An optional action to show a MessageBox if app messages should be displayed.</param>
-		/// <param name="repository">The name of a GitHub repository. If null, then <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
-		/// <param name="repositoryOwner">The owner of the GitHub repository.</param>
-		/// <returns>True if an update is available. False if the assembly is up-to-date. Null if no release info was found.</returns>
-		public static bool? CheckForUpdate(
-			Assembly assembly,
-			IntPtr? ownerHandle,
-			Action<string> showMessage,
-			string repository = null,
-			string repositoryOwner = "menees")
-		{
-			bool? result = null;
-
-			Release release = FindGithubLatest(repository ?? ApplicationInfo.ApplicationName, repositoryOwner);
-			if (release == null)
-			{
-				showMessage?.Invoke("Unable to determine the latest release information.");
-			}
-			else
-			{
-				result = release.CheckForUpdate(assembly, ownerHandle, showMessage);
-			}
-
-			return result;
-		}
-
-		/// <summary>
-		/// Checks if the current <see cref="Version"/> is newer than the assembly's version
-		/// and shows the updated release web page and message if necessary.
-		/// </summary>
-		/// <param name="assembly">The assembly to compare to. This is required.</param>
-		/// <param name="ownerHandle">An optional owner window handle if a newer release's web page should be opened.</param>
-		/// <param name="showMessage">An optional action to show a MessageBox if app messages should be displayed.</param>
-		/// <returns>True if an update is available. False otherwise (i.e., <paramref name="assembly"/> is up-to-date).</returns>
-		public bool CheckForUpdate(Assembly assembly, IntPtr? ownerHandle, Action<string> showMessage)
-			=> this.CheckForUpdate(ReflectionUtility.GetVersion(assembly), ownerHandle, showMessage);
-
-		/// <summary>
-		/// Checks if the current <see cref="Version"/> is newer than the specified <paramref name="fromVersion"/>
-		/// and shows the updated release web page and message if necessary.
-		/// </summary>
-		/// <param name="fromVersion">The version to compare to. This is required.</param>
-		/// <param name="ownerHandle">An optional owner window handle if a newer release's web page should be opened.</param>
-		/// <param name="showMessage">An optional action to show a MessageBox if app messages should be displayed.</param>
-		/// <returns>True if an update is available. False otherwise (i.e., <paramref name="fromVersion"/> is up-to-date).</returns>
-		public bool CheckForUpdate(Version fromVersion, IntPtr? ownerHandle, Action<string> showMessage)
-		{
-			Conditions.RequireReference(fromVersion, nameof(fromVersion));
-			bool result = fromVersion < this.Version;
-
-			if (!result)
-			{
-				showMessage?.Invoke("You're up-to-date!");
-			}
-			else
-			{
-				if (ownerHandle != null)
-				{
-					ShellUtility.ShellExecute(ownerHandle, this.HtmlUri.ToString());
-				}
-
-				if (showMessage != null)
-				{
-					StringBuilder sb = new StringBuilder();
-					sb.Append("You're on version ").Append(fromVersion).Append(", but ");
-					sb.Append(this.Version).Append(" has been available since ");
-					sb.Append(this.ReleasedUtc.ToLocalTime()).AppendLine(" from ").Append(this.HtmlUri).Append('.');
-					showMessage(sb.ToString());
-				}
 			}
 
 			return result;

@@ -49,6 +49,8 @@
 			this.icon = new System.Windows.Forms.PictureBox();
 			this.okayButton = new System.Windows.Forms.Button();
 			this.charityWare = new System.Windows.Forms.Label();
+			this.updateLink = new System.Windows.Forms.LinkLabel();
+			this.updateChecker = new System.ComponentModel.BackgroundWorker();
 			((System.ComponentModel.ISupportInitialize)(this.logo)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.icon)).BeginInit();
 			this.SuspendLayout();
@@ -100,7 +102,7 @@
 			this.version.AutoSize = true;
 			this.version.Location = new System.Drawing.Point(106, 140);
 			this.version.Name = "version";
-			this.version.Size = new System.Drawing.Size(64, 15);
+			this.version.Size = new System.Drawing.Size(63, 15);
 			this.version.TabIndex = 2;
 			this.version.Text = "Version 1.0";
 			// 
@@ -149,8 +151,25 @@
 			this.charityWare.Name = "charityWare";
 			this.charityWare.Size = new System.Drawing.Size(331, 42);
 			this.charityWare.TabIndex = 6;
-			this.charityWare.Text = "This software is CharityWare.  If you use it, please donate something to t" +
-    "he charity of your choice.";
+			this.charityWare.Text = "This software is CharityWare.  If you use it, please donate something to the char" +
+    "ity of your choice.";
+			// 
+			// updateLink
+			// 
+			this.updateLink.AutoSize = true;
+			this.updateLink.Location = new System.Drawing.Point(106, 284);
+			this.updateLink.Name = "updateLink";
+			this.updateLink.Size = new System.Drawing.Size(126, 15);
+			this.updateLink.TabIndex = 8;
+			this.updateLink.TabStop = true;
+			this.updateLink.Text = "Version 1.1 update available!";
+			this.updateLink.Visible = false;
+			this.updateLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.UpdateLink_LinkClicked);
+			// 
+			// updateChecker
+			// 
+			this.updateChecker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.UpdateChecker_DoWork);
+			this.updateChecker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.UpdateChecker_RunWorkerCompleted);
 			// 
 			// AboutBox
 			// 
@@ -159,6 +178,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.okayButton;
 			this.ClientSize = new System.Drawing.Size(474, 321);
+			this.Controls.Add(this.updateLink);
 			this.Controls.Add(this.charityWare);
 			this.Controls.Add(this.emailLink);
 			this.Controls.Add(this.bottomSeparator);
@@ -176,6 +196,7 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "About";
+			this.Shown += new System.EventHandler(this.AboutBox_Shown);
 			((System.ComponentModel.ISupportInitialize)(this.logo)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.icon)).EndInit();
 			this.ResumeLayout(false);
@@ -184,5 +205,8 @@
 		}
 
 		#endregion
+
+		private System.Windows.Forms.LinkLabel updateLink;
+		private System.ComponentModel.BackgroundWorker updateChecker;
 	}
 }
