@@ -17,7 +17,7 @@ namespace Menees.Common.Tests
 			string applicationName = ApplicationInfo.ApplicationName;
 			Assert.IsNotNull(applicationName);
 
-			applicationName = "TeleLink Testing";
+			applicationName = "Testing";
 			ApplicationInfo.Initialize(applicationName);
 			Assert.AreEqual(applicationName, ApplicationInfo.ApplicationName);
 		}
