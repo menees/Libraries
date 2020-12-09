@@ -38,7 +38,7 @@ namespace Menees.Common.Tests
 			// Test it when the drive doesn't exist.
 			FileUtility.DeleteFile(@"B:\Test.txt");
 
-			// Test is when the folder doesn't exist.
+			// Test it when the folder doesn't exist.
 			FileUtility.DeleteFile(@"C:\" + Guid.NewGuid().ToString("N") + @"\Test.txt");
 		}
 
