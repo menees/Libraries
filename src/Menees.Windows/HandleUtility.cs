@@ -21,6 +21,15 @@ namespace Menees.Windows
 	/// </remarks>
 	public static class HandleUtility
 	{
+		#region Public Properties
+
+		/// <summary>
+		/// Gets whether the current application is active (i.e., owns the foreground window).
+		/// </summary>
+		public static bool IsApplicationActivated => NativeMethods.IsApplicationActivated;
+
+		#endregion
+
 		#region Public Methods
 
 		/// <summary>

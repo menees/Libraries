@@ -39,6 +39,7 @@ namespace Menees
 		private static string applicationName;
 		private static int showingUnhandledExceptionErrorMessage;
 		private static bool? isDebugBuild;
+		private static Func<bool> isActivated;
 
 		#endregion
 
@@ -100,13 +101,13 @@ namespace Menees
 		public static int ProcessId => LazyProcessId.Value;
 
 		/// <summary>
-		/// Gets whether the current application is active (i.e., owns the foreground window).
+		/// Gets whether the current application is activated per the lambda passed to <see cref="Initialize"/>.
 		/// </summary>
 		public static bool IsActivated
 		{
 			get
 			{
-				bool result = NativeMethods.IsApplicationActivated;
+				bool result = isActivated?.Invoke() ?? false;
 				return result;
 			}
 		}
@@ -146,8 +147,9 @@ namespace Menees
 		/// </summary>
 		/// <param name="applicationName">Pass null to use the current AppDomain's friendly name.</param>
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
+		/// <param name="isActivated">A function to determine if <see cref="IsActivated"/> should consider the application activated.</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void Initialize(string applicationName, Assembly applicationAssembly = null)
+		public static void Initialize(string applicationName, Assembly applicationAssembly = null, Func<bool> isActivated = null)
 		{
 			// Try to log when unhandled or unobserved exceptions occur.  This info can be very useful if the process crashes.
 			// Note: Windows Forms unhandled exceptions are logged via Menees.Windows.Forms.WindowsUtility.InitializeApplication.
@@ -164,6 +166,7 @@ namespace Menees
 
 			// If the name is null or empty, then the property accessor will use the AppDomain's friendly name.
 			ApplicationInfo.applicationName = applicationName;
+			ApplicationInfo.isActivated = isActivated;
 
 			// Put it in the log's global context, so it will appear in every log entry.
 			if (!string.IsNullOrEmpty(applicationName))

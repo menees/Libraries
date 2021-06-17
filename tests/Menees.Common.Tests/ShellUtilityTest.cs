@@ -60,7 +60,7 @@ namespace Menees.Common.Tests
 			if (Environment.UserInteractive)
 			{
 				string typeName = ShellUtility.GetFileTypeInfo(".cs", false, IconOptions.None, null);
-				typeName.ShouldEqual("Visual C# Source File");
+				typeName.ShouldContainIgnoringCase("C# Source File");
 
 				string notepadPath = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\System32\Notepad.exe");
 				Icon icon = null;

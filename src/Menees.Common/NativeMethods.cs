@@ -55,36 +55,6 @@ namespace Menees
 
 		#endregion
 
-		#region Internal Properties
-
-		[SuppressMessage(
-			"Microsoft.Usage",
-			"CA1806:DoNotIgnoreMethodResults",
-			MessageId = "Menees.NativeMethods.GetWindowThreadProcessId(System.IntPtr,System.Int32@)",
-			Justification = "GetWindowThreadProcessId returns a thread ID not an HRESULT.  We check Marshal.GetLastWin32Error().")]
-		internal static bool IsApplicationActivated
-		{
-			get
-			{
-				// This property is thread-safe, not WinForm or WPF specific, and works even if child windows have focus in a process.
-				// http://stackoverflow.com/questions/7162834/determine-if-current-application-is-activated-has-focus/7162873#7162873
-				bool result = false;
-
-				// GetForegroundWindow will return null if no window is currently activated
-				// (e.g., the screen is locked or a remote desktop is connected but minimized).
-				IntPtr activatedHandle = GetForegroundWindow();
-				if (Marshal.GetLastWin32Error() == 0 && activatedHandle != IntPtr.Zero)
-				{
-					GetWindowThreadProcessId(activatedHandle, out int activatedProcessId);
-					result = Marshal.GetLastWin32Error() == 0 && activatedProcessId == ApplicationInfo.ProcessId;
-				}
-
-				return result;
-			}
-		}
-
-		#endregion
-
 		#region Internal Methods
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
@@ -272,12 +242,6 @@ namespace Menees
 		[DllImport("user32.dll", CharSet = CharSet.Unicode)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool DestroyIcon(IntPtr handle);
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]
-		private static extern IntPtr GetForegroundWindow();
-
-		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern int GetWindowThreadProcessId(IntPtr handle, out int processId);
 
 		#endregion
 

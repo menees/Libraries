@@ -114,7 +114,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
 		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly applicationAssembly = null)
 		{
-			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly());
+			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly(), () => HandleUtility.IsApplicationActivated);
 
 			Application.Current.DispatcherUnhandledException += (sender, e) =>
 			{

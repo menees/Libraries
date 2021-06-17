@@ -4,6 +4,7 @@ using System.IO;
 using Menees;
 using Menees.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SoftwareApproach.TestingExtensions;
 
 namespace Menees.Common.Tests
 {
@@ -15,11 +16,16 @@ namespace Menees.Common.Tests
 		{
 			// Before Initialize is called, the app name gets pulled from AppDomain.FriendlyName
 			string applicationName = ApplicationInfo.ApplicationName;
-			Assert.IsNotNull(applicationName);
+			applicationName.ShouldNotBeNull();
 
 			applicationName = "Testing";
-			ApplicationInfo.Initialize(applicationName);
-			Assert.AreEqual(applicationName, ApplicationInfo.ApplicationName);
+			bool isActivated = true;
+			ApplicationInfo.Initialize(applicationName, isActivated: () => isActivated);
+			ApplicationInfo.ApplicationName.ShouldEqual(applicationName);
+
+			ApplicationInfo.IsActivated.ShouldEqual(isActivated);
+			isActivated = false;
+			ApplicationInfo.IsActivated.ShouldEqual(isActivated);
 		}
 
 		[TestMethod()]

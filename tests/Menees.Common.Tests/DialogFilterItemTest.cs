@@ -13,9 +13,9 @@ namespace Menees.Common.Tests
 		public void ConstructorTest()
 		{
 			DialogFilterItem item = new DialogFilterItem("cs");
-			item.ItemName.ShouldEqual("Visual C# Source Files");
+			item.ItemName.ShouldContainIgnoringCase("C# Source Files");
 			item.Masks.SequenceEqual(new[] { "*.cs" }).ShouldBeTrue();
-			item.ToString().ShouldEqual("Visual C# Source Files (*.cs)|*.cs");
+			item.ToString().ShouldContainIgnoringCase("C# Source Files (*.cs)|*.cs");
 
 			item = new DialogFilterItem("vb", false);
 			item.ItemName.ShouldEqual("Visual Basic Source File");
