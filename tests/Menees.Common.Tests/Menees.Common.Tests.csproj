@@ -6,7 +6,6 @@
 		<UseWindowsForms>true</UseWindowsForms>
 		<Version>1.2.3</Version>
 		<Copyright>Copyright For Unit Test</Copyright>
-		<Nullable>enable</Nullable>
 		<BuildTime>2021-12-26 17:50:00Z</BuildTime>
 	</PropertyGroup>
 

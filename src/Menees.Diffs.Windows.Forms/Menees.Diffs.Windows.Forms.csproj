@@ -5,7 +5,6 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Description>Windows Forms controls for showing diffs of text, files, and directories</Description>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

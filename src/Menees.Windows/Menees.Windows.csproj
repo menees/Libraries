@@ -4,7 +4,6 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Windows-specific helpers for WMI, shell dialogs, and Visual Studio invocation</Description>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>

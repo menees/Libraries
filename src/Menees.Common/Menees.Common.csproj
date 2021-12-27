@@ -5,7 +5,6 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<RootNamespace>Menees</RootNamespace>
 		<Description>Helpers for files, text, XML, logging, exceptions, etc.</Description>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<Choose>

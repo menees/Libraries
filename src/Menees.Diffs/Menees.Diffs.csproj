@@ -4,7 +4,6 @@
 		<TargetFrameworks>netstandard2.0;$(MeneesTargetNetCoreBase);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Differencing algorithms for text files, binary files, and directories</Description>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
