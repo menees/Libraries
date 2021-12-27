@@ -33,13 +33,13 @@ namespace Menees.Windows.Tests
 					DateTime? installDate = record.GetDateTimeN("InstallDate");
 					installDate.ShouldBeNull("InstallDate");
 
-					string path = record.GetString("ExecutablePath");
-					object pathValue = record.GetValue("ExecutablePath");
+					string? path = record.GetString("ExecutablePath");
+					object? pathValue = record.GetValue("ExecutablePath");
 					pathValue.ShouldBeOfType(typeof(string));
 					path.ShouldBe(pathValue.ToString());
 
 					// Internally, this calls GetValue, which tries to convert to the correct .NET type.
-					object coercedCreationDate = record["CreationDate"];
+					object? coercedCreationDate = record["CreationDate"];
 					coercedCreationDate.ShouldBeOfType(typeof(DateTime));
 					coercedCreationDate.ShouldBe(creationDate);
 				});
@@ -102,7 +102,7 @@ namespace Menees.Windows.Tests
 					string.Equals((string)args[0], Environment.UserName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("User");
 					string.Equals((string)args[1], Environment.UserDomainName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("Domain");
 
-					IDictionary<string, object> output = record.InvokeMethod("GetOwner", (IDictionary<string, object>)null);
+					IDictionary<string, object> output = record.InvokeMethod("GetOwner", (IDictionary<string, object>?)null);
 					Convert.ToInt32(output["ReturnValue"]).ShouldBe(0);
 					string.Equals((string)output["User"], Environment.UserName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("User");
 					string.Equals((string)output["Domain"], Environment.UserDomainName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("Domain");

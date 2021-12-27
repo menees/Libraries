@@ -49,7 +49,7 @@ namespace Menees.Windows
 		/// <param name="title">A short description of the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user canceled).</returns>
-		public static string SelectFolder(IntPtr? ownerHandle, string title, string initialFolder)
+		public static string? SelectFolder(IntPtr? ownerHandle, string title, string initialFolder)
 			=> NativeMethods.SelectFolder(ownerHandle, title, initialFolder);
 
 		#endregion

@@ -14,10 +14,11 @@ namespace Menees.Windows.Tests
 		public void CreateAndReleaseTest()
 		{
 			// WshShortcut Object Properties and Methods: http://msdn.microsoft.com/en-us/library/f5y78918.aspx
-			dynamic shell = ComUtility.CreateInstance("WScript.Shell");
+			dynamic? shell = ComUtility.CreateInstance("WScript.Shell");
+			Assert.IsNotNull(shell);
 			try
 			{
-				var link = shell.CreateShortcut("TestShortcut.lnk");
+				var link = shell!.CreateShortcut("TestShortcut.lnk");
 				try
 				{
 					link.TargetPath = ApplicationInfo.ExecutableFile;

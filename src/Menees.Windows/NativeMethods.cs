@@ -175,7 +175,7 @@ namespace Menees.Windows
 			"Microsoft.Usage",
 			"CA2201:DoNotRaiseReservedExceptionTypes",
 			Justification = "We have to use PreserveSig, check for S_OK or ERROR_CANCELLED, and throw otherwise.")]
-		internal static string SelectFolder(IntPtr? ownerHandle, string title, string initialFolder)
+		internal static string? SelectFolder(IntPtr? ownerHandle, string title, string initialFolder)
 		{
 			// This uses the "new" IFileDialog implementation rather than the old, awful SHBrowseForFolder dialog.
 			// This implementation was pieced together from several C# and C++ examples:
@@ -204,7 +204,7 @@ namespace Menees.Windows
 			// Windows only uses this for the first usage of the dialog with the current title
 			// in the current process's path.  For subsequent calls, Windows remembers
 			// and starts from the previous path.
-			IShellItem currentDirectoryItem = GetShellItemForPath(Environment.CurrentDirectory);
+			IShellItem? currentDirectoryItem = GetShellItemForPath(Environment.CurrentDirectory);
 			if (currentDirectoryItem != null)
 			{
 				dialog.SetDefaultFolder(currentDirectoryItem);
@@ -212,7 +212,7 @@ namespace Menees.Windows
 
 			if (!string.IsNullOrEmpty(initialFolder))
 			{
-				IShellItem initialFolderItem = GetShellItemForPath(initialFolder);
+				IShellItem? initialFolderItem = GetShellItemForPath(initialFolder);
 				if (initialFolderItem != null)
 				{
 					dialog.SetFolder(initialFolderItem);
@@ -226,7 +226,7 @@ namespace Menees.Windows
 
 			uint showResult = dialog.Show(ownerHandle.GetValueOrDefault());
 			const uint ERROR_CANCELLED = 0x800704C7; // For when the user clicks Cancel.
-			string result = null;
+			string? result = null;
 			if (showResult == S_OK)
 			{
 				if (dialog.GetResult(out IShellItem shellItem) == S_OK)
@@ -274,10 +274,10 @@ namespace Menees.Windows
 
 		#region Private Methods
 
-		private static IShellItem GetShellItemForPath(string path)
+		private static IShellItem? GetShellItemForPath(string path)
 		{
 			var riid = new Guid(IID_IShellItem);
-			if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out IShellItem result) != S_OK)
+			if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out IShellItem? result) != S_OK)
 			{
 				// If the user types an invalid "path" into an input box, we don't want to raise an exception.
 				result = null;
@@ -295,7 +295,7 @@ namespace Menees.Windows
 			[MarshalAs(UnmanagedType.LPWStr)] string pszPath,
 			IntPtr pbc,
 			ref Guid riid,
-			[MarshalAs(UnmanagedType.Interface)] out IShellItem ppv);
+			[MarshalAs(UnmanagedType.Interface)] out IShellItem? ppv);
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]

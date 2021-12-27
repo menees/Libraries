@@ -4,7 +4,9 @@
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Windows-specific helpers for WMI, shell dialogs, and Visual Studio invocation</Description>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
+
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" Version="3.0.4492">
@@ -21,9 +23,6 @@
 			<ItemGroup>
 				<Compile Remove="NativeMethods.Core.cs" />
 				<None Include="NativeMethods.Core.cs" />
-
-				<Compile Remove="ComObject.Core.cs" />
-				<None Include="ComObject.Core.cs" />
 
 				<Compile Remove="ComUtility.Core.cs" />
 				<None Include="ComUtility.Core.cs" />
