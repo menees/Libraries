@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.IO;
 using System.Linq;
 
@@ -16,11 +16,11 @@ namespace Menees.Diffs.Tests
 		public void DirectoryDiffFileFilterTest()
 		{
 			var filter = new DirectoryDiffFileFilter("*.txt;*.xml", true);
-			filter.Filters.ShouldEqual("*.txt;*.xml");
+			filter.Filters.ShouldBe("*.txt;*.xml");
 			filter.Include.ShouldBeTrue();
 
 			filter = new DirectoryDiffFileFilter("*.bin", false);
-			filter.Filters.ShouldEqual("*.bin");
+			filter.Filters.ShouldBe("*.bin");
 			filter.Include.ShouldBeFalse();
 		}
 
@@ -31,7 +31,7 @@ namespace Menees.Diffs.Tests
 			using TempFile b = new("B");
 
 			string directory = Path.GetDirectoryName(a.FileName);
-			directory.ShouldEqual(Path.GetDirectoryName(b.FileName));
+			directory.ShouldBe(Path.GetDirectoryName(b.FileName));
 			DirectoryInfo info = new(directory);
 			string filterString = Path.GetFileName(a.FileName) + ";" + Path.GetFileName(b.FileName);
 
@@ -44,8 +44,8 @@ namespace Menees.Diffs.Tests
 					: new DirectoryDiffFileFilter(filterString, true, StringComparison.Ordinal);
 
 				FileInfo[] files = include.Filter(info);
-				files[0].FullName.ShouldEqual(a.FileName);
-				files[1].FullName.ShouldEqual(b.FileName);
+				files[0].FullName.ShouldBe(a.FileName);
+				files[1].FullName.ShouldBe(b.FileName);
 
 				var exclude = pass == 1
 					? new DirectoryDiffFileFilter(filterString, false)

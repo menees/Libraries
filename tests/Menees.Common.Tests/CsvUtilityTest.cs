@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -48,17 +48,17 @@ namespace Menees.Common.Tests
 			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteValue(writer, "A");
-				buffer.ToString().ShouldEqual("A");
+				buffer.ToString().ShouldBe("A");
 				buffer.Clear();
 
 				// This should be quoted because it contains a comma.
 				CsvUtility.WriteValue(writer, "A, B");
-				buffer.ToString().ShouldEqual("\"A, B\"");
+				buffer.ToString().ShouldBe("\"A, B\"");
 				buffer.Clear();
 
 				// This contains a comma and double quotes.
 				CsvUtility.WriteValue(writer, "He said, \"What?\"");
-				buffer.ToString().ShouldEqual("\"He said, \"\"What?\"\"\"");
+				buffer.ToString().ShouldBe("\"He said, \"\"What?\"\"\"");
 				buffer.Clear();
 			}
 		}
@@ -153,7 +153,7 @@ namespace Menees.Common.Tests
 
 		private void TestWrites(string tableContents, string readerContents)
 		{
-			tableContents.ShouldEqual(readerContents);
+			tableContents.ShouldBe(readerContents);
 
 			using (StringReader reader = new(readerContents))
 			{
@@ -162,18 +162,18 @@ namespace Menees.Common.Tests
 				int numColumns = TestData.GetLength(1);
 				while ((values = CsvUtility.ReadLine(reader)) != null)
 				{
-					values.Count.ShouldEqual(numColumns);
+					values.Count.ShouldBe(numColumns);
 					for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
 					{
 						string value = values[columnIndex];
 						string testValue = TestData[rowIndex, columnIndex].ToString();
-						value.ShouldEqual(testValue);
+						value.ShouldBe(testValue);
 					}
 
 					rowIndex++;
 				}
 
-				rowIndex.ShouldEqual(TestData.GetLength(0));
+				rowIndex.ShouldBe(TestData.GetLength(0));
 			}
 		}
 
@@ -184,11 +184,11 @@ namespace Menees.Common.Tests
 			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteLine(writer, new object[] { 1, "A", "B", "C", 4.2m });
-				buffer.ToString().ShouldEqual("1,A,B,C,4.2\r\n");
+				buffer.ToString().ShouldBe("1,A,B,C,4.2\r\n");
 				buffer.Clear();
 
 				CsvUtility.WriteLine(writer, new object[] { 1, "A, \"B A\", C", 4.2m });
-				buffer.ToString().ShouldEqual("1,\"A, \"\"B A\"\", C\",4.2\r\n");
+				buffer.ToString().ShouldBe("1,\"A, \"\"B A\"\", C\",4.2\r\n");
 				buffer.Clear();
 			}
 		}
@@ -213,10 +213,10 @@ namespace Menees.Common.Tests
 		private static void TestReadTable(DataTable oldTable, DataTable newTable, bool treatAsStrings = true)
 		{
 			int columnCount = oldTable.Columns.Count;
-			columnCount.ShouldEqual(newTable.Columns.Count);
+			columnCount.ShouldBe(newTable.Columns.Count);
 
 			int rowCount = oldTable.Rows.Count;
-			rowCount.ShouldEqual(newTable.Rows.Count);
+			rowCount.ShouldBe(newTable.Rows.Count);
 
 			for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
 			{
@@ -233,7 +233,7 @@ namespace Menees.Common.Tests
 						newValue = newValue.ToString();
 					}
 
-					originalValue.ShouldEqual(newValue);
+					originalValue.ShouldBe(newValue);
 				}
 			}
 		}

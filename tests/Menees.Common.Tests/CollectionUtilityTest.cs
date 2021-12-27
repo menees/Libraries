@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -31,10 +31,10 @@ namespace Menees.Common.Tests
 		public void EmptyArrayTest()
 		{
 			int[] ints = CollectionUtility.EmptyArray<int>();
-			ints.Length.ShouldEqual(0);
+			ints.Length.ShouldBe(0);
 
 			string[] strings = CollectionUtility.EmptyArray<string>();
-			strings.Length.ShouldEqual(0);
+			strings.Length.ShouldBe(0);
 
 			string[] secondStrings = CollectionUtility.EmptyArray<string>();
 			object.ReferenceEquals(strings, secondStrings).ShouldBeTrue("The cache should return the same instance.");

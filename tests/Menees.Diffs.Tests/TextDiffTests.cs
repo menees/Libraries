@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -22,7 +22,7 @@ namespace Menees.Diffs.Tests
 				TextDiffTests.Check(edits, expectedEditTypes);
 				foreach (Edit edit in edits)
 				{
-					edit.Length.ShouldEqual(1);
+					edit.Length.ShouldBe(1);
 				}
 			}
 
@@ -108,9 +108,9 @@ namespace Menees.Diffs.Tests
 				EditScript newEdits = diff.Execute(leftLines, rightLines);
 				if (edits != null)
 				{
-					edits.Count.ShouldEqual(newEdits.Count);
-					edits.TotalEditLength.ShouldEqual(newEdits.TotalEditLength);
-					edits.Similarity.ShouldEqual(newEdits.Similarity);
+					edits.Count.ShouldBe(newEdits.Count);
+					edits.TotalEditLength.ShouldBe(newEdits.TotalEditLength);
+					edits.Similarity.ShouldBe(newEdits.Similarity);
 				}
 
 				edits = newEdits;
@@ -121,19 +121,19 @@ namespace Menees.Diffs.Tests
 
 		internal static void Check(EditScript edits, params EditType[] expectedEditTypes)
 		{
-			edits.Count.ShouldEqual(expectedEditTypes.Length, nameof(edits.Count));
+			edits.Count.ShouldBe(expectedEditTypes.Length, nameof(edits.Count));
 			for (int i = 0; i < expectedEditTypes.Length; i++)
 			{
 				Edit edit = edits[i];
-				edit.EditType.ShouldEqual(expectedEditTypes[i]);
+				edit.EditType.ShouldBe(expectedEditTypes[i]);
 			}
 		}
 
 		internal static void Check(Edit edit, int expectedLength, int expectedStartA, int expectedStartB)
 		{
-			edit.Length.ShouldEqual(expectedLength);
-			edit.StartA.ShouldEqual(expectedStartA);
-			edit.StartB.ShouldEqual(expectedStartB);
+			edit.Length.ShouldBe(expectedLength);
+			edit.StartA.ShouldBe(expectedStartA);
+			edit.StartB.ShouldBe(expectedStartB);
 		}
 	}
 }

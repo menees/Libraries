@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
 	</PropertyGroup>
@@ -15,7 +15,7 @@
 		</When>
 		<Otherwise>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
+				<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>

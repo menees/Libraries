@@ -2,7 +2,7 @@
 using Menees;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Drawing;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Linq;
 
 namespace Menees.Common.Tests
@@ -42,7 +42,9 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ConvertValueTest()
 		{
-			Point actual = (Point)ConvertUtility.ConvertValue("1, 2", typeof(Point));
+			object? actualObject = ConvertUtility.ConvertValue("1, 2", typeof(Point));
+			actualObject.ShouldNotBeNull();
+			Point actual = (Point)actualObject!;
 			Point expected = new(1, 2);
 			Assert.AreEqual(expected, actual);
 
@@ -101,35 +103,35 @@ namespace Menees.Common.Tests
 		public void ToHexTest()
 		{
 			ConvertUtility.ToHex(null).ShouldBeNull();
-			ConvertUtility.ToHex(Enumerable.Empty<byte>()).ShouldEqual(string.Empty);
+			ConvertUtility.ToHex(Enumerable.Empty<byte>()).ShouldBe(string.Empty);
 			byte[] ateBadBeef = new byte[] { 0x8B, 0xAD, 0xBE, 0xEF};
-			ConvertUtility.ToHex(ateBadBeef).ShouldEqual("8BADBEEF");
-			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.None).ShouldEqual("8BADBEEF");
-			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Lowercase).ShouldEqual("8badbeef");
-			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix).ShouldEqual("0x8BADBEEF");
-			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix | ToHexOptions.Lowercase).ShouldEqual("0x8badbeef");
+			ConvertUtility.ToHex(ateBadBeef).ShouldBe("8BADBEEF");
+			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.None).ShouldBe("8BADBEEF");
+			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Lowercase).ShouldBe("8badbeef");
+			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix).ShouldBe("0x8BADBEEF");
+			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Include0xPrefix | ToHexOptions.Lowercase).ShouldBe("0x8badbeef");
 		}
 
 		[TestMethod]
 		public void RoundToSecondsTest()
 		{
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.0)).ShouldEqual(TimeSpan.FromSeconds(1));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.4)).ShouldEqual(TimeSpan.FromSeconds(1));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.5)).ShouldEqual(TimeSpan.FromSeconds(2));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.6)).ShouldEqual(TimeSpan.FromSeconds(2));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldEqual(TimeSpan.FromSeconds(-1));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.4)).ShouldEqual(TimeSpan.FromSeconds(-1));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldEqual(TimeSpan.FromSeconds(-2));
-			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.6)).ShouldEqual(TimeSpan.FromSeconds(-2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.0)).ShouldBe(TimeSpan.FromSeconds(1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.4)).ShouldBe(TimeSpan.FromSeconds(1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.5)).ShouldBe(TimeSpan.FromSeconds(2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(1.6)).ShouldBe(TimeSpan.FromSeconds(2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldBe(TimeSpan.FromSeconds(-1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.4)).ShouldBe(TimeSpan.FromSeconds(-1));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldBe(TimeSpan.FromSeconds(-2));
+			ConvertUtility.RoundToSeconds(TimeSpan.FromSeconds(-1.6)).ShouldBe(TimeSpan.FromSeconds(-2));
 		}
 
 		[TestMethod]
 		public void TruncateToSecondsTest()
 		{
-			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.0)).ShouldEqual(TimeSpan.FromSeconds(1));
-			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.5)).ShouldEqual(TimeSpan.FromSeconds(1));
-			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldEqual(TimeSpan.FromSeconds(-1));
-			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldEqual(TimeSpan.FromSeconds(-1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.0)).ShouldBe(TimeSpan.FromSeconds(1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(1.5)).ShouldBe(TimeSpan.FromSeconds(1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.0)).ShouldBe(TimeSpan.FromSeconds(-1));
+			ConvertUtility.TruncateToSeconds(TimeSpan.FromSeconds(-1.5)).ShouldBe(TimeSpan.FromSeconds(-1));
 		}
 	}
 }

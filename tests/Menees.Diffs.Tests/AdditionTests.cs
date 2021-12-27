@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -16,7 +16,7 @@ namespace Menees.Diffs.Tests
 			AddCopyCollection ac = BinaryDiffTests.Diff("A", "BC");
 			BinaryDiffTests.Check(ac, true);
 			Addition add = (Addition)ac[0];
-			Encoding.UTF8.GetString(add.GetBytes()).ShouldEqual("BC");
+			Encoding.UTF8.GetString(add.GetBytes()).ShouldBe("BC");
 		}
 	}
 }

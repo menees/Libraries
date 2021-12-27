@@ -2,7 +2,7 @@
 using System.Linq;
 using Menees.Shell;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -13,24 +13,24 @@ namespace Menees.Common.Tests
 		public void ConstructorTest()
 		{
 			DialogFilterItem item = new("cs");
-			item.ItemName.ShouldContainIgnoringCase("C# Source Files");
+			item.ItemName.ShouldContain("C# Source Files", Case.Insensitive);
 			item.Masks.SequenceEqual(new[] { "*.cs" }).ShouldBeTrue();
-			item.ToString().ShouldContainIgnoringCase("C# Source Files (*.cs)|*.cs");
+			item.ToString().ShouldContain("C# Source Files (*.cs)|*.cs", Case.Insensitive);
 
 			item = new DialogFilterItem("vb", false);
-			item.ItemName.ShouldEqual("Visual Basic Source File");
+			item.ItemName.ShouldBe("Visual Basic Source File");
 			item.Masks.SequenceEqual(new[] { "*.vb" }).ShouldBeTrue();
-			item.ToString().ShouldEqual("Visual Basic Source File (*.vb)|*.vb");
+			item.ToString().ShouldBe("Visual Basic Source File (*.vb)|*.vb");
 
 			item = new DialogFilterItem("Text Files", "txt");
-			item.ItemName.ShouldEqual("Text Files");
+			item.ItemName.ShouldBe("Text Files");
 			item.Masks.SequenceEqual(new[] { "*.txt" }).ShouldBeTrue();
-			item.ToString().ShouldEqual("Text Files (*.txt)|*.txt");
+			item.ToString().ShouldBe("Text Files (*.txt)|*.txt");
 
 			item = new DialogFilterItem("Testing Files", "txt", ".abc", "*.xyz");
-			item.ItemName.ShouldEqual("Testing Files");
+			item.ItemName.ShouldBe("Testing Files");
 			item.Masks.SequenceEqual(new[] { "*.txt", "*.abc", "*.xyz" }).ShouldBeTrue();
-			item.ToString().ShouldEqual("Testing Files (*.txt;*.abc;*.xyz)|*.txt;*.abc;*.xyz");
+			item.ToString().ShouldBe("Testing Files (*.txt;*.abc;*.xyz)|*.txt;*.abc;*.xyz");
 		}
 
 		[TestMethod]
@@ -38,7 +38,7 @@ namespace Menees.Common.Tests
 		{
 			DialogFilterItem item = new("Text Files", "txt");
 			string actual = DialogFilterItem.Join(item, DialogFilterItem.AllFiles);
-			actual.ShouldEqual("Text Files (*.txt)|*.txt|All Files (*.*)|*.*");
+			actual.ShouldBe("Text Files (*.txt)|*.txt|All Files (*.*)|*.*");
 		}
 	}
 }

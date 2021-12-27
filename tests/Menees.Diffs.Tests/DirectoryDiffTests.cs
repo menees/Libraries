@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Diagnostics;
 using System.IO;
 
@@ -66,10 +66,10 @@ namespace Menees.Diffs.Tests
 
 		static void Check(DirectoryDiffEntry entry, string expectedName, bool expectInA, bool expectInB)
 		{
-			entry.Name.ShouldEqual(expectedName);
+			entry.Name.ShouldBe(expectedName);
 			entry.IsFile.ShouldBeTrue("Is File");
-			entry.InA.ShouldEqual(expectInA, "In A");
-			entry.InB.ShouldEqual(expectInB, "In B");
+			entry.InA.ShouldBe(expectInA, "In A");
+			entry.InB.ShouldBe(expectInB, "In B");
 		}
 
 		[TestMethod]
@@ -83,7 +83,7 @@ namespace Menees.Diffs.Tests
 					? new DirectoryDiff(true, false, false, false, false, false, Filter)
 					: new DirectoryDiff(true, false, false, false, false, false, Filter, StringComparison.Ordinal);
 				DirectoryDiffResults results = diff.Execute(ADir, BDir);
-				results.Entries.Count.ShouldEqual(1);
+				results.Entries.Count.ShouldBe(1);
 				Check(results.Entries[0], "2.txt", true, false);
 			}
 		}
@@ -97,7 +97,7 @@ namespace Menees.Diffs.Tests
 					? new DirectoryDiff(false, true, false, false, false, false, Filter)
 					: new DirectoryDiff(false, true, false, false, false, false, Filter, StringComparison.Ordinal);
 				DirectoryDiffResults results = diff.Execute(ADir, BDir);
-				results.Entries.Count.ShouldEqual(1);
+				results.Entries.Count.ShouldBe(1);
 				Check(results.Entries[0], "3.txt", false, true);
 			}
 		}
@@ -111,7 +111,7 @@ namespace Menees.Diffs.Tests
 					? new DirectoryDiff(false, false, true, false, false, false, Filter)
 					: new DirectoryDiff(false, false, true, false, false, false, Filter, StringComparison.Ordinal);
 				DirectoryDiffResults results = diff.Execute(ADir, BDir);
-				results.Entries.Count.ShouldEqual(1);
+				results.Entries.Count.ShouldBe(1);
 				Check(results.Entries[0], "5.txt", true, true);
 			}
 		}
@@ -125,7 +125,7 @@ namespace Menees.Diffs.Tests
 					? new DirectoryDiff(false, false, false, true, false, false, Filter)
 					: new DirectoryDiff(false, false, false, true, false, false, Filter, StringComparison.Ordinal);
 				DirectoryDiffResults results = diff.Execute(ADir, BDir);
-				results.Entries.Count.ShouldEqual(2);
+				results.Entries.Count.ShouldBe(2);
 				Check(results.Entries[0], "1.txt", true, true);
 				Check(results.Entries[1], "4.txt", true, true);
 			}
@@ -140,7 +140,7 @@ namespace Menees.Diffs.Tests
 					? new DirectoryDiff(true, true, true, false, false, false, Filter)
 					: new DirectoryDiff(true, true, true, false, false, false, Filter, StringComparison.Ordinal);
 				DirectoryDiffResults results = diff.Execute(ADir, BDir);
-				results.Entries.Count.ShouldEqual(3);
+				results.Entries.Count.ShouldBe(3);
 				Check(results.Entries[0], "2.txt", true, false);
 				Check(results.Entries[1], "3.txt", false, true);
 				Check(results.Entries[2], "5.txt", true, true);

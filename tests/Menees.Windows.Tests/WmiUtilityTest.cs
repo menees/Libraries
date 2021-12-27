@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Management;
 using Menees.Windows.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Windows.Tests
 {
@@ -20,7 +20,7 @@ namespace Menees.Windows.Tests
 				"SELECT ProcessId FROM Win32_Process where ProcessId = " + currentProcessId,
 				record =>
 				{
-					record.GetInt32("ProcessId").ShouldEqual(currentProcessId);
+					record.GetInt32("ProcessId").ShouldBe(currentProcessId);
 					foundRecord = true;
 				});
 			foundRecord.ShouldBeTrue("Found first record");
@@ -48,7 +48,7 @@ namespace Menees.Windows.Tests
 				"SELECT ProcessId FROM Win32_Process where ProcessId = " + currentProcessId,
 				record =>
 				{
-					record.GetInt32("ProcessId").ShouldEqual(currentProcessId);
+					record.GetInt32("ProcessId").ShouldBe(currentProcessId);
 					foundRecord = true;
 				});
 			result.ShouldBeTrue("First query");

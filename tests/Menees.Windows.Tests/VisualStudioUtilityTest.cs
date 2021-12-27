@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Windows.Tests
 {

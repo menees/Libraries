@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using Menees.Shell;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -17,10 +17,10 @@ namespace Menees.Common.Tests
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
 			string actual = ShellUtility.GetCopyrightInfo(asm);
-			actual.ShouldEqual("Copyright For Unit Test");
+			actual.ShouldBe("Copyright For Unit Test");
 
 			actual = ShellUtility.GetCopyrightInfo(null);
-			actual.ShouldEqual(ShellUtility.GetCopyrightInfo(typeof(ShellUtility).Assembly));
+			actual.ShouldBe(ShellUtility.GetCopyrightInfo(typeof(ShellUtility).Assembly));
 		}
 
 		[TestMethod]
@@ -37,7 +37,7 @@ namespace Menees.Common.Tests
 				expected += " – Administrator";
 			}
 
-			actual.ShouldEqual(expected);
+			actual.ShouldBe(expected);
 		}
 
 		[TestMethod]
@@ -59,14 +59,14 @@ namespace Menees.Common.Tests
 			// The shell functions and System.Drawing APIs may not work in services.
 			if (Environment.UserInteractive)
 			{
-				string typeName = ShellUtility.GetFileTypeInfo(".cs", false, IconOptions.None, null);
-				typeName.ShouldContainIgnoringCase("C# Source File");
+				string? typeName = ShellUtility.GetFileTypeInfo(".cs", false, IconOptions.None, null);
+				typeName.ShouldContain("C# Source File", Case.Insensitive);
 
 				string notepadPath = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\System32\Notepad.exe");
 				Icon icon = null;
 				typeName = ShellUtility.GetFileTypeInfo(notepadPath, true, IconOptions.Large, hIcon => icon = CloneIcon(hIcon));
-				typeName.ShouldEqual("Application");
-				icon.Size.ShouldEqual(SystemInformation.IconSize);
+				typeName.ShouldBe("Application");
+				icon.Size.ShouldBe(SystemInformation.IconSize);
 				icon.Dispose();
 
 				typeName = ShellUtility.GetFileTypeInfo(
@@ -74,8 +74,8 @@ namespace Menees.Common.Tests
 					false,
 					IconOptions.Small | IconOptions.Shortcut | IconOptions.Selected,
 					hIcon => icon = CloneIcon(hIcon));
-				typeName.ShouldEqual("Application extension");
-				icon.Size.ShouldEqual(SystemInformation.SmallIconSize);
+				typeName.ShouldBe("Application extension");
+				icon.Size.ShouldBe(SystemInformation.SmallIconSize);
 				icon.Dispose();
 			}
 		}

@@ -1,7 +1,7 @@
 ﻿using Menees;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -69,7 +69,7 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentNullException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 
 			string testRef = "Valid";
@@ -83,7 +83,7 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentNullException ex)
 			{
-				ex.ParamName.ShouldEqual("testRef");
+				ex.ParamName.ShouldBe("testRef");
 			}
 		}
 
@@ -116,7 +116,7 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 
 			test = "Valid";
@@ -130,7 +130,7 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 		}
 	}

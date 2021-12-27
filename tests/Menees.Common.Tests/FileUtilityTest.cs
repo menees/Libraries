@@ -4,7 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -163,16 +163,16 @@ namespace Menees.Common.Tests
 				string lowercasePath = testPath.ToLower();
 				bool expected = File.Exists(lowercasePath) || Directory.Exists(lowercasePath);
 				bool actual = FileUtility.TryGetExactPath(lowercasePath, out string exactPath);
-				actual.ShouldEqual(expected);
+				actual.ShouldBe(expected);
 				if (actual)
 				{
 					if (expectedExactPaths.TryGetValue(testPath, out string expectedExactPath))
 					{
-						exactPath.ShouldEqual(expectedExactPath);
+						exactPath.ShouldBe(expectedExactPath);
 					}
 					else
 					{
-						exactPath.ShouldEqual(testPath);
+						exactPath.ShouldBe(testPath);
 					}
 				}
 				else
@@ -210,7 +210,7 @@ namespace Menees.Common.Tests
 			foreach (var pair in tests)
 			{
 				bool actual = FileUtility.IsValidName(pair.Key);
-				actual.ShouldEqual(pair.Value, pair.Key);
+				actual.ShouldBe(pair.Value, pair.Key);
 			}
 		}
 
@@ -303,7 +303,7 @@ namespace Menees.Common.Tests
 			foreach (var pair in paths.OrderBy(p => p.Key))
 			{
 				bool actual = FileUtility.IsValidPath(pair.Key, pair.Value);
-				actual.ShouldEqual(expected, "{0} should be {1}.", pair.Key, expected ? "valid" : "invalid");
+				actual.ShouldBe(expected, $"{pair.Key} should be {(expected ? "valid" : "invalid")}.");
 			}
 		}
 	}

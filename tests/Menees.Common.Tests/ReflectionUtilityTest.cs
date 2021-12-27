@@ -2,7 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -14,7 +14,7 @@ namespace Menees.Common.Tests
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
 			string actual = ReflectionUtility.GetCopyright(asm);
-			actual.ShouldEqual("Copyright For Unit Test");
+			actual.ShouldBe("Copyright For Unit Test");
 		}
 
 		[TestMethod]
@@ -22,7 +22,7 @@ namespace Menees.Common.Tests
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
 			Version actual = ReflectionUtility.GetVersion(asm);
-			actual.ShouldEqual(Version.Parse("1.2.3.0"));
+			actual.ShouldBe(Version.Parse("1.2.3.0"));
 
 			actual = ReflectionUtility.GetVersion(typeof(ReflectionUtility).Assembly);
 			actual.CompareTo(Version.Parse("4.9.10")).ShouldBeGreaterThanOrEqualTo(0, "Common Version >= 4.9.10");
@@ -35,7 +35,7 @@ namespace Menees.Common.Tests
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			built.ShouldNotBeNull("Menees.Common.Tests assembly");
-			built.ShouldEqual(DateTime.Parse("2021-12-26 17:50:00Z"));
+			built.ShouldBe(DateTime.Parse("2021-12-26 17:50:00Z"));
 
 			// The Menees.Common assembly is built normally so it will NOT have a build time.
 			built = ReflectionUtility.GetBuildTime(typeof(Conditions).Assembly);

@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
@@ -18,8 +18,8 @@ namespace Menees.Diffs.Tests
 		{
 			static void Test(TempFile f1, TempFile f2, bool expected, string message)
 			{
-				DiffUtility.AreFilesDifferent(f1.FileName, f2.FileName).ShouldEqual(expected, message);
-				DiffUtility.AreFilesDifferent(f1.Info, f2.Info).ShouldEqual(expected, message);
+				DiffUtility.AreFilesDifferent(f1.FileName, f2.FileName).ShouldBe(expected, message);
+				DiffUtility.AreFilesDifferent(f1.Info, f2.Info).ShouldBe(expected, message);
 			}
 
 			using TempFile a1 = new("1234");

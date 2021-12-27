@@ -7,7 +7,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" Version="2.3.2262-g94fae01e">
+		<PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" Version="3.0.4492">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>
@@ -36,7 +36,7 @@
 				<Compile Remove="ComUtility.Framework.cs" />
 				<None Include="ComUtility.Framework.cs" />
 
-				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
+				<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
