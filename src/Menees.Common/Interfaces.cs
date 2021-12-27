@@ -38,7 +38,7 @@ namespace Menees
 		/// <summary>
 		/// Gets the parent settings node.
 		/// </summary>
-		ISettingsNode ParentNode { get; }
+		ISettingsNode? ParentNode { get; }
 
 		#endregion
 
@@ -57,7 +57,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="settingName">The name of a new or existing setting.</param>
 		/// <param name="value">The new value for the setting.</param>
-		void SetValue(string settingName, string value);
+		void SetValue(string settingName, string? value);
 
 		/// <summary>
 		/// Gets a setting's value as an Int32.
@@ -110,10 +110,6 @@ namespace Menees
 		/// Gets the names of all the settings in the current node.
 		/// </summary>
 		/// <returns>A collection of setting names.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This has to dynamically build the collection on each call, which can be expensive.")]
 		IList<string> GetSettingNames();
 
 		/// <summary>
@@ -126,10 +122,6 @@ namespace Menees
 		/// Gets the names of all the sub-nodes of the current node.
 		/// </summary>
 		/// <returns>A collection of node names.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This has to dynamically build the collection on each call, which can be expensive.")]
 		IList<string> GetSubNodeNames();
 
 		/// <summary>
@@ -146,7 +138,7 @@ namespace Menees
 		/// <paramref name="nodeNameOrPath"/> if one doesn't already exist.</param>
 		/// <returns>An existing node if one is found, or a new node if <paramref name="createIfNotFound"/>
 		/// is true, or null otherwise.</returns>
-		ISettingsNode GetSubNode(string nodeNameOrPath, bool createIfNotFound);
+		ISettingsNode? GetSubNode(string nodeNameOrPath, bool createIfNotFound);
 
 		#endregion
 	}

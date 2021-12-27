@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	<PropertyGroup>
+		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
+
 		<!-- For SystemInformation class. -->
 		<UseWindowsForms>true</UseWindowsForms>
 		<Version>1.2.3</Version>
 		<Copyright>Copyright For Unit Test</Copyright>
-		<!-- This build is set to non-deterministic so the ReflectionUtilityTest.GetBuildTimeTest can succeed. -->
-		<Deterministic>false</Deterministic>
+		<Nullable>enable</Nullable>
+		<BuildTime>2021-12-26 17:50:00Z</BuildTime>
 	</PropertyGroup>
 
 	<ItemGroup>

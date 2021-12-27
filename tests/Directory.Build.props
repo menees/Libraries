@@ -1,32 +1,18 @@
 <Project>
+	<ImportGroup>
+		<!--Include all src folder build props first. From https://stackoverflow.com/a/45976205/1882616 -->
+		<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)..\src'))" />
+	</ImportGroup>
+
 	<PropertyGroup>
 		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
 		<!-- We can't list netstandard2.0 here because it doesn't have a runtime; it's just a spec. https://stackoverflow.com/a/44478400/1882616 -->
-		<!-- .NET 4.6.1 is the lowest Framework version "compatible" with netstandard2.0 per https://docs.microsoft.com/en-us/dotnet/standard/net-standard. -->
-		<TargetFrameworks>netcoreapp3.1;net461</TargetFrameworks>
-
-		<NeutralLanguage>en-US</NeutralLanguage>
-		<Authors>Bill Menees</Authors>
-		<PackageProjectUrl>http://www.menees.com</PackageProjectUrl>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/menees/Libraries</RepositoryUrl>
-		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-		<LangVersion>latest</LangVersion>
+		<TargetFrameworks>$(MeneesTargetNetCoreBase);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<!-- https://docs.microsoft.com/en-us/visualstudio/test/configure-unit-tests-by-using-a-dot-runsettings-file?branch=release-16.4&view=vs-2019 -->
 		<!-- https://github.com/microsoft/vstest/pull/2272 says $(ProjectDir) relative paths should work, but I can't get them to. -->
 		<!-- https://github.com/Microsoft/vstest/issues/605 says RunSettingsFilePath only accepts absolute paths. -->
 		<RunSettingsFilePath>$(SolutionDir)\tests\.runsettings</RunSettingsFilePath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<DefineConstants>TRACE</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>

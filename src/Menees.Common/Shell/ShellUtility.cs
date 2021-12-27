@@ -28,9 +28,9 @@ namespace Menees.Shell
 		/// If a copyright isn't found in the passed-in assembly or if it is null or empty,
 		/// then the copyright information from the current assembly will be returned.
 		/// </remarks>
-		public static string GetCopyrightInfo(Assembly assembly)
+		public static string? GetCopyrightInfo(Assembly assembly)
 		{
-			string result = null;
+			string? result = null;
 
 			if (assembly != null)
 			{
@@ -69,7 +69,7 @@ namespace Menees.Shell
 		/// must copy/clone the icon if it needs to use it later.
 		/// </param>
 		/// <returns>The shell's file type name (e.g., "Visual C# Source file" for a ".cs" file).</returns>
-		public static string GetFileTypeInfo(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr> useIconHandle)
+		public static string? GetFileTypeInfo(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr>? useIconHandle)
 			=> NativeMethods.GetShellFileTypeAndIcon(fileName, useExistingFile, iconOptions, useIconHandle);
 
 		/// <summary>
@@ -81,22 +81,25 @@ namespace Menees.Shell
 		{
 			Conditions.RequireReference(assembly, nameof(assembly));
 
-			StringBuilder sb = new StringBuilder("Version ");
+			StringBuilder sb = new("Version ");
 
 			// Show at least Major.Minor, but only show Build and Revision if they're non-zero.
-			Version displayVersion = ReflectionUtility.GetVersion(assembly);
+			Version? displayVersion = ReflectionUtility.GetVersion(assembly);
 			const int MaxVersionFields = 4;
 			int versionFieldsToDisplay = MaxVersionFields;
-			if (displayVersion.Revision == 0)
+			if (displayVersion != null)
 			{
-				versionFieldsToDisplay--;
-				if (displayVersion.Build == 0)
+				if (displayVersion.Revision == 0)
 				{
 					versionFieldsToDisplay--;
+					if (displayVersion.Build == 0)
+					{
+						versionFieldsToDisplay--;
+					}
 				}
-			}
 
-			sb.Append(displayVersion.ToString(versionFieldsToDisplay));
+				sb.Append(displayVersion.ToString(versionFieldsToDisplay));
+			}
 
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			if (built != null)
@@ -124,7 +127,7 @@ namespace Menees.Shell
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <returns>The process started by executing the file.</returns>
 		/// <exception cref="Win32Exception">An error occurred when opening the associated file.</exception>
-		public static Process ShellExecute(IntPtr? ownerHandle, string fileName) => ShellExecute(ownerHandle, fileName, string.Empty);
+		public static Process? ShellExecute(IntPtr? ownerHandle, string fileName) => ShellExecute(ownerHandle, fileName, string.Empty);
 
 		/// <summary>
 		/// Executes an action on the specified file using the Windows shell.
@@ -134,11 +137,11 @@ namespace Menees.Shell
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
 		/// <exception cref="Win32Exception">An error occurred when opening the associated file.</exception>
-		public static Process ShellExecute(IntPtr? ownerHandle, string fileName, string verb)
+		public static Process? ShellExecute(IntPtr? ownerHandle, string fileName, string verb)
 		{
 			Conditions.RequireString(fileName, nameof(fileName));
 
-			ProcessStartInfo startInfo = new ProcessStartInfo { ErrorDialog = true };
+			ProcessStartInfo startInfo = new() { ErrorDialog = true };
 			if (ownerHandle != null)
 			{
 				startInfo.ErrorDialogParentHandle = ownerHandle.Value;
@@ -148,7 +151,7 @@ namespace Menees.Shell
 			startInfo.UseShellExecute = true;
 			startInfo.Verb = verb;
 
-			Process result = Process.Start(startInfo);
+			Process? result = Process.Start(startInfo);
 			return result;
 		}
 

@@ -29,7 +29,7 @@ namespace Menees
 
 			if (!string.IsNullOrEmpty(newPathPart))
 			{
-				UriBuilder builder = new UriBuilder(uri);
+				UriBuilder builder = new(uri);
 
 				string path = builder.Path;
 				if (string.IsNullOrEmpty(path))

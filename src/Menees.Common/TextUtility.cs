@@ -157,7 +157,7 @@ namespace Menees
 				int textLength = text.Length;
 				int oldValueLength = oldValue.Length;
 				int previousIndex = 0;
-				StringBuilder sb = new StringBuilder(text.Length);
+				StringBuilder sb = new(text.Length);
 				while (currentIndex >= 0)
 				{
 					if (currentIndex > previousIndex)
@@ -202,7 +202,7 @@ namespace Menees
 
 			if (!string.IsNullOrEmpty(text))
 			{
-				StringBuilder sb = new StringBuilder(text);
+				StringBuilder sb = new(text);
 				int length = text.Length;
 				for (int i = 0; i < length; i++)
 				{
@@ -229,7 +229,7 @@ namespace Menees
 
 			if (!string.IsNullOrEmpty(text))
 			{
-				StringBuilder sb = new StringBuilder(text);
+				StringBuilder sb = new(text);
 				int length = text.Length;
 				for (int i = 0; i < length; i++)
 				{
@@ -277,7 +277,7 @@ namespace Menees
 		/// <returns>A list of tokens.</returns>
 		public static IList<string> SplitIntoTokens(string text, char separator, char? delimiter, bool trimTokens)
 		{
-			List<string> result = new List<string>();
+			List<string> result = new();
 			SplitIntoTokens(text, separator, delimiter, trimTokens, result);
 			return result;
 		}
@@ -596,7 +596,7 @@ namespace Menees
 			}
 			else
 			{
-				StringBuilder sb = new StringBuilder(plural);
+				StringBuilder sb = new(plural);
 				int n = Math.Min(word.Length, plural.Length);
 				for (int i = 0; i < n; i++)
 				{

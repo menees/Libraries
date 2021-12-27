@@ -15,17 +15,12 @@ namespace Menees.Diagnostics
 	/// <summary>
 	/// Provides the current thread's log context properties for <see cref="Menees.Log.ThreadContext"/>.
 	/// </summary>
-	[SuppressMessage(
-		"Microsoft.Design",
-		"CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
-		Justification = "Only a single instance of this class is ever created, and it lives the life of the process.")]
 	public sealed class ThreadLogContext : ILogContext
 	{
 		#region Private Data Members
 
 		// This will create a dictionary for each thread that requests one.
-		[SuppressMessage("Usage", "CC0033:Dispose Fields Properly", Justification = "Only a single class instance is created, and it has process lifetime.")]
-		private readonly ThreadLocal<Dictionary<string, object>> entries = new ThreadLocal<Dictionary<string, object>>(() => new Dictionary<string, object>());
+		private readonly ThreadLocal<Dictionary<string, object>> entries = new(() => new Dictionary<string, object>());
 
 		#endregion
 
@@ -34,6 +29,13 @@ namespace Menees.Diagnostics
 		internal ThreadLogContext()
 		{
 		}
+
+		#endregion
+
+		#region Private Properties
+
+		// this.entries.Value is non-null because we initialize this.entries with a value factory.
+		private Dictionary<string, object> ThreadEntries => this.entries.Value!;
 
 		#endregion
 
@@ -46,7 +48,7 @@ namespace Menees.Diagnostics
 		{
 			get
 			{
-				if (!this.TryGetValue(key, out object result))
+				if (!this.TryGetValue(key, out object? result) || result == null)
 				{
 					throw Exceptions.Log(new KeyNotFoundException("The specified key was not found: " + key));
 				}
@@ -60,7 +62,7 @@ namespace Menees.Diagnostics
 				// whether a key/value pair is really in the map or not.
 				if (value != null)
 				{
-					this.entries.Value[key] = value;
+					this.ThreadEntries[key] = value;
 				}
 			}
 		}
@@ -72,7 +74,7 @@ namespace Menees.Diagnostics
 		{
 			if (this.entries.IsValueCreated)
 			{
-				this.entries.Value.Clear();
+				this.ThreadEntries.Clear();
 			}
 		}
 
@@ -83,7 +85,7 @@ namespace Menees.Diagnostics
 		{
 			if (this.entries.IsValueCreated)
 			{
-				this.entries.Value.Remove(key);
+				this.ThreadEntries.Remove(key);
 			}
 		}
 
@@ -96,7 +98,7 @@ namespace Menees.Diagnostics
 
 			if (this.entries.IsValueCreated)
 			{
-				result = this.entries.Value.ContainsKey(key);
+				result = this.ThreadEntries.ContainsKey(key);
 			}
 
 			return result;
@@ -105,15 +107,15 @@ namespace Menees.Diagnostics
 		/// <summary>
 		/// Tries to get the value associated with the specified key.
 		/// </summary>
-		public bool TryGetValue<T>(string key, out T value)
+		public bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T value)
 		{
-			object propertyValue = null;
-			bool result = this.entries.IsValueCreated && this.entries.Value.TryGetValue(key, out propertyValue) && propertyValue != null;
+			object? propertyValue = null;
+			bool result = this.entries.IsValueCreated && this.ThreadEntries.TryGetValue(key, out propertyValue) && propertyValue != null;
 			if (result)
 			{
 				// Cast the object value into type T.  If the key was associated with a value
 				// of a different type, then this will throw an InvalidCastException.
-				value = (T)propertyValue;
+				value = (T?)propertyValue;
 			}
 			else
 			{
@@ -153,13 +155,13 @@ namespace Menees.Diagnostics
 		/// </example>
 		public IDisposable Push(string key, object value)
 		{
-			bool hasPreviousValue = this.TryGetValue(key, out object previousValue);
+			bool hasPreviousValue = this.TryGetValue(key, out object? previousValue) && previousValue != null;
 			this[key] = value;
 			return new Disposer(() =>
 				{
 					if (hasPreviousValue)
 					{
-						this[key] = previousValue;
+						this[key] = previousValue!;
 					}
 					else
 					{
@@ -177,7 +179,7 @@ namespace Menees.Diagnostics
 			// Don't force a dictionary to be created for this thread if it hasn't been already.
 			if (this.entries.IsValueCreated)
 			{
-				foreach (var pair in this.entries.Value)
+				foreach (var pair in this.ThreadEntries)
 				{
 					target[pair.Key] = pair.Value;
 				}

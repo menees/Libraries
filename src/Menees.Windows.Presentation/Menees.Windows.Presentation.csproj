@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	<PropertyGroup>
-		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
+		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<UseWPF>true</UseWPF>

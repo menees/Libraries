@@ -31,7 +31,7 @@ namespace Menees
 		/// <param name="message">The error message.</param>
 		/// <param name="argName">The argument name.</param>
 		/// <returns>A new exception instance.</returns>
-		public static ArgumentException NewArgumentException(string message, string argName) => NewArgumentException(message, argName, null);
+		public static ArgumentException NewArgumentException(string message, string? argName) => NewArgumentException(message, argName, null);
 
 		/// <summary>
 		/// Creates and logs a new ArgumentException with the specified message and context properties.
@@ -39,7 +39,7 @@ namespace Menees
 		/// <param name="message">The error message.</param>
 		/// <param name="contextProperties">Context information to log with the exception.</param>
 		/// <returns>A new exception instance.</returns>
-		public static ArgumentException NewArgumentException(string message, IDictionary<string, object> contextProperties)
+		public static ArgumentException NewArgumentException(string message, IDictionary<string, object>? contextProperties)
 			=> NewArgumentException(message, null, contextProperties);
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace Menees
 		/// <param name="argName">The argument name.</param>
 		/// <param name="contextProperties">Context information to log with the exception.</param>
 		/// <returns>A new exception instance.</returns>
-		public static ArgumentException NewArgumentException(string message, string argName, IDictionary<string, object> contextProperties)
+		public static ArgumentException NewArgumentException(string message, string? argName, IDictionary<string, object>? contextProperties)
 			=> Log(new ArgumentException(message, argName), contextProperties);
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace Menees
 		/// <param name="argName">The argument name.</param>
 		/// <param name="contextProperties">Context information to log with the exception.</param>
 		/// <returns>A new exception instance.</returns>
-		public static ArgumentNullException NewArgumentNullException(string argName, IDictionary<string, object> contextProperties)
+		public static ArgumentNullException NewArgumentNullException(string argName, IDictionary<string, object>? contextProperties)
 			=> Log(new ArgumentNullException(argName), contextProperties);
 
 		/// <summary>
@@ -137,7 +137,7 @@ namespace Menees
 		/// <remarks>
 		/// See <see cref="Log&lt;T&gt;(T, Type)"/> for an example and more information.
 		/// </remarks>
-		public static T Log<T>(T ex, IDictionary<string, object> contextProperties)
+		public static T Log<T>(T ex, IDictionary<string, object>? contextProperties)
 			where T : Exception => Log(ex, null, contextProperties);
 
 		/// <summary>
@@ -153,7 +153,7 @@ namespace Menees
 		/// <remarks>
 		/// See <see cref="Log&lt;T&gt;(T, Type)"/> for an example and more information.
 		/// </remarks>
-		public static T Log<T>(T ex, Type category, IDictionary<string, object> contextProperties)
+		public static T Log<T>(T ex, Type? category, IDictionary<string, object>? contextProperties)
 			where T : Exception
 		{
 			// Make this a "quiet" precondition rather than throwing an exception
@@ -180,7 +180,7 @@ namespace Menees
 		/// <param name="message">The error message.</param>
 		/// <param name="contextProperties">Context information to log with the exception.</param>
 		/// <returns>A new exception instance.</returns>
-		public static InvalidOperationException NewInvalidOperationException(string message, IDictionary<string, object> contextProperties)
+		public static InvalidOperationException NewInvalidOperationException(string message, IDictionary<string, object>? contextProperties)
 			=> Log(new InvalidOperationException(message), contextProperties);
 
 		/// <summary>
@@ -192,8 +192,8 @@ namespace Menees
 		/// exception and its 0-based depth (where 0 is the root exception).</param>
 		public static void ForEach(Exception ex, Action<Exception, int> action)
 		{
-			Conditions.RequireReference(ex, () => ex);
-			Conditions.RequireReference(action, () => action);
+			Conditions.RequireReference(ex, nameof(ex));
+			Conditions.RequireReference(action, nameof(action));
 
 			ForEach(ex, 0, null, (exception, depth, outer) => action(exception, depth));
 		}
@@ -205,10 +205,10 @@ namespace Menees
 		/// <param name="ex">The root exception to start from.  <paramref name="action"/> will be called for this too.</param>
 		/// <param name="action">The action to invoke for the root exception and each inner exception.  This is passed the
 		/// exception, its 0-based depth (where 0 is the root exception), and the outer (i.e., parent) exception.</param>
-		public static void ForEach(Exception ex, Action<Exception, int, Exception> action)
+		public static void ForEach(Exception ex, Action<Exception, int, Exception?> action)
 		{
-			Conditions.RequireReference(ex, () => ex);
-			Conditions.RequireReference(action, () => action);
+			Conditions.RequireReference(ex, nameof(ex));
+			Conditions.RequireReference(action, nameof(action));
 
 			ForEach(ex, 0, null, action);
 		}
@@ -222,8 +222,8 @@ namespace Menees
 		/// the indention level is based on the exception's depth in the tree.</returns>
 		public static string GetMessage(Exception ex)
 		{
-			StringBuilder sb = new StringBuilder();
-			Exceptions.ForEach(ex, (exception, depth, outer) => sb.Append('\t', depth).Append(exception.Message).AppendLine());
+			StringBuilder sb = new();
+			ForEach(ex, (exception, depth, outer) => sb.Append('\t', depth).Append(exception.Message).AppendLine());
 			string result = sb.ToString().Trim();
 			return result;
 		}
@@ -232,7 +232,7 @@ namespace Menees
 
 		#region Private Methods
 
-		private static void ForEach(Exception ex, int depth, Exception parent, Action<Exception, int, Exception> action)
+		private static void ForEach(Exception ex, int depth, Exception? parent, Action<Exception, int, Exception?> action)
 		{
 			action(ex, depth, parent);
 
@@ -246,7 +246,7 @@ namespace Menees
 			}
 			else
 			{
-				Exception inner = ex.InnerException;
+				Exception? inner = ex.InnerException;
 				if (inner != null)
 				{
 					ForEach(inner, depth, ex, action);

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
+		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Description>Windows-specific helpers for WMI, shell dialogs, and Visual Studio invocation</Description>
@@ -18,7 +17,7 @@
 	</ItemGroup>
 
 	<Choose>
-		<When Condition=" '$(TargetFramework)' == 'net45' ">
+		<When Condition=" '$(TargetFramework)' == '$(MeneesTargetNetFramework)' ">
 			<ItemGroup>
 				<Compile Remove="NativeMethods.Core.cs" />
 				<None Include="NativeMethods.Core.cs" />

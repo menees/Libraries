@@ -6,6 +6,7 @@ namespace Menees
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Globalization;
 	using System.IO;
 	using System.Linq;
@@ -21,10 +22,10 @@ namespace Menees
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<string> FalseValues = new HashSet<string>(
+		private static readonly HashSet<string> FalseValues = new(
 			new string[] { "false", "f", "no", "n", "0" }, StringComparer.OrdinalIgnoreCase);
 
-		private static readonly HashSet<string> TrueValues = new HashSet<string>(
+		private static readonly HashSet<string> TrueValues = new(
 			new string[] { "true", "t", "yes", "y", "1" }, StringComparer.OrdinalIgnoreCase);
 
 		#endregion
@@ -39,23 +40,11 @@ namespace Menees
 		/// <returns>The converted value.</returns>
 		/// <exception cref="InvalidCastException">If <paramref name="value"/>
 		/// can't be converted into type T.</exception>
-		public static T ConvertValue<T>(object value)
+		[return: MaybeNull]
+		[return: NotNullIfNotNull("value")]
+		public static T ConvertValue<T>(object? value)
 		{
-			T result;
-
-			// We can't do a C# "as" check because T may not be a reference type.
-			// There's a small amount of duplicate work done by "is + Cast" (because
-			// .NET will do the "is" check again during the cast), but it's unavoidable
-			// in this case because we're using generics with no class constraint.
-			if (value is T)
-			{
-				result = (T)value;
-			}
-			else
-			{
-				result = (T)ConvertValue(value, typeof(T));
-			}
-
+			T? result = (value is T typedValue) ? typedValue : (T?)ConvertValue(value, typeof(T));
 			return result;
 		}
 
@@ -67,12 +56,12 @@ namespace Menees
 		/// <returns>The converted value.</returns>
 		/// <exception cref="InvalidCastException">If <paramref name="value"/>
 		/// can't be converted into type T.</exception>
-		public static object ConvertValue(object value, Type resultType)
+		public static object? ConvertValue(object? value, Type resultType)
 		{
 			Conditions.RequireReference(resultType, nameof(resultType));
 
 			bool converted = false;
-			object result = null;
+			object? result = null;
 
 			if (value != null)
 			{
@@ -84,7 +73,7 @@ namespace Menees
 				{
 					try
 					{
-						object fromTypeConverter = converter.ConvertFrom(value);
+						object? fromTypeConverter = converter.ConvertFrom(value);
 						result = fromTypeConverter;
 						converted = true;
 					}
@@ -94,7 +83,7 @@ namespace Menees
 						// all exceptions and then rethrows a System.Exception, which is HORRIBLE!  We'll try to
 						// undo Microsoft's mistake by re-throwing the original exception, so callers can catch
 						// specific exception types.
-						Exception inner = ex.InnerException;
+						Exception? inner = ex.InnerException;
 						if (inner != null)
 						{
 							ExceptionDispatchInfo.Capture(inner).Throw();
@@ -126,7 +115,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="value">The value to check.</param>
 		/// <returns>True if the value is null or DBNull.Value.  False otherwise.</returns>
-		public static bool IsNull(object value)
+		public static bool IsNull(object? value)
 		{
 			bool result = value == null || value == DBNull.Value;
 			return result;
@@ -137,11 +126,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="value">The string to convert.</param>
 		/// <returns>True if the string case-insensitively matches "True", "T", "Yes", "Y", or "1".  False otherwise.</returns>
-		public static bool ToBoolean(string value)
-		{
-			bool result = TrueValues.Contains(value);
-			return result;
-		}
+		public static bool ToBoolean(string? value) => ToBoolean(value, false);
 
 		/// <summary>
 		/// Converts a string value to a bool.
@@ -155,17 +140,17 @@ namespace Menees
 		/// then this returns the defaultValue.  For example, ToBoolean("P", true) will return true,
 		/// and ToBoolean("Q", false) will return false.
 		/// </returns>
-		public static bool ToBoolean(string value, bool defaultValue)
+		public static bool ToBoolean(string? value, bool defaultValue)
 		{
 			bool result = defaultValue;
 
-			if (TrueValues.Contains(value))
+			if (value != null)
 			{
-				result = true;
-			}
-			else
-			{
-				if (FalseValues.Contains(value))
+				if (TrueValues.Contains(value))
+				{
+					result = true;
+				}
+				else if (FalseValues.Contains(value))
 				{
 					result = false;
 				}
@@ -180,7 +165,7 @@ namespace Menees
 		/// <param name="value">The string to convert.</param>
 		/// <param name="defaultValue">The default value to use if the string can't be converted.</param>
 		/// <returns>The int value.</returns>
-		public static int ToInt32(string value, int defaultValue)
+		public static int ToInt32(string? value, int defaultValue)
 		{
 			int result = defaultValue;
 
@@ -198,14 +183,15 @@ namespace Menees
 		/// <param name="value">The sequence of bytes to convert.</param>
 		/// <param name="options">Options affecting a "0x" prefix and whether to use lowercase hex characters.</param>
 		/// <returns>The encoded hex bytes.</returns>
-		public static string ToHex(IEnumerable<byte> value, ToHexOptions options = ToHexOptions.None)
+		[return: NotNullIfNotNull("value")]
+		public static string? ToHex(IEnumerable<byte>? value, ToHexOptions options = ToHexOptions.None)
 		{
-			string result = null;
+			string? result = null;
 
 			if (value != null)
 			{
 				string prefix = options.HasFlag(ToHexOptions.Include0xPrefix) ? "0x" : string.Empty;
-				StringBuilder sb = new StringBuilder(prefix, prefix.Length + (2 * value.Count()));
+				StringBuilder sb = new(prefix, prefix.Length + (2 * value.Count()));
 
 				string format = options.HasFlag(ToHexOptions.Lowercase) ? "{0:x2}" : "{0:X2}";
 				foreach (byte entry in value)
@@ -231,13 +217,14 @@ namespace Menees
 		/// <paramref name="throwOnError"/> is true.</exception>
 		/// <returns>A byte array if <paramref name="value"/> can be parsed.
 		/// Or null if <paramref name="value"/>can't be parsed and <paramref name="throwOnError"/> is false.</returns>
-		public static byte[] FromHex(string value, bool throwOnError = true)
+		[return: NotNullIfNotNull("value")]
+		public static byte[]? FromHex(string? value, bool throwOnError = true)
 		{
-			byte[] result = null;
+			byte[]? result = null;
 
 			if (value != null)
 			{
-				string errorMessage = null;
+				string? errorMessage = null;
 
 				// Ignore leading and trailing whitespace, embedded whitespace, and colon separators (used in certificate hashes).
 				List<char> chars = value.Where(ch => !char.IsWhiteSpace(ch) && ch != ':').ToList();
@@ -256,7 +243,7 @@ namespace Menees
 				// Use a MemoryStream instead of List<byte> so we can grab its internal buffer at the end
 				// without a realloc if we specify an initial capacity that matches its final length.
 				int capacity = (charCount - startIndex) / 2;
-				using (MemoryStream stream = new MemoryStream(capacity))
+				using (MemoryStream stream = new(capacity))
 				{
 					byte[] buffer = new byte[1];
 					for (int i = startIndex; i < charCount; i += 2)
@@ -282,7 +269,7 @@ namespace Menees
 
 				if (!string.IsNullOrEmpty(errorMessage) && throwOnError)
 				{
-					throw Exceptions.NewArgumentException(errorMessage);
+					throw Exceptions.NewArgumentException(errorMessage!);
 				}
 			}
 
@@ -318,7 +305,7 @@ namespace Menees
 
 		#region Internal Methods
 
-		internal static T GetValue<T>(string textValue, T defaultValue)
+		internal static T GetValue<T>(string? textValue, T defaultValue)
 			where T : struct
 		{
 			T result = defaultValue;
@@ -329,7 +316,7 @@ namespace Menees
 				// Enums are the most common case, so handle them specially.
 				if (type.IsEnum)
 				{
-					if (Enum.TryParse<T>(textValue, out T parsedValue))
+					if (Enum.TryParse(textValue, out T parsedValue))
 					{
 						result = parsedValue;
 					}

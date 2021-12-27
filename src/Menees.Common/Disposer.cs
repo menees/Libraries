@@ -20,7 +20,7 @@ namespace Menees
 	{
 		#region Private Data Members
 
-		private Action disposeMethod;
+		private Action? disposeMethod;
 
 		#endregion
 

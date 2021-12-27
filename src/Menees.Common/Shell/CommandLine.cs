@@ -117,12 +117,12 @@
 		private readonly bool useConsole;
 		private readonly Dictionary<string, Switch> nameToSwitchMap;
 		private readonly List<Switch> distinctSwitches;
-		private Action<string, IList<string>> valueValidationHandler;
-		private List<KeyValuePair<string, string>> argHelp;
-		private Action<IList<string>> finalValidationHandler;
-		private List<string> errors;
+		private Action<string, IList<string>>? valueValidationHandler;
+		private List<KeyValuePair<string, string>>? argHelp;
+		private Action<IList<string>>? finalValidationHandler;
+		private List<string>? errors;
 		private State currentState;
-		private List<string> header;
+		private List<string>? header;
 
 		#endregion
 
@@ -259,7 +259,7 @@
 			Conditions.RequireReference(values, nameof(values));
 			Conditions.RequireReference(switches, nameof(switches));
 
-			string currentName = null;
+			string? currentName = null;
 			foreach (string rawArg in args)
 			{
 				string arg = (rawArg ?? string.Empty).Trim();
@@ -285,7 +285,7 @@
 					}
 
 					// If the arg is like n:v or n=v, then we can split and add it now.
-					if (HandleCombinedNameValuePair(currentName, switches))
+					if (currentName != null && HandleCombinedNameValuePair(currentName, switches))
 					{
 						currentName = null;
 					}
@@ -328,7 +328,7 @@
 		/// <returns>A collection of arguments that optionally includes the program name.</returns>
 		public static IEnumerable<string> Split(string commandLine, bool includeProgramName)
 		{
-			IEnumerable<string> result = null;
+			IEnumerable<string>? result = null;
 
 			if (!string.IsNullOrWhiteSpace(commandLine))
 			{
@@ -351,16 +351,17 @@
 		/// </summary>
 		/// <param name="value">The value to encode.</param>
 		/// <returns>The encoded value.</returns>
-		public static string EncodeValue(object value)
+		[return: NotNullIfNotNull("value")]
+		public static string? EncodeValue(object value)
 		{
-			string result = null;
+			string? result = null;
 
 			if (value != null)
 			{
 				result = Convert.ToString(value);
 				if (!string.IsNullOrEmpty(result))
 				{
-					StringBuilder builder = new StringBuilder(result.Length);
+					StringBuilder builder = new(result.Length);
 					AppendValue(builder, result);
 					result = builder.ToString();
 				}
@@ -380,7 +381,7 @@
 		{
 			Conditions.RequireString(name, nameof(name));
 
-			StringBuilder builder = new StringBuilder(2 * name.Length);
+			StringBuilder builder = new(2 * name.Length);
 			AppendSwitch(builder, name, value);
 			return builder.ToString();
 		}
@@ -394,14 +395,14 @@
 		/// <returns>The command line with space-separated arguments properly encoded.</returns>
 		public static string Build(params object[] arguments)
 		{
-			string result = null;
+			string result = string.Empty;
 
 			if (arguments != null && arguments.Length > 0)
 			{
-				StringBuilder builder = new StringBuilder();
+				StringBuilder builder = new();
 				foreach (object arg in arguments)
 				{
-					string name = null;
+					string? name = null;
 					object value = arg;
 
 					KeyValuePair<string, object>? pair = arg as KeyValuePair<string, object>?;
@@ -423,11 +424,11 @@
 							builder.Append(' ');
 						}
 
-						AppendSwitch(builder, name, value);
+						AppendSwitch(builder, name!, value);
 					}
 					else
 					{
-						string textValue = Convert.ToString(value);
+						string? textValue = Convert.ToString(value);
 						if (!string.IsNullOrEmpty(textValue))
 						{
 							if (builder.Length > 0)
@@ -499,10 +500,6 @@
 		/// <param name="description">The description of the switch to display in the generated help.</param>
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddSwitch(string name, string description, Action<string, IList<string>> handler)
 			=> this.InternalAddSwitch(new[] { name }, description, handler, CommandLineSwitchOptions.None);
 
@@ -514,10 +511,6 @@
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <param name="options">Options that affect the switch's behavior.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddSwitch(string name, string description, Action<string, IList<string>> handler, CommandLineSwitchOptions options)
 			=> this.InternalAddSwitch(new[] { name }, description, handler, options);
 
@@ -528,10 +521,6 @@
 		/// <param name="description">The description of the switch to display in the generated help.</param>
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddSwitch(string[] names, string description, Action<string, IList<string>> handler)
 			=> this.InternalAddSwitch(names, description, handler, CommandLineSwitchOptions.None);
 
@@ -543,10 +532,6 @@
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <param name="options">Options that affect the switch's behavior.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddSwitch(string[] names, string description, Action<string, IList<string>> handler, CommandLineSwitchOptions options)
 			=> this.InternalAddSwitch(names, description, handler, options);
 
@@ -559,11 +544,7 @@
 		{
 			// Note: I'm not calling RequireUnparsed because they can add header lines
 			// after parsing if they want to (e.g., only if help needs to be displayed).
-			if (this.header == null)
-			{
-				this.header = new List<string>();
-			}
-
+			this.header ??= new List<string>();
 			this.header.AddRange(lines);
 			return this;
 		}
@@ -574,10 +555,6 @@
 		/// <param name="handler">The action to execute to handle the value.</param>
 		/// <param name="valueHelp">Value names and descriptions that should appear in the generated help message.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddValueHandler(Action<string, IList<string>> handler, params KeyValuePair<string, string>[] valueHelp)
 		{
 			this.RequireUnparsed();
@@ -602,10 +579,6 @@
 		/// </summary>
 		/// <param name="handler">The action to execute to perform final validation.</param>
 		/// <returns>The current instance.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The caller doesn't instantiate an Action and doesn't declare the argument types with lambda expressions.")]
 		public CommandLine AddFinalValidation(Action<IList<string>> handler)
 		{
 			this.RequireUnparsed();
@@ -660,7 +633,7 @@
 			// only valid if /Y also appears)
 			if (this.finalValidationHandler != null)
 			{
-				List<string> errors = new List<string>(0);
+				List<string> errors = new(0);
 				this.finalValidationHandler(errors);
 				this.AddErrors(errors);
 			}
@@ -697,7 +670,7 @@
 		/// <returns>The message written by <see cref="WriteMessage(TextWriter)"/>.</returns>
 		public string CreateMessage()
 		{
-			using (StringWriter writer = new StringWriter())
+			using (StringWriter writer = new())
 			{
 				this.WriteMessage(writer);
 				string result = writer.ToString();
@@ -812,7 +785,7 @@
 		private static List<string> WrapText(string text, int maxSegmentLength, string newLine)
 		{
 			// First, split text into lines based on existing hard line breaks.
-			List<string> originalLines = new List<string>();
+			List<string> originalLines = new();
 			int startPos = 0;
 			while (startPos < text.Length)
 			{
@@ -830,10 +803,10 @@
 			}
 
 			// Now, split each line into "words" and then wrap them appropriately.
-			List<string> result = new List<string>();
+			List<string> result = new();
 			foreach (string originalLine in originalLines)
 			{
-				List<string> words = new List<string>();
+				List<string> words = new();
 				int wordStart = 0;
 				for (int i = 0; i < originalLine.Length; i++)
 				{
@@ -850,7 +823,7 @@
 				// Trim off leading whitespace from words and remove empty entries.
 				words = words.Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
 
-				StringBuilder currentLine = new StringBuilder();
+				StringBuilder currentLine = new();
 				foreach (string word in words)
 				{
 					// We have to add 1 to allow for the space we want to append before the word.
@@ -971,7 +944,7 @@
 			AppendValue(builder, name);
 			if (value != null)
 			{
-				string textValue = Convert.ToString(value);
+				string? textValue = Convert.ToString(value);
 				if (!string.IsNullOrEmpty(textValue))
 				{
 					builder.Append('=');
@@ -989,7 +962,7 @@
 		{
 			this.RequireUnparsed();
 
-			Switch sw = new Switch(names, handler, options);
+			Switch sw = new(names, handler, options);
 
 			// Add each name first to make sure there are no clashes.
 			foreach (string name in names)
@@ -1013,7 +986,7 @@
 
 		private void ParseArguments(IEnumerable<string> args)
 		{
-			Switch pendingSwitch = null;
+			Switch? pendingSwitch = null;
 			foreach (string arg in args)
 			{
 				// .NET's command line processing won't give us an empty string,
@@ -1044,7 +1017,7 @@
 					}
 					else if (this.valueValidationHandler != null)
 					{
-						List<string> errors = new List<string>(0);
+						List<string> errors = new(0);
 						this.valueValidationHandler(arg, errors);
 						this.AddErrors(errors);
 					}
@@ -1063,9 +1036,9 @@
 			}
 		}
 
-		private Switch ParseSwitchArg(string originalArg)
+		private Switch? ParseSwitchArg(string originalArg)
 		{
-			Switch pendingSwitch = null;
+			Switch? pendingSwitch = null;
 
 			// Strip off the prefix character.
 			char prefix = originalArg[0];
@@ -1085,7 +1058,7 @@
 					if ((separatorIndex + 1) < arg.Length)
 					{
 						string argName = arg.Substring(0, separatorIndex);
-						Switch sw = this.FindSwitch(argName, prefix);
+						Switch? sw = this.FindSwitch(argName, prefix);
 						if (sw != null)
 						{
 							string argValue = arg.Substring(separatorIndex + 1);
@@ -1099,7 +1072,7 @@
 				}
 				else if (arg.EndsWith("+", StringComparison.Ordinal) || arg.EndsWith("-", StringComparison.Ordinal))
 				{
-					Switch sw = this.FindSwitch(arg.Substring(0, arg.Length - 1), prefix);
+					Switch? sw = this.FindSwitch(arg.Substring(0, arg.Length - 1), prefix);
 					if (sw != null)
 					{
 						bool flagValue = !arg.EndsWith("-", StringComparison.Ordinal);
@@ -1108,7 +1081,7 @@
 				}
 				else
 				{
-					Switch sw = this.FindSwitch(arg, prefix);
+					Switch? sw = this.FindSwitch(arg, prefix);
 					if (sw != null)
 					{
 						if (sw.IsFlagSwitch)
@@ -1128,14 +1101,14 @@
 			return pendingSwitch;
 		}
 
-		private Switch FindSwitch(string name, char prefix)
+		private Switch? FindSwitch(string name, char prefix)
 		{
 			var matches = from sw in this.distinctSwitches
 						from n in sw.Names
 						where n.Length >= name.Length && this.nameToSwitchMap.Comparer.Equals(n.Substring(0, name.Length), name)
 						select sw;
 
-			Switch result = null;
+			Switch? result = null;
 			int matchCount = matches.Count();
 			if (matchCount == 0)
 			{
@@ -1155,10 +1128,7 @@
 
 		private void AddError(string errorFormat, params object[] formatArgs)
 		{
-			if (this.errors == null)
-			{
-				this.errors = new List<string>();
-			}
+			this.errors ??= new List<string>();
 
 			string error = string.Format(CultureInfo.CurrentCulture, errorFormat, formatArgs);
 			this.errors.Add(error);
@@ -1179,11 +1149,7 @@
 
 		private void AddArgHelp(KeyValuePair<string, string> entry)
 		{
-			if (this.argHelp == null)
-			{
-				this.argHelp = new List<KeyValuePair<string, string>>();
-			}
-
+			this.argHelp ??= new List<KeyValuePair<string, string>>();
 			this.argHelp.Add(entry);
 		}
 
@@ -1199,7 +1165,7 @@
 			else
 			{
 				List<string> segments = WrapText(text, maxSegmentLength, newLine);
-				string wrappedIndent = new string(' ', leftMargin);
+				string wrappedIndent = new(' ', leftMargin);
 
 				int segmentCount = segments.Count;
 				for (int i = 0; i < segmentCount; i++)
@@ -1294,7 +1260,7 @@
 				}
 			}
 
-			public void SetValue(string argValue, CommandLine cmd)
+			public void SetValue(string? argValue, CommandLine cmd)
 			{
 				this.usageCount++;
 
@@ -1309,8 +1275,8 @@
 				else
 				{
 					var handler = (Action<string, IList<string>>)this.Handler;
-					List<string> errors = new List<string>(0);
-					handler(argValue, errors);
+					List<string> errors = new(0);
+					handler(argValue ?? string.Empty, errors);
 					cmd.AddErrors(errors);
 				}
 			}
