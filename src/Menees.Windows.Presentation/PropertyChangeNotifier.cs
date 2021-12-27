@@ -39,7 +39,7 @@
 		/// <summary>
 		/// Raised when a property's value has changed.
 		/// </summary>
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler? PropertyChanged;
 
 		#endregion
 
@@ -55,7 +55,7 @@
 		/// for this parameter. If omitted, the C# compiler will inject the caller's property name automatically
 		/// using the <see cref="CallerMemberNameAttribute"/>.</param>
 		/// <returns>True if the member was updated. False if the member wasn't updated.</returns>
-		protected bool Update<T>(ref T member, T value, [CallerMemberName] string callerMemberName = null)
+		protected bool Update<T>(ref T member, T value, [CallerMemberName] string? callerMemberName = null)
 		{
 			bool result = false;
 
@@ -63,7 +63,7 @@
 			{
 				member = value;
 				result = true;
-				this.OnPropertyChanged(callerMemberName);
+				this.OnPropertyChanged(callerMemberName ?? string.Empty);
 			}
 
 			return result;
@@ -79,7 +79,7 @@
 		/// </remarks>
 		protected void OnPropertyChanged(string propertyName)
 		{
-			PropertyChangedEventHandler handler = this.PropertyChanged;
+			PropertyChangedEventHandler? handler = this.PropertyChanged;
 			if (handler != null)
 			{
 				PropertyChangedEventArgs args = new(propertyName);
