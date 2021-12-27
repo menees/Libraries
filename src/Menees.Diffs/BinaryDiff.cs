@@ -130,7 +130,7 @@ namespace Menees.Diffs
 				throw new ArgumentException("The Base and Version streams must support seeking.");
 			}
 
-			TableEntry[] table = new TableEntry[this.tableSize];
+			TableEntry?[] table = new TableEntry?[this.tableSize];
 			List<IAddCopy> list = new();
 			AddCopyCollection result = new(list);
 
@@ -153,7 +153,7 @@ namespace Menees.Diffs
 				verHash = this.Footprint(versionFile, verPos, verHash, ref lastVerHashPos);
 				TableEntry verEntry = GetTableEntry(table, verHash, versionFile, verPos);
 
-				TableEntry baseEntry = null;
+				TableEntry? baseEntry = null;
 				if (isBaseActive)
 				{
 					baseHash = this.Footprint(baseFile, basePos, baseHash, ref lastBaseHashPos);
@@ -176,7 +176,7 @@ namespace Menees.Diffs
 				}
 
 				isBaseActive = isBaseActive && (basePos <= (baseFile.Length - this.footprintLength));
-				if (isBaseActive)
+				if (isBaseActive && baseEntry != null)
 				{
 					if (versionFile == baseEntry.File && Verify(versionFile, baseEntry.Offset, baseFile, basePos)
 						&& verStart <= baseEntry.Offset)
@@ -245,7 +245,7 @@ namespace Menees.Diffs
 			return length;
 		}
 
-		private static void FlushTable(TableEntry[] table)
+		private static void FlushTable(TableEntry?[] table)
 		{
 			for (int i = 0; i < table.Length; i++)
 			{
@@ -253,10 +253,10 @@ namespace Menees.Diffs
 			}
 		}
 
-		private static TableEntry GetTableEntry(TableEntry[] table, uint hash, Stream file, int pos)
+		private static TableEntry GetTableEntry(TableEntry?[] table, uint hash, Stream file, int pos)
 		{
 			int index = (int)(hash % table.Length);
-			TableEntry result = table[index];
+			TableEntry? result = table[index];
 			if (result == null)
 			{
 				result = new TableEntry
@@ -333,7 +333,7 @@ namespace Menees.Diffs
 
 		private class TableEntry
 		{
-			public Stream File { get; set; }
+			public Stream? File { get; set; }
 
 			public int Offset { get; set; }
 		}

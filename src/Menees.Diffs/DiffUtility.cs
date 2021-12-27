@@ -79,8 +79,11 @@ namespace Menees.Diffs
 
 			while (reader.Peek() > -1)
 			{
-				string line = reader.ReadLine();
-				result.Add(line);
+				string? line = reader.ReadLine();
+				if (line != null)
+				{
+					result.Add(line);
+				}
 			}
 
 			return result;

@@ -66,7 +66,7 @@ namespace Menees.Diffs
 			files.Sort(this.comparer);
 
 			// Throw out duplicates
-			FileInfo previousFile = null;
+			FileInfo? previousFile = null;
 			for (int i = 0; i < files.Count; /*Incremented in the loop*/)
 			{
 				FileInfo currentFile = files[i];

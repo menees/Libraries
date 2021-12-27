@@ -30,7 +30,8 @@ namespace Menees.Diffs.Tests
 			using TempFile a = new("A");
 			using TempFile b = new("B");
 
-			string directory = Path.GetDirectoryName(a.FileName);
+			string? directory = Path.GetDirectoryName(a.FileName);
+			directory.ShouldNotBeNull();
 			directory.ShouldBe(Path.GetDirectoryName(b.FileName));
 			DirectoryInfo info = new(directory);
 			string filterString = Path.GetFileName(a.FileName) + ";" + Path.GetFileName(b.FileName);

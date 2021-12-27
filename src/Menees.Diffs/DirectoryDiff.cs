@@ -90,7 +90,7 @@ namespace Menees.Diffs
 
 			this.Execute(directoryA, directoryB, entry, checkIfFilesAreDifferent);
 
-			DirectoryDiffResults results = new(directoryA, directoryB, entry.Subentries, this.recursive, this.filter);
+			DirectoryDiffResults results = new(directoryA, directoryB, entry.Subentries!, this.recursive, this.filter);
 			return results;
 		}
 
@@ -104,6 +104,7 @@ namespace Menees.Diffs
 			int indexB = 0;
 			int countA = infosA.Length;
 			int countB = infosB.Length;
+			DirectoryDiffEntryCollection subentries = entry.Subentries ?? throw Exceptions.NewInvalidOperationException("Subentries should not be null.");
 			while (indexA < countA && indexB < countB)
 			{
 				FileSystemInfo infoA = infosA[indexA];
@@ -140,7 +141,7 @@ namespace Menees.Diffs
 
 							if ((different && this.showDifferent) || (!different && this.showSame))
 							{
-								entry.Subentries.Add(newEntry);
+								subentries.Add(newEntry);
 							}
 						}
 						else
@@ -161,7 +162,7 @@ namespace Menees.Diffs
 
 							if (this.ignoreDirectoryComparison || (different && this.showDifferent) || (!different && this.showSame))
 							{
-								entry.Subentries.Add(newEntry);
+								subentries.Add(newEntry);
 							}
 						}
 
@@ -179,7 +180,7 @@ namespace Menees.Diffs
 					// The item is only in A
 					if (this.showOnlyInA)
 					{
-						entry.Subentries.Add(new DirectoryDiffEntry(infoA.Name, isFile, true, false, false));
+						subentries.Add(new DirectoryDiffEntry(infoA.Name, isFile, true, false, false));
 						entry.Different = true;
 					}
 
@@ -191,7 +192,7 @@ namespace Menees.Diffs
 					// The item is only in B
 					if (this.showOnlyInB)
 					{
-						entry.Subentries.Add(new DirectoryDiffEntry(infoB.Name, isFile, false, true, false));
+						subentries.Add(new DirectoryDiffEntry(infoB.Name, isFile, false, true, false));
 						entry.Different = true;
 					}
 
@@ -204,7 +205,7 @@ namespace Menees.Diffs
 			{
 				for (int i = indexA; i < countA; i++)
 				{
-					entry.Subentries.Add(new DirectoryDiffEntry(infosA[i].Name, isFile, true, false, false));
+					subentries.Add(new DirectoryDiffEntry(infosA[i].Name, isFile, true, false, false));
 					entry.Different = true;
 				}
 			}
@@ -212,7 +213,7 @@ namespace Menees.Diffs
 			{
 				for (int i = indexB; i < countB; i++)
 				{
-					entry.Subentries.Add(new DirectoryDiffEntry(infosB[i].Name, isFile, false, true, false));
+					subentries.Add(new DirectoryDiffEntry(infosB[i].Name, isFile, false, true, false));
 					entry.Different = true;
 				}
 			}

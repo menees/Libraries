@@ -64,7 +64,7 @@ namespace Menees.Diffs
 				_ => CurrentCultureComparer,
 			};
 
-		public int Compare(FileSystemInfo x, FileSystemInfo y) => string.Compare(x.Name, y.Name, this.Comparison);
+		public int Compare(FileSystemInfo? x, FileSystemInfo? y) => string.Compare(x?.Name, y?.Name, this.Comparison);
 
 		#endregion
 	}

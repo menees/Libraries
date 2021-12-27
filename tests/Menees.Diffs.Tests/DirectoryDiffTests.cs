@@ -12,13 +12,13 @@ namespace Menees.Diffs.Tests
 	[TestClass]
 	public class DirectoryDiffTests
 	{
-		private static DirectoryInfo DataDir { get; set; }
+		private static DirectoryInfo DataDir { get; set; } = null!; // Set by ClassInitialize.
 
-		private static DirectoryInfo ADir { get; set; }
+		private static DirectoryInfo ADir { get; set; } = null!; // Set by ClassInitialize.
 
-		private static DirectoryInfo BDir { get; set; }
+		private static DirectoryInfo BDir { get; set; } = null!; // Set by ClassInitialize.
 
-		private static DirectoryDiffFileFilter Filter { get; set; }
+		private static DirectoryDiffFileFilter Filter { get; set; } = null!; // Set by ClassInitialize.
 
 		[ClassInitialize]
 		public static void ClassInitialize(TestContext context)
