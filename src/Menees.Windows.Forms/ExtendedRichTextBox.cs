@@ -235,7 +235,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		[DefaultValue(null)]
 		[Description("The caption to use for find operations.")]
-		public string FindCaption { get; set; }
+		public string? FindCaption { get; set; }
 
 		#endregion
 
@@ -342,14 +342,10 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <returns>A Text Object Model interface.  The caller can cast the result to tom.ITextDocument
 		/// if they add a COM reference to msftedit.dll.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This has to make several interop calls, which can be expensive.")]
 		[Description("Gets an object that implements ITextDocument.")]
-		public object GetOleInterface()
+		public object? GetOleInterface()
 		{
-			object result = null;
+			object? result = null;
 
 			IntPtr ptrOleInterface = IntPtr.Zero;
 

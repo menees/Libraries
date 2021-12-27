@@ -49,7 +49,7 @@ namespace Menees.Windows.Forms
 		/// <summary>
 		/// Gets the caption to use for dialogs displayed for this find target.
 		/// </summary>
-		string FindCaption { get; }
+		string? FindCaption { get; }
 
 		/// <summary>
 		/// Finds the specified text in the target.

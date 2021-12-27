@@ -28,6 +28,7 @@ namespace Menees.Windows.Forms
 		public TextBoxFinder(TextBoxBase textBox)
 		{
 			this.TextBox = textBox;
+			this.textBox = this.TextBox; // Satisfy C# compiler that this.textBox was set.
 		}
 
 		#endregion
@@ -65,7 +66,7 @@ namespace Menees.Windows.Forms
 		protected override bool OnDialogExecute(IFindDialog findDialog, IWin32Window owner, FindData findData)
 		{
 			// Initialize the find text from the selection.
-			string oldFindText = null;
+			string? oldFindText = null;
 			if (this.textBox.SelectionLength > 0)
 			{
 				// Only use the selection if it is one line or less.

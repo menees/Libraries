@@ -25,16 +25,16 @@ namespace Menees.Windows.Forms
 		private const string DefaultSettingsNodeName = "Recent Items";
 
 		private readonly List<string> items = new();
-		private readonly Dictionary<string, IEnumerable<string>> itemToValuesMap =
+		private readonly Dictionary<string, IEnumerable<string>?> itemToValuesMap =
 			new(StringComparer.OrdinalIgnoreCase);
 
 		private int maxItems = 10;
-		private FormSaver formSaver;
+		private FormSaver? formSaver;
 		private string settingsNodeName = DefaultSettingsNodeName;
-		private ToolStripMenuItem menuItem;
-		private ContextMenuStrip contextMenu;
-		private EventHandler<SettingsEventArgs> loadHandler;
-		private EventHandler<SettingsEventArgs> saveHandler;
+		private ToolStripMenuItem? menuItem;
+		private ContextMenuStrip? contextMenu;
+		private EventHandler<SettingsEventArgs>? loadHandler;
+		private EventHandler<SettingsEventArgs>? saveHandler;
 
 		#endregion
 
@@ -67,7 +67,7 @@ namespace Menees.Windows.Forms
 		[Browsable(true)]
 		[Category("Action")]
 		[Description("Called when a \"recent item\" menu item is clicked.")]
-		public event EventHandler<RecentItemClickEventArgs> ItemClick;
+		public event EventHandler<RecentItemClickEventArgs>? ItemClick;
 
 		#endregion
 
@@ -124,7 +124,7 @@ namespace Menees.Windows.Forms
 		[DefaultValue(null)]
 		[Category("Helper Objects")]
 		[Description("The FormSaver object used to save and load settings.")]
-		public FormSaver FormSaver
+		public FormSaver? FormSaver
 		{
 			get
 			{
@@ -177,7 +177,7 @@ namespace Menees.Windows.Forms
 		[DefaultValue(null)]
 		[Category("Helper Objects")]
 		[Description("The menu item that should contain the recent items.")]
-		public ToolStripMenuItem MenuItem
+		public ToolStripMenuItem? MenuItem
 		{
 			get
 			{
@@ -206,7 +206,7 @@ namespace Menees.Windows.Forms
 		[DefaultValue(null)]
 		[Category("Helper Objects")]
 		[Description("The context menu that should contain the recent items.")]
-		public ContextMenuStrip ContextMenuStrip
+		public ContextMenuStrip? ContextMenuStrip
 		{
 			get
 			{
@@ -308,7 +308,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <param name="item">The item to add.</param>
 		/// <param name="values">An optional array of values to associate with the item.</param>
-		public void Add(string item, IEnumerable<string> values)
+		public void Add(string item, IEnumerable<string>? values)
 		{
 			Conditions.RequireString(item, nameof(item));
 
@@ -386,7 +386,7 @@ namespace Menees.Windows.Forms
 		{
 			Conditions.RequireReference(baseNode, nameof(baseNode));
 
-			ISettingsNode settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
+			ISettingsNode? settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
 			if (settingsNode != null)
 			{
 				int itemIndex = 0;
@@ -401,7 +401,7 @@ namespace Menees.Windows.Forms
 					this.items.Add(item);
 
 					// Load any custom values if they exist.
-					ISettingsNode valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", false);
+					ISettingsNode? valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", false);
 					if (valuesNode != null)
 					{
 						int count = valuesNode.GetValue(nameof(this.Count), 0);
@@ -430,7 +430,7 @@ namespace Menees.Windows.Forms
 			Conditions.RequireReference(baseNode, nameof(baseNode));
 
 			// Clear out any old settings.
-			ISettingsNode settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
+			ISettingsNode? settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
 			if (settingsNode != null)
 			{
 				baseNode.DeleteSubNode(this.SettingsNodeName);
@@ -447,10 +447,10 @@ namespace Menees.Windows.Forms
 					settingsNode.SetValue(itemIndex.ToString(), item);
 
 					// If they attached custom values to the item, then save those too.
-					this.itemToValuesMap.TryGetValue(item, out IEnumerable<string> values);
+					this.itemToValuesMap.TryGetValue(item, out IEnumerable<string>? values);
 					if (values != null)
 					{
-						ISettingsNode valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", true);
+						ISettingsNode valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", true)!;
 						int count = values.Count();
 						valuesNode.SetValue(nameof(this.Count), count);
 						int stringIndex = 0;
@@ -469,9 +469,9 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <param name="item">An item to lookup.</param>
 		/// <returns>The values associated with the item.  This can be null.</returns>
-		public IEnumerable<string> GetItemValues(string item)
+		public IEnumerable<string>? GetItemValues(string item)
 		{
-			this.itemToValuesMap.TryGetValue(item, out IEnumerable<string> result);
+			this.itemToValuesMap.TryGetValue(item, out IEnumerable<string>? result);
 			return result;
 		}
 
@@ -520,7 +520,7 @@ namespace Menees.Windows.Forms
 						string item = this.items[i];
 						const int MaxSingleDigitNumber = 9;
 						string menuText = string.Format("{0}{1}:  {2}", (i < MaxSingleDigitNumber) ? "&" : string.Empty, i + 1, item);
-						this.itemToValuesMap.TryGetValue(item, out IEnumerable<string> values);
+						this.itemToValuesMap.TryGetValue(item, out IEnumerable<string>? values);
 						ToolStripMenuItem menuItem = new RecentItemMenuItem(menuText, new EventHandler(this.OnMenuItemClick), item, values);
 						menuItems.Add(menuItem);
 					}
@@ -562,7 +562,7 @@ namespace Menees.Windows.Forms
 			this.AddMenuItems();
 		}
 
-		private void OnMenuItemClick(object sender, EventArgs e)
+		private void OnMenuItemClick(object? sender, EventArgs e)
 		{
 			if (this.ItemClick != null && sender is RecentItemMenuItem menuItem)
 			{
@@ -570,7 +570,7 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void OnLoadSettings(object sender, SettingsEventArgs e)
+		private void OnLoadSettings(object? sender, SettingsEventArgs e)
 		{
 			if (!this.DesignMode)
 			{
@@ -578,7 +578,7 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void OnSaveSettings(object sender, SettingsEventArgs e)
+		private void OnSaveSettings(object? sender, SettingsEventArgs e)
 		{
 			if (!this.DesignMode)
 			{
@@ -594,7 +594,7 @@ namespace Menees.Windows.Forms
 		{
 			#region Constructors
 
-			public RecentItemMenuItem(string text, EventHandler eh, string item, IEnumerable<string> values)
+			public RecentItemMenuItem(string text, EventHandler eh, string item, IEnumerable<string>? values)
 				: base(text, null, eh)
 			{
 				this.Item = item;
@@ -607,7 +607,7 @@ namespace Menees.Windows.Forms
 
 			public string Item { get; }
 
-			public IEnumerable<string> Values { get; }
+			public IEnumerable<string>? Values { get; }
 
 			#endregion
 		}

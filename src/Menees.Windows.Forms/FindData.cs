@@ -25,8 +25,8 @@ namespace Menees.Windows.Forms
 
 		private static readonly Func<IFindDialog> CreateStandardFindDialog = () => new FindDialog();
 
-		private Func<IFindDialog> createFindDialog;
-		private string caption;
+		private Func<IFindDialog>? createFindDialog;
+		private string? caption;
 
 		#endregion
 
@@ -82,7 +82,7 @@ namespace Menees.Windows.Forms
 		/// Gets or sets the caption to use for dialogs.
 		/// This defaults to "Find".
 		/// </summary>
-		public string Caption
+		public string? Caption
 		{
 			get { return string.IsNullOrWhiteSpace(this.caption) ? "Find" : this.caption; }
 			set { this.caption = value; }
@@ -100,7 +100,9 @@ namespace Menees.Windows.Forms
 		public virtual bool IsFoundIn(string value)
 		{
 			bool result = !string.IsNullOrEmpty(value) &&
+#pragma warning disable CA2249 // Consider using 'string.Contains' instead of 'string.IndexOf'. net48 doesn't support Contains with StringComparison.
 				value.IndexOf(this.Text, this.MatchCase ? StringComparison.CurrentCulture : StringComparison.CurrentCultureIgnoreCase) >= 0;
+#pragma warning restore CA2249 // Consider using 'string.Contains' instead of 'string.IndexOf'
 			return result;
 		}
 
@@ -113,7 +115,7 @@ namespace Menees.Windows.Forms
 		{
 			if (this.ShowMessageIfNotFound)
 			{
-				string message = string.Format("'{0}' was not found.", this.Text);
+				string message = $"'{this.Text}' was not found.";
 				MessageBox.Show(owner, message, this.Caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
 			}
 		}

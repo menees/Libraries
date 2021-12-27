@@ -13,7 +13,7 @@
 	/// Adds extension methods to <see cref="string"/>.
 	/// </summary>
 	/// <remarks>
-	/// These methods are properly annotated for nullable analysis, unlike string.IsNullOrEmpty in netstandard2.0 builds.
+	/// These methods are properly annotated for nullable analysis, unlike string.IsNullOrEmpty in netstandard2.0 and net48 builds.
 	/// </remarks>
 	public static class StringExtensions
 	{

@@ -17,7 +17,7 @@ namespace Menees.Windows.Forms
 
 		// Store a reference to FindData so an external FindData
 		// instance can be shared with multiple Finder instances.
-		private FindData findData;
+		private FindData? findData;
 
 		#endregion
 

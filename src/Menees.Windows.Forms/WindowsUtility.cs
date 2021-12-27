@@ -84,7 +84,7 @@ namespace Menees.Windows.Forms
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError"/> to be called.</param>
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly applicationAssembly = null)
+		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly? applicationAssembly = null)
 		{
 			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly(), () => HandleUtility.IsApplicationActivated);
 
@@ -123,10 +123,10 @@ namespace Menees.Windows.Forms
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user canceled).</returns>
-		public static string SelectFolder(IWin32Window owner, string title, string initialFolder)
+		public static string? SelectFolder(IWin32Window? owner, string title, string initialFolder)
 		{
 			IntPtr? ownerHandle = owner != null ? owner.Handle : (IntPtr?)null;
-			string result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);
+			string? result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);
 			return result;
 		}
 
@@ -136,13 +136,13 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <returns>Whether the file was opened/executed successfully.</returns>
-		public static bool ShellExecute(IWin32Window owner, string fileName)
+		public static bool ShellExecute(IWin32Window? owner, string fileName)
 		{
 			bool result = false;
 
 			try
 			{
-				using (Process process = ShellExecute(owner, fileName, string.Empty))
+				using (Process? process = ShellExecute(owner, fileName, string.Empty))
 				{
 					result = true;
 				}
@@ -164,7 +164,7 @@ namespace Menees.Windows.Forms
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
-		public static Process ShellExecute(IWin32Window owner, string fileName, string verb)
+		public static Process? ShellExecute(IWin32Window? owner, string fileName, string verb)
 		{
 			IntPtr? ownerHandle = null;
 			if (owner != null)
@@ -172,7 +172,7 @@ namespace Menees.Windows.Forms
 				ownerHandle = owner.Handle;
 			}
 
-			Process result = ShellUtility.ShellExecute(ownerHandle, fileName, verb);
+			Process? result = ShellUtility.ShellExecute(ownerHandle, fileName, verb);
 			return result;
 		}
 
@@ -189,7 +189,7 @@ namespace Menees.Windows.Forms
 		/// which the version and copyright information will be read from.</param>
 		/// <param name="repository">The name of a GitHub repository. If null, then
 		/// <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
-		public static void ShowAboutBox(IWin32Window owner, Assembly mainAssembly, string repository = null)
+		public static void ShowAboutBox(IWin32Window? owner, Assembly mainAssembly, string? repository = null)
 		{
 			// If an assembly wasn't provided, then we want the version of the calling assembly not the current assembly.
 			using (AboutBox dialog = new(mainAssembly ?? Assembly.GetCallingAssembly(), repository))
@@ -204,7 +204,7 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The owner of the displayed modal dialog.</param>
 		/// <param name="prompt">The message to prompt with (up to 4 lines long).</param>
 		/// <returns>The user-entered value if they pressed OK, or null if Cancel was pressed.</returns>
-		public static string ShowInputBox(IWin32Window owner, string prompt) => ShowInputBox(owner, prompt, null, string.Empty, null, null);
+		public static string? ShowInputBox(IWin32Window? owner, string prompt) => ShowInputBox(owner, prompt, null, string.Empty, null, null);
 
 		/// <summary>
 		/// Shows an input box for a single value with validation.
@@ -220,13 +220,13 @@ namespace Menees.Windows.Forms
 		/// The function should return a null if the input passes validation, and it should return an error
 		/// message to display to the end user if the input fails validation.</param>
 		/// <returns>The user-entered value if they pressed OK, or null if Cancel was pressed.</returns>
-		public static string ShowInputBox(
-			IWin32Window owner,
+		public static string? ShowInputBox(
+			IWin32Window? owner,
 			string prompt,
-			string title,
-			string defaultValue,
+			string? title,
+			string? defaultValue,
 			int? maxLength,
-			Func<string, string> validate)
+			Func<string, string>? validate)
 		{
 			using (InputDialog dialog = new())
 			{
@@ -239,7 +239,7 @@ namespace Menees.Windows.Forms
 					dialog.Text = title;
 				}
 
-				string result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
+				string? result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
 				return result;
 			}
 		}
@@ -249,7 +249,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
-		public static void ShowError(IWin32Window owner, string message)
+		public static void ShowError(IWin32Window? owner, string message)
 		{
 			MessageBox.Show(owner, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
@@ -259,11 +259,11 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <param name="icon">An icon, which can contain multiple image sizes.</param>
 		/// <returns>A small image either extracted from <paramref name="icon"/> or drawn scaled onto a new bitmap.</returns>
-		public static Image GetSmallIconImage(Icon icon)
+		public static Image? GetSmallIconImage(Icon icon)
 		{
 			Conditions.RequireReference(icon, nameof(icon));
 
-			Image result = null;
+			Image? result = null;
 
 			if (icon.Size == SmallIconSize)
 			{
@@ -313,7 +313,7 @@ namespace Menees.Windows.Forms
 			// In another article, Microsoft recommended changing the Dock style to get rid of the 3D border,
 			// but that didn't work reliably, and it required lots of extra work to position the MdiClient.
 			// http://bytes.com/topic/visual-basic-net/answers/607162-customize-windows-forms-mdiclient
-			MdiClient mdiClient = form.Controls.OfType<MdiClient>().FirstOrDefault();
+			MdiClient? mdiClient = form.Controls.OfType<MdiClient>().FirstOrDefault();
 			if (mdiClient != null)
 			{
 				NativeMethods.SetBorderStyle(mdiClient, borderStyle);

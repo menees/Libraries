@@ -44,7 +44,7 @@ namespace Menees.Windows.Forms
 		private readonly Sorter sorter;
 		private readonly Dictionary<int, HeaderData> columnNumberToHeaderDataMap = new();
 		private readonly Dictionary<int, ListViewColumnType> columnNumberToTypeMap = new();
-		private IComparer previousSorter;
+		private IComparer? previousSorter;
 		private int sorterUpdateLevel;
 		private int capacity;
 
@@ -113,11 +113,6 @@ namespace Menees.Windows.Forms
 		/// Changes the inherited <see cref="ListView.MultiSelect"/> property to default to false.
 		/// </summary>
 		[DefaultValue(false)]
-		[SuppressMessage(
-			"Microsoft.Naming",
-			"CA1704:IdentifiersShouldBeSpelledCorrectly",
-			MessageId = "Multi",
-			Justification = "This property name is dictated by the base class.")]
 		public new bool MultiSelect
 		{
 			get
@@ -264,7 +259,7 @@ namespace Menees.Windows.Forms
 					bool ascending = this.sorter.Ascending;
 
 					// Save off the selected and focused items.
-					ListViewItem focusedItem = null;
+					ListViewItem? focusedItem = null;
 					int numSelectedItems = this.SelectedIndices.Count;
 					ListViewItem[] selectedItems = new ListViewItem[numSelectedItems];
 					for (int i = 0; i < numSelectedItems; i++)
@@ -370,7 +365,7 @@ namespace Menees.Windows.Forms
 					bool autoSizeHeader = false;
 
 					// Only do the Header auto-size the first time and when the column name or position changes.
-					if (!this.columnNumberToHeaderDataMap.TryGetValue(column.Index, out HeaderData data))
+					if (!this.columnNumberToHeaderDataMap.TryGetValue(column.Index, out HeaderData? data))
 					{
 						data = new HeaderData(column.Text);
 						this.columnNumberToHeaderDataMap.Add(column.Index, data);
@@ -1044,16 +1039,18 @@ namespace Menees.Windows.Forms
 
 			#region Public Methods
 
-			public int Compare(object x, object y)
+			public int Compare(object? x, object? y)
 			{
 				int result = 0;
 
 				if (this.column >= 0)
 				{
-					ListViewItem itemX = (ListViewItem)x;
-					ListViewItem itemY = (ListViewItem)y;
-
-					result = this.listView.CompareItems(itemX, itemY, this.column, this.Ascending, this.columnType);
+					ListViewItem? itemX = (ListViewItem?)x;
+					ListViewItem? itemY = (ListViewItem?)y;
+					if (itemX != null && itemY != null)
+					{
+						result = this.listView.CompareItems(itemX, itemY, this.column, this.Ascending, this.columnType);
+					}
 				}
 
 				return result;

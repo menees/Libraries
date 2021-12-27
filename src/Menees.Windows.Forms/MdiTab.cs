@@ -42,7 +42,7 @@ namespace Menees.Windows.Forms
 
 		#region Internal Events
 
-		internal event EventHandler CloseClicked;
+		internal event EventHandler? CloseClicked;
 
 		#endregion
 
@@ -51,7 +51,7 @@ namespace Menees.Windows.Forms
 		/// <summary>
 		/// Gets the form associated with the current tab.
 		/// </summary>
-		public Form AssociatedForm
+		public Form? AssociatedForm
 		{
 			get;
 			internal set;

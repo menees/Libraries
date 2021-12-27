@@ -53,11 +53,11 @@
 				// According to the following thread SelectedGridItem will never be null, and it
 				// can be used to get GridItem.Parent.GridItems.
 				// http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=542741&SiteID=1
-				GridItem selectedItem = this.SelectedGridItem;
+				GridItem? selectedItem = this.SelectedGridItem;
 				if (selectedItem != null)
 				{
 					// Search up to the root item, so we can then search only top-level properties.
-					while (selectedItem.GridItemType != GridItemType.Root)
+					while (selectedItem != null && selectedItem.GridItemType != GridItemType.Root)
 					{
 						selectedItem = selectedItem.Parent;
 					}
@@ -65,7 +65,7 @@
 					// If the name of a non-browsable property is specified, then this will
 					// return null.  But we can't assign null to SelectedGridItem because
 					// it will throw an ArgumentException.
-					GridItem result = FindPropertyGridItem(selectedItem.GridItems, propertyName);
+					GridItem? result = selectedItem != null ? FindPropertyGridItem(selectedItem.GridItems, propertyName) : null;
 					if (result != null)
 					{
 						this.SelectedGridItem = result;
@@ -82,13 +82,13 @@
 			object[] selection = this.SelectedObjects;
 
 			// Try to save the name of the currently selected property.
-			string selectedPropertyName = null;
+			string? selectedPropertyName = null;
 			if (selection != null && selection.Length > 0)
 			{
 				GridItem gridItem = this.SelectedGridItem;
 				if (gridItem != null && gridItem.GridItemType == GridItemType.Property)
 				{
-					selectedPropertyName = gridItem.PropertyDescriptor.Name;
+					selectedPropertyName = gridItem.PropertyDescriptor?.Name;
 				}
 			}
 
@@ -96,7 +96,7 @@
 			this.SelectedObjects = selection;
 
 			// Try to restore the previously selected property.
-			if (!string.IsNullOrEmpty(selectedPropertyName))
+			if (selectedPropertyName.IsNotEmpty())
 			{
 				this.SelectProperty(selectedPropertyName);
 			}
@@ -106,9 +106,9 @@
 
 		#region Private Methods
 
-		private static GridItem FindPropertyGridItem(GridItemCollection gridItems, string propertyName)
+		private static GridItem? FindPropertyGridItem(GridItemCollection gridItems, string propertyName)
 		{
-			GridItem result = null;
+			GridItem? result = null;
 
 			foreach (GridItem item in gridItems)
 			{
@@ -127,7 +127,7 @@
 						break;
 					}
 				}
-				else if (item.GridItemType == GridItemType.Property && item.PropertyDescriptor.Name == propertyName)
+				else if (item.GridItemType == GridItemType.Property && item.PropertyDescriptor?.Name == propertyName)
 				{
 					result = item;
 					break;
@@ -149,7 +149,7 @@
 			if (this.SelectedObject != null && this.SelectedGridItem != null
 				&& this.SelectedGridItem.GridItemType == GridItemType.Property)
 			{
-				enabled = this.SelectedGridItem.PropertyDescriptor.CanResetValue(this.SelectedObject);
+				enabled = this.SelectedGridItem.PropertyDescriptor?.CanResetValue(this.SelectedObject) ?? false;
 			}
 
 			this.reset.Enabled = enabled;
