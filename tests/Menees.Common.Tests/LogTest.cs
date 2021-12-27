@@ -11,10 +11,10 @@ namespace Menees.Common.Tests
 	[TestClass()]
 	public class LogTest
 	{
-		private StringWriter writer;
-		private TextWriterTraceListener listener;
+		private StringWriter? writer;
+		private TextWriterTraceListener? listener;
 
-		public TestContext TestContext { get; set; }
+		public TestContext? TestContext { get; set; }
 
 		#region Helper Methods And Types
 
@@ -22,7 +22,7 @@ namespace Menees.Common.Tests
 		public void LogTestInitialize()
 		{
 			this.writer = new StringWriter();
-			this.listener = new TextWriterTraceListener(this.writer, TestContext.TestName);
+			this.listener = new TextWriterTraceListener(this.writer, TestContext?.TestName);
 			GetLog().Listeners.Add(this.listener);
 
 			Log.GlobalContext["Context Level"] = "Global Level Context";
@@ -51,7 +51,7 @@ namespace Menees.Common.Tests
 			private readonly string message;
 		}
 
-		private IDictionary<string, object> CreateTestProperties()
+		private static IDictionary<string, object> CreateTestProperties()
 		{
 			//I'm intentionally using a case-sensitive dictionary here.
 			//Most places I use case-insensitive, so I want to test
@@ -69,12 +69,12 @@ namespace Menees.Common.Tests
 			AssertLogEntry(originalMessage, category, level, null, null);
 		}
 
-		private void AssertLogEntry(object originalMessage, Type category, LogLevel level, Exception ex)
+		private void AssertLogEntry(object originalMessage, Type category, LogLevel level, Exception? ex)
 		{
 			AssertLogEntry(originalMessage, category, level, ex, null);
 		}
 
-		private void AssertLogEntry(object originalMessage, Type category, LogLevel level, Exception ex, IDictionary<string, object> properties)
+		private void AssertLogEntry(object originalMessage, Type category, LogLevel level, Exception? ex, IDictionary<string, object>? properties)
 		{
 			string categoryName = Log.GetLog(category).CategoryName;
 			AssertLogEntry(originalMessage, categoryName, level, ex, properties);
@@ -85,23 +85,23 @@ namespace Menees.Common.Tests
 			AssertLogEntry(originalMessage, category, level, null, null);
 		}
 
-		private void AssertLogEntry(object originalMessage, string category, LogLevel level, Exception ex)
+		private void AssertLogEntry(object originalMessage, string category, LogLevel level, Exception? ex)
 		{
 			AssertLogEntry(originalMessage, category, level, ex, null);
 		}
 
-		private void AssertLogEntry(object originalMessageData, string category, LogLevel level, Exception ex, IDictionary<string, object> properties)
+		private void AssertLogEntry(object originalMessageData, string category, LogLevel level, Exception? ex, IDictionary<string, object>? properties)
 		{
-			string originalMessage = originalMessageData is TestData testData ? testData.Message : Convert.ToString(originalMessageData);
-			this.listener.Flush();
-			string finalMessage = this.writer.ToString();
+			string? originalMessage = originalMessageData is TestData testData ? testData.Message : Convert.ToString(originalMessageData);
+			this.listener?.Flush();
+			string? finalMessage = this.writer?.ToString();
 
-			if (string.IsNullOrEmpty(finalMessage))
+			if (finalMessage.IsEmpty())
 			{
 				Assert.Fail("No messages were logged.");
 			}
 
-			if (!finalMessage.Contains(originalMessage))
+			if (originalMessage != null && !finalMessage.Contains(originalMessage))
 			{
 				Assert.Fail("The original message was not present in the final message.");
 			}

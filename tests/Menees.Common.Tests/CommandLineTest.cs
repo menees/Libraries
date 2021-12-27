@@ -113,11 +113,11 @@ namespace Menees.Common.Tests
 			public bool isBinary;
 			public bool prompt;
 			public bool verify;
-			public string source;
+			public string? source;
 			public List<string> targets = new();
 		}
 
-		private CommandLine CreateTester(TestData data)
+		private static CommandLine CreateTester(TestData data)
 		{
 			CommandLine result = new(false);
 
@@ -250,7 +250,7 @@ namespace Menees.Common.Tests
 			VerifySplit(@"test.exe a\\\\""b c"" d e", new[] { @"a\\b c", "d", "e" });
 		}
 
-		private void VerifySplit(string commandLine, string[] expected)
+		private static void VerifySplit(string commandLine, string[] expected)
 		{
 			string[] actual = CommandLine.Split(commandLine, false).ToArray();
 			actual.Length.ShouldBe(expected.Length);

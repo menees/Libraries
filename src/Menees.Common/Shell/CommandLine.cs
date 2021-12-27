@@ -352,7 +352,7 @@
 		/// <param name="value">The value to encode.</param>
 		/// <returns>The encoded value.</returns>
 		[return: NotNullIfNotNull("value")]
-		public static string? EncodeValue(object value)
+		public static string? EncodeValue(object? value)
 		{
 			string? result = null;
 
@@ -377,7 +377,7 @@
 		/// If it doesn't begin with a switch prefix character, then one will be added.</param>
 		/// <param name="value">The value for the switch.  This can be null.</param>
 		/// <returns>The encoded name and value.</returns>
-		public static string EncodeSwitch(string name, object value)
+		public static string EncodeSwitch(string name, object? value)
 		{
 			Conditions.RequireString(name, nameof(name));
 
@@ -924,7 +924,7 @@
 			}
 		}
 
-		private static void AppendSwitch(StringBuilder builder, string name, object value)
+		private static void AppendSwitch(StringBuilder builder, string name, object? value)
 		{
 			// All callers should have enforced this already, so we can safely check name[0].
 			Debug.Assert(!string.IsNullOrEmpty(name), "Name must be non-empty.");

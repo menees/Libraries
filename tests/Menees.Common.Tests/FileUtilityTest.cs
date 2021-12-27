@@ -77,7 +77,7 @@ namespace Menees.Common.Tests
 			string actual = FileUtility.GetTempFileName(extension);
 			Assert.AreEqual(extension, Path.GetExtension(actual));
 
-			string directory = Path.GetDirectoryName(actual);
+			string? directory = Path.GetDirectoryName(actual);
 			string tempDir = Path.GetTempPath();
 			if (!string.IsNullOrEmpty(tempDir) && tempDir.EndsWith(@"\"))
 			{
@@ -155,18 +155,18 @@ namespace Menees.Common.Tests
 				};
 			Dictionary<string, string> expectedExactPaths = new()
 				{
-					{ @"..", Path.GetDirectoryName(Environment.CurrentDirectory) },
+					{ @"..", Path.GetDirectoryName(Environment.CurrentDirectory) ?? string.Empty },
 				};
 
 			foreach (string testPath in testPaths)
 			{
 				string lowercasePath = testPath.ToLower();
 				bool expected = File.Exists(lowercasePath) || Directory.Exists(lowercasePath);
-				bool actual = FileUtility.TryGetExactPath(lowercasePath, out string exactPath);
+				bool actual = FileUtility.TryGetExactPath(lowercasePath, out string? exactPath);
 				actual.ShouldBe(expected);
 				if (actual)
 				{
-					if (expectedExactPaths.TryGetValue(testPath, out string expectedExactPath))
+					if (expectedExactPaths.TryGetValue(testPath, out string? expectedExactPath))
 					{
 						exactPath.ShouldBe(expectedExactPath);
 					}
@@ -298,7 +298,7 @@ namespace Menees.Common.Tests
 			TestIsValidPath(invalidPaths, false);
 		}
 
-		private void TestIsValidPath(Dictionary<string, ValidPathOptions> paths, bool expected)
+		private static void TestIsValidPath(Dictionary<string, ValidPathOptions> paths, bool expected)
 		{
 			foreach (var pair in paths.OrderBy(p => p.Key))
 			{

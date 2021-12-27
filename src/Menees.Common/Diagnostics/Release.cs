@@ -75,9 +75,13 @@
 			using (HttpClient httpClient = new())
 			{
 				// The GitHub API requires a User-Agent header, and they request that it include the GitHub user name.
-				// https://developer.github.com/v3/#user-agent-required
-				ProductInfoHeaderValue userAgent = new(repositoryOwner, typeof(Release).Assembly.FullName);
-				httpClient.DefaultRequestHeaders.UserAgent.Add(userAgent);
+				// Unfortunately, .NET's ProductInfoHeaderValue doesn't support User-Agent comments, so we have
+				// to add it without validation.
+				// https://docs.github.com/en/rest/overview/resources-in-the-rest-api#user-agent-required
+				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+				// https://github.com/dotnet/runtime/issues/28021
+				string comment = $"{repositoryOwner} ({ApplicationInfo.ApplicationName}, {nameof(FindGithubLatest)} in {typeof(Release).Assembly.FullName})";
+				httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", comment);
 
 				try
 				{

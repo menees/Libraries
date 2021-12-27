@@ -28,7 +28,7 @@ namespace Menees.Shell
 		/// If a copyright isn't found in the passed-in assembly or if it is null or empty,
 		/// then the copyright information from the current assembly will be returned.
 		/// </remarks>
-		public static string? GetCopyrightInfo(Assembly assembly)
+		public static string? GetCopyrightInfo(Assembly? assembly)
 		{
 			string? result = null;
 

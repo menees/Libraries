@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,7 +14,7 @@ namespace Menees.Common.Tests
 		public void GetCopyrightTest()
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
-			string actual = ReflectionUtility.GetCopyright(asm);
+			string? actual = ReflectionUtility.GetCopyright(asm);
 			actual.ShouldBe("Copyright For Unit Test");
 		}
 
@@ -21,10 +22,11 @@ namespace Menees.Common.Tests
 		public void GetVersionTest()
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
-			Version actual = ReflectionUtility.GetVersion(asm);
+			Version? actual = ReflectionUtility.GetVersion(asm);
 			actual.ShouldBe(Version.Parse("1.2.3.0"));
 
 			actual = ReflectionUtility.GetVersion(typeof(ReflectionUtility).Assembly);
+			actual.ShouldNotBeNull();
 			actual.CompareTo(Version.Parse("4.9.10")).ShouldBeGreaterThanOrEqualTo(0, "Common Version >= 4.9.10");
 		}
 
@@ -35,11 +37,16 @@ namespace Menees.Common.Tests
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			built.ShouldNotBeNull("Menees.Common.Tests assembly");
-			built.ShouldBe(DateTime.Parse("2021-12-26 17:50:00Z"));
+			DateTime expected = DateTime.Parse("2021-12-26 17:50:00Z", null, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+			built.ShouldBe(expected);
 
-			// The Menees.Common assembly is built normally so it will NOT have a build time.
+			// The Menees.Common assembly is built with a date in debug builds and a datetime in release builds.
 			built = ReflectionUtility.GetBuildTime(typeof(Conditions).Assembly);
-			built.ShouldBeNull("Menees.Common assembly");
+			built.ShouldNotBeNull("Menees.Common assembly");
+			if (ApplicationInfo.IsDebugBuild)
+			{
+				built.Value.TimeOfDay.ShouldBe(TimeSpan.Zero);
+			}
 		}
 	}
 }

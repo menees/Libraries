@@ -52,7 +52,7 @@
 			{
 				string? result = word;
 
-				if (word != null && word.Length > 0)
+				if (word.IsNotEmpty())
 				{
 					if (SpecialCases.TryGetValue(word, out string? plural))
 					{

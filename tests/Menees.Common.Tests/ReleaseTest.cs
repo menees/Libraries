@@ -15,9 +15,9 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void FindGithubLatestTest()
 		{
-			Release libraries = Release.FindGithubLatest("Libraries");
+			Release? libraries = Release.FindGithubLatest("Libraries");
 			libraries.ShouldNotBeNull("Libraries Version");
-			Version commonVersion = ReflectionUtility.GetVersion(typeof(Release).Assembly);
+			Version? commonVersion = ReflectionUtility.GetVersion(typeof(Release).Assembly);
 			libraries.Version.CompareTo(commonVersion).ShouldBeLessThanOrEqualTo(0, "Libraries Version <= Local Common Version");
 		}
 	}

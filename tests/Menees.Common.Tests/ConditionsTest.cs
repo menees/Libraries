@@ -53,7 +53,7 @@ namespace Menees.Common.Tests
 			catch (ArgumentException ex)
 			{
 				Assert.AreEqual("False", ex.Message);
-				Assert.IsNull(ex.ParamName);
+				ex.ParamName.ShouldBeNullOrEmpty();
 			}
 		}
 
@@ -64,7 +64,7 @@ namespace Menees.Common.Tests
 
 			try
 			{
-				Conditions.RequireReference((string)null, "test");
+				Conditions.RequireReference((string?)null, "test");
 				Assert.Fail("An exception should have been thrown before this.");
 			}
 			catch (ArgumentNullException ex)
@@ -72,7 +72,7 @@ namespace Menees.Common.Tests
 				ex.ParamName.ShouldBe("test");
 			}
 
-			string testRef = "Valid";
+			string? testRef = "Valid";
 			Conditions.RequireReference(testRef, nameof(testRef));
 
 			try

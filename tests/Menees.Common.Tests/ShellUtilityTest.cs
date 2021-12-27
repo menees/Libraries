@@ -16,7 +16,7 @@ namespace Menees.Common.Tests
 		public void GetCopyrightInfoTest()
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
-			string actual = ShellUtility.GetCopyrightInfo(asm);
+			string? actual = ShellUtility.GetCopyrightInfo(asm);
 			actual.ShouldBe("Copyright For Unit Test");
 
 			actual = ShellUtility.GetCopyrightInfo(null);
@@ -29,6 +29,7 @@ namespace Menees.Common.Tests
 			Assembly asm = Assembly.GetExecutingAssembly();
 			string actual = ShellUtility.GetVersionInfo(asm);
 			DateTime? built = ReflectionUtility.GetBuildTime(asm);
+			built.ShouldNotBeNull();
 
 			// Runtime bitness check from https://stackoverflow.com/a/3782556/1882616.
 			string expected = "Version 1.2.3 – " + built.Value.ToLocalTime().ToShortDateString() + " – " + 8 * IntPtr.Size + "-bit";
@@ -43,7 +44,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ShellExecuteTest()
 		{
-			using (Process process = ShellUtility.ShellExecute(null, "Notepad.exe"))
+			using (Process? process = ShellUtility.ShellExecute(null, "Notepad.exe"))
 			{
 				if (process != null)
 				{
@@ -60,12 +61,14 @@ namespace Menees.Common.Tests
 			if (Environment.UserInteractive)
 			{
 				string? typeName = ShellUtility.GetFileTypeInfo(".cs", false, IconOptions.None, null);
+				typeName.ShouldNotBeNull();
 				typeName.ShouldContain("C# Source File", Case.Insensitive);
 
 				string notepadPath = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\System32\Notepad.exe");
-				Icon icon = null;
+				Icon? icon = null;
 				typeName = ShellUtility.GetFileTypeInfo(notepadPath, true, IconOptions.Large, hIcon => icon = CloneIcon(hIcon));
 				typeName.ShouldBe("Application");
+				icon.ShouldNotBeNull();
 				icon.Size.ShouldBe(SystemInformation.IconSize);
 				icon.Dispose();
 

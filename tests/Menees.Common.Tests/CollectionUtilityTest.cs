@@ -37,11 +37,11 @@ namespace Menees.Common.Tests
 			strings.Length.ShouldBe(0);
 
 			string[] secondStrings = CollectionUtility.EmptyArray<string>();
-			object.ReferenceEquals(strings, secondStrings).ShouldBeTrue("The cache should return the same instance.");
+			ReferenceEquals(strings, secondStrings).ShouldBeTrue("The cache should return the same instance.");
 
 			Array.Resize(ref strings, 1);
-			object.ReferenceEquals(strings, CollectionUtility.EmptyArray<string>()).ShouldBeFalse("Resize shouldn't affect the cache.");
-			object.ReferenceEquals(secondStrings, CollectionUtility.EmptyArray<string>()).ShouldBeTrue("The cache should still be the same.");
+			ReferenceEquals(strings, CollectionUtility.EmptyArray<string>()).ShouldBeFalse("Resize shouldn't affect the cache.");
+			ReferenceEquals(secondStrings, CollectionUtility.EmptyArray<string>()).ShouldBeTrue("The cache should still be the same.");
 		}
 	}
 }

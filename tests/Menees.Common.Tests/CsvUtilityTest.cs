@@ -27,13 +27,13 @@ namespace Menees.Common.Tests
 		{
 			using (StringReader reader = new("A, B, C\r\nD, E, F\r\nG, \"H\r\nh\", \"I\ni\""))
 			{
-				var values = CsvUtility.ReadLine(reader).ToArray();
+				var values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "A", "B", "C" }, values);
 
-				values = CsvUtility.ReadLine(reader).ToArray();
+				values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "D", "E", "F" }, values);
 
-				values = CsvUtility.ReadLine(reader).ToArray();
+				values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "G", "H\r\nh", "I\r\ni" }, values);
 
 				var nullValue = CsvUtility.ReadLine(reader);
@@ -101,7 +101,7 @@ namespace Menees.Common.Tests
 			TestWrites(tableContents, readerContents.ToString());
 		}
 
-		private static readonly object[,] TestData = 
+		private static readonly object[,] TestData =
 		{
 			{ "Id", "Name", "Cost" },
 			{ 1, "Silly Putty", 4.99m },
@@ -110,7 +110,7 @@ namespace Menees.Common.Tests
 			{ 4, "Soccer ball\r\n(Futbol)", 14.99m }
 		};
 
-		private DataTable CreateTestTable()
+		private static DataTable CreateTestTable()
 		{
 			DataTable result = new();
 			var columns = result.Columns;
@@ -137,7 +137,7 @@ namespace Menees.Common.Tests
 			return result;
 		}
 
-		private DataTable CreateTestTableAndText(out string tableText)
+		private static DataTable CreateTestTableAndText(out string tableText)
 		{
 			DataTable result = CreateTestTable();
 
@@ -151,13 +151,13 @@ namespace Menees.Common.Tests
 			return result;
 		}
 
-		private void TestWrites(string tableContents, string readerContents)
+		private static void TestWrites(string tableContents, string readerContents)
 		{
 			tableContents.ShouldBe(readerContents);
 
 			using (StringReader reader = new(readerContents))
 			{
-				IList<string> values;
+				IList<string>? values;
 				int rowIndex = 0;
 				int numColumns = TestData.GetLength(1);
 				while ((values = CsvUtility.ReadLine(reader)) != null)
@@ -166,7 +166,7 @@ namespace Menees.Common.Tests
 					for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
 					{
 						string value = values[columnIndex];
-						string testValue = TestData[rowIndex, columnIndex].ToString();
+						string? testValue = TestData[rowIndex, columnIndex].ToString();
 						value.ShouldBe(testValue);
 					}
 
@@ -201,7 +201,7 @@ namespace Menees.Common.Tests
 			{
 				DataTable table = CreateTestTable();
 				CsvUtility.WriteTable(tableFileName, table);
-				DataTable newTable = CsvUtility.ReadTable(tableFileName);
+				DataTable? newTable = CsvUtility.ReadTable(tableFileName);
 				TestReadTable(table, newTable);
 			}
 			finally
@@ -210,9 +210,10 @@ namespace Menees.Common.Tests
 			}
 		}
 
-		private static void TestReadTable(DataTable oldTable, DataTable newTable, bool treatAsStrings = true)
+		private static void TestReadTable(DataTable oldTable, DataTable? newTable, bool treatAsStrings = true)
 		{
 			int columnCount = oldTable.Columns.Count;
+			newTable.ShouldNotBeNull();
 			columnCount.ShouldBe(newTable.Columns.Count);
 
 			int rowCount = oldTable.Rows.Count;
@@ -224,8 +225,8 @@ namespace Menees.Common.Tests
 				DataRow newRow = newTable.Rows[rowIndex];
 				for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
 				{
-					object originalValue = originalRow[columnIndex];
-					object newValue = newRow[columnIndex];
+					object? originalValue = originalRow[columnIndex];
+					object? newValue = newRow[columnIndex];
 
 					if (treatAsStrings)
 					{
@@ -245,7 +246,7 @@ namespace Menees.Common.Tests
 
 			using (StringReader reader = new(tableText))
 			{
-				DataTable newTable = CsvUtility.ReadTable(reader);
+				DataTable? newTable = CsvUtility.ReadTable(reader);
 				TestReadTable(table, newTable);
 			}
 		}
@@ -257,7 +258,7 @@ namespace Menees.Common.Tests
 
 			using (StringReader reader = new(tableText))
 			{
-				DataTable newTable = CsvUtility.ReadTable(reader, preLoadTable =>
+				DataTable? newTable = CsvUtility.ReadTable(reader, preLoadTable =>
 					{
 						int columnCount = preLoadTable.Columns.Count;
 						for (int i = 0; i < columnCount; i++)
