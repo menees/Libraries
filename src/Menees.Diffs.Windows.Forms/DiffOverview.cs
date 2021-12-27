@@ -21,8 +21,8 @@ namespace Menees.Diffs.Windows.Forms
 		private readonly BorderStyle borderStyle = BorderStyle.Fixed3D;
 		private bool dragging;
 		private bool useTranslucentView = true;
-		private Bitmap image;
-		private DiffView view;
+		private Bitmap? image;
+		private DiffView? view;
 		private Rectangle viewRect;
 
 		#endregion
@@ -52,17 +52,13 @@ namespace Menees.Diffs.Windows.Forms
 		/// <summary>
 		/// Fired when the user clicks and/or drags to move the view.
 		/// </summary>
-		public event EventHandler<DiffLineClickEventArgs> LineClick;
+		public event EventHandler<DiffLineClickEventArgs>? LineClick;
 
 		#endregion
 
 		#region Public Properties
 
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1811:AvoidUncalledPrivateCode",
-			Justification = "The get_DiffView accessor is only called by the Windows Forms designer via reflection.")]
-		public DiffView DiffView
+		public DiffView? DiffView
 		{
 			get
 			{
@@ -212,7 +208,7 @@ namespace Menees.Diffs.Windows.Forms
 				// Repaint the view window if any of it is invalid
 				if (r.IntersectsWith(this.viewRect))
 				{
-					Pen disposablePen = null;
+					Pen? disposablePen = null;
 					try
 					{
 						Pen pen = SystemPens.Highlight;
@@ -289,7 +285,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			// The diff colors changed, so we need to rerender the
 			// image.  The current view rect should still be valid.
@@ -297,13 +293,13 @@ namespace Menees.Diffs.Windows.Forms
 			this.Invalidate();
 		}
 
-		private void DiffView_LinesChanged(object sender, EventArgs e)
+		private void DiffView_LinesChanged(object? sender, EventArgs e)
 		{
 			// If the Lines changed, we need to update everything.
 			this.UpdateAll();
 		}
 
-		private void DiffView_SizeChanged(object sender, EventArgs e)
+		private void DiffView_SizeChanged(object? sender, EventArgs e)
 		{
 			// If the DiffView size changed, then our view window
 			// may be longer or shorter, but the rendered image is
@@ -313,7 +309,7 @@ namespace Menees.Diffs.Windows.Forms
 			this.Invalidate();
 		}
 
-		private void DiffView_VScrollPosChanged(object sender, EventArgs e)
+		private void DiffView_VScrollPosChanged(object? sender, EventArgs e)
 		{
 			// The DiffView's FirstVisibleLine has changed, so we
 			// just need to invalidate our view.
@@ -425,7 +421,7 @@ namespace Menees.Diffs.Windows.Forms
 
 									// Draw delete on the left and dead space on the right.
 									g.FillRectangle(backBrush, GutterWidth, y, fullFillWidth / 2, lineHeight);
-									using (Brush deadBrush = DiffOptions.TryCreateDeadSpaceBrush(backBrush.Color))
+									using (Brush? deadBrush = DiffOptions.TryCreateDeadSpaceBrush(backBrush.Color))
 									{
 										g.FillRectangle(deadBrush ?? backBrush, GutterWidth + (fullFillWidth / 2), y, fullFillWidth / 2, lineHeight);
 									}
@@ -435,7 +431,7 @@ namespace Menees.Diffs.Windows.Forms
 								case EditType.Insert:
 
 									// Draw dead space on the left and insert on the right.
-									using (Brush deadBrush = DiffOptions.TryCreateDeadSpaceBrush(backBrush.Color))
+									using (Brush? deadBrush = DiffOptions.TryCreateDeadSpaceBrush(backBrush.Color))
 									{
 										g.FillRectangle(deadBrush ?? backBrush, GutterWidth, y, fullFillWidth / 2, lineHeight);
 									}

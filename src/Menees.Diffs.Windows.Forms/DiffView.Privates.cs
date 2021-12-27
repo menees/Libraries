@@ -33,14 +33,14 @@
 		private readonly Timer autoScrollTimer;
 		private bool capturedMouse;
 		private bool showWhitespace;
-		private Caret caret;
+		private Caret? caret;
 		private int charWidth = 1;
 		private int gutterWidth = 1;
 		private int horizontalAutoScrollAmount;
 		private int lineHeight = 1;
 		private int verticalAutoScrollAmount;
 		private int wheelDelta;
-		private DiffViewLines lines;
+		private DiffViewLines? lines;
 		private DiffViewPosition position;
 		private DiffViewPosition selectionStart = DiffViewPosition.Empty;
 		private string gutterFormat = "{0}";
@@ -103,7 +103,7 @@
 			return result.Width;
 		}
 
-		private void AutoScrollTimer_Tick(object sender, EventArgs e)
+		private void AutoScrollTimer_Tick(object? sender, EventArgs e)
 		{
 			this.VScrollPos += this.verticalAutoScrollAmount;
 			this.HScrollPos += this.horizontalAutoScrollAmount;
@@ -124,7 +124,7 @@
 			}
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			// The colors and/or tab width changed.
 			this.UpdateTextMetrics(true);
@@ -140,7 +140,7 @@
 		{
 			if (deadSpace)
 			{
-				using (Brush deadBrush = DiffOptions.TryCreateDeadSpaceBrush(brush.Color))
+				using (Brush? deadBrush = DiffOptions.TryCreateDeadSpaceBrush(brush.Color))
 				{
 					// If hatching is turned off, then we have to fallback to the solid brush.
 					g.FillRectangle(deadBrush ?? brush, this.gutterWidth, y, this.ClientSize.Width, this.lineHeight);
@@ -271,7 +271,7 @@
 				// extra work until the user requests to see the changed line.  It's still
 				// the same amount of work if they view every line, but it makes the
 				// user interface more responsive to split it up like this.
-				EditScript changeEditScript = line.GetChangeEditScript(this.ChangeDiffOptions);
+				EditScript? changeEditScript = line.GetChangeEditScript(this.ChangeDiffOptions);
 				if (changeEditScript != null)
 				{
 					this.DrawChangedLineBackground(g, displayLine, lineText, changeEditScript, line.FromA, x, y);
@@ -433,7 +433,7 @@
 		private DisplayLine GetDisplayLine(int line)
 		{
 			DisplayLine result;
-			if (line >= 0 && line < this.LineCount)
+			if (line >= 0 && line < this.LineCount && this.lines != null)
 			{
 				result = this.GetDisplayLine(this.lines[line]);
 			}
@@ -499,7 +499,7 @@
 			}
 		}
 
-		private bool GetSingleLineSelectedText(out string text)
+		private bool GetSingleLineSelectedText(out string? text)
 		{
 			text = null;
 			bool result = false;
@@ -518,7 +518,7 @@
 			return result;
 		}
 
-		private int GetXForColumn(Graphics g, DisplayLine displayLine, string displayText, int column)
+		private int GetXForColumn(Graphics g, DisplayLine displayLine, string? displayText, int column)
 		{
 			if (displayText == null)
 			{
@@ -884,7 +884,7 @@
 			// pixel so we can have a separator line, and then
 			// a small separator window-colored area.
 			int maxLineNumChars = 1;
-			if (this.LineCount > 0)
+			if (this.LineCount > 0 && this.lines != null)
 			{
 				// Get the largest number.  Add 1 to it because we will
 				// when we display it.  This is important when the number
@@ -909,7 +909,7 @@
 			StringBuilder sb = new(BufferSize);
 			sb.Append("{0:");
 			sb.Append('0', maxLineNumChars);
-			sb.Append("}");
+			sb.Append('}');
 			this.gutterFormat = sb.ToString();
 
 			// Update the caret position (Gutter width or Font changes affect it)

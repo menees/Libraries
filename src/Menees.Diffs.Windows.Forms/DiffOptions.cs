@@ -37,7 +37,7 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Events
 
-		public static event EventHandler OptionsChanged;
+		public static event EventHandler? OptionsChanged;
 
 		#endregion
 
@@ -211,9 +211,9 @@ namespace Menees.Diffs.Windows.Forms
 			node.SetValue(nameof(HatchDeadSpace), HatchDeadSpace);
 		}
 
-		public static Brush TryCreateDeadSpaceBrush(Color backColor)
+		public static Brush? TryCreateDeadSpaceBrush(Color backColor)
 		{
-			Brush result = null;
+			Brush? result = null;
 			if (HatchDeadSpace)
 			{
 				result = new HatchBrush(HatchStyle.Percent25, SystemColors.ControlDark, backColor);

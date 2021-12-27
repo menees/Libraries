@@ -84,15 +84,14 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			this.AddLine(lineOne);
 			this.AddLine(lineTwo);
-
-			this.diffStartLines = CollectionUtility.EmptyArray<int>();
-			this.diffEndLines = CollectionUtility.EmptyArray<int>();
 		}
 
 		private DiffViewLines()
 			: base(new List<DiffViewLine>())
 		{
 			// Called by the other constructors.
+			this.diffStartLines = CollectionUtility.EmptyArray<int>();
+			this.diffEndLines = CollectionUtility.EmptyArray<int>();
 		}
 
 		#endregion

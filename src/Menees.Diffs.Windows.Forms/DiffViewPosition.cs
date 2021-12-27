@@ -89,7 +89,7 @@ namespace Menees.Diffs.Windows.Forms
 			return result;
 		}
 
-		public override bool Equals(object value)
+		public override bool Equals(object? value)
 		{
 			bool result = false;
 
