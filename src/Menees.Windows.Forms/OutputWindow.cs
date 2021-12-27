@@ -27,8 +27,8 @@
 		private const string DefaultFindCaption = "Find In Output";
 		private const int RichTextBoxDefaultTabStopWidth = 36; // From ITextDocument.DefaultTabStop
 
-		private readonly List<int> highlights = new List<int>();
-		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new Dictionary<Guid, int>();
+		private readonly List<int> highlights = new();
+		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new();
 		private int indentWidth;
 
 		#endregion
@@ -259,7 +259,7 @@
 		/// <returns>True if the find text was found and selected.  False otherwise.</returns>
 		public bool Find(FindData findData, FindMode findMode)
 		{
-			TextBoxFinder finder = new TextBoxFinder(this.output);
+			TextBoxFinder finder = new(this.output);
 			bool result = finder.Find(this.OwnerWindow, findData, findMode);
 			return result;
 		}

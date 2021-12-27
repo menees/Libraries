@@ -92,7 +92,7 @@ namespace Menees.Common.Tests
 			string badSchemaText = schemaText.Replace("<xs:attribute name='empty' type='xs:string' use='required' />", "<xs:attribute name='empty' type='xs:string' use='unknown' />");
 			XElement badSchemaElement = XElement.Parse(badSchemaText, LoadOptions.SetLineInfo);
 
-			List<ValidationEventArgs> errors = new List<ValidationEventArgs>();
+			List<ValidationEventArgs> errors = new();
 			schema = XmlUtility.CreateSchemaSet(new[] { badSchemaElement }, errors);
 			Assert.IsNotNull(schema);
 			Assert.AreEqual(1, errors.Count);

@@ -131,8 +131,8 @@ namespace Menees.Diffs
 			}
 
 			TableEntry[] table = new TableEntry[this.tableSize];
-			List<IAddCopy> list = new List<IAddCopy>();
-			AddCopyCollection result = new AddCopyCollection(list);
+			List<IAddCopy> list = new();
+			AddCopyCollection result = new(list);
 
 			baseFile.Seek(0, SeekOrigin.Begin);
 			versionFile.Seek(0, SeekOrigin.End);
@@ -216,13 +216,13 @@ namespace Menees.Diffs
 			versionFile.Seek(versionStart, SeekOrigin.Begin);
 			byte[] bytes = new byte[length];
 			versionFile.Read(bytes, 0, length);
-			Addition add = new Addition(bytes);
+			Addition add = new(bytes);
 			list.Add(add);
 		}
 
 		protected virtual int EmitCopy(int basePosition, int length, Stream baseFile, IList<IAddCopy> list)
 		{
-			Copy copy = new Copy(basePosition, length);
+			Copy copy = new(basePosition, length);
 			list.Add(copy);
 			return length;
 		}

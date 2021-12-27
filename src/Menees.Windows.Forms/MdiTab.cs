@@ -77,7 +77,7 @@ namespace Menees.Windows.Forms
 
 				Point mousePositionInStrip = this.Owner.PointToClient(Cursor.Position);
 				Rectangle bounds = this.Bounds;
-				Point mousePosition = new Point(mousePositionInStrip.X - bounds.X, mousePositionInStrip.Y - bounds.Y);
+				Point mousePosition = new(mousePositionInStrip.X - bounds.X, mousePositionInStrip.Y - bounds.Y);
 
 				Bitmap closeImage = Properties.Resources.CloseGray;
 				bool mouseOnClose = closeRect.Contains(mousePosition);
@@ -91,7 +91,7 @@ namespace Menees.Windows.Forms
 						graph.FillRectangle(backBrush, closeRect);
 					}
 
-					using (Pen borderPen = new Pen(closeBorderColor))
+					using (Pen borderPen = new(closeBorderColor))
 					{
 						graph.DrawRectangle(borderPen, closeRect.X, closeRect.Y, closeRect.Width - 1, closeRect.Height - 1);
 					}
@@ -197,7 +197,7 @@ namespace Menees.Windows.Forms
 			Rectangle bounds = this.Bounds;
 			int x = bounds.Width - CloseButtonSpace - 2;
 			int y = (bounds.Height - CloseButtonSpace) / 2;
-			Rectangle result = new Rectangle(x, y, CloseButtonSpace, CloseButtonSpace);
+			Rectangle result = new(x, y, CloseButtonSpace, CloseButtonSpace);
 			return result;
 		}
 

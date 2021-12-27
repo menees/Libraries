@@ -41,8 +41,8 @@ namespace Menees.Windows.Forms
 			this.GripStyle = ToolStripGripStyle.Hidden;
 			this.UseFormIconAsNewTabImage = true;
 
-			MdiTabStripColorTable colorTable = new MdiTabStripColorTable(this);
-			ToolStripProfessionalRenderer renderer = new ToolStripProfessionalRenderer(colorTable);
+			MdiTabStripColorTable colorTable = new(this);
+			ToolStripProfessionalRenderer renderer = new(colorTable);
 			this.Renderer = renderer;
 
 			// Call this to make it initially invisible (if it's not design time).
@@ -427,7 +427,7 @@ namespace Menees.Windows.Forms
 			if (this.updateLevel == 0 && this.Enabled)
 			{
 				// Remove tabs for closed forms.
-				HashSet<Form> skipForms = new HashSet<Form>();
+				HashSet<Form> skipForms = new();
 				IList<MdiTab> tabs = this.RemoveClosedTabs(sender, senderActivating, skipForms);
 
 				// Add tabs for new forms.

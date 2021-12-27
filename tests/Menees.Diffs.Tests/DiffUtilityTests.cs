@@ -22,10 +22,10 @@ namespace Menees.Diffs.Tests
 				DiffUtility.AreFilesDifferent(f1.Info, f2.Info).ShouldEqual(expected, message);
 			}
 
-			using TempFile a1 = new TempFile("1234");
-			using TempFile a2 = new TempFile("1234");
-			using TempFile b = new TempFile("12345");
-			using TempFile c = new TempFile("12045");
+			using TempFile a1 = new("1234");
+			using TempFile a2 = new("1234");
+			using TempFile b = new("12345");
+			using TempFile c = new("12045");
 
 			Test(a1, a2, false, "a1==a2");
 			Test(a1, b, true, "a1!=b");
@@ -47,10 +47,10 @@ namespace Menees.Diffs.Tests
 				AreEquivalent(actual, expected);
 			}
 
-			using TempFile a = new TempFile("Line1");
-			using TempFile b = new TempFile("Line1\nLine2");
-			using TempFile c = new TempFile("Line1\r\nLine2\r\n");
-			using TempFile d = new TempFile("Line1\r\nLine2\r\nLine3");
+			using TempFile a = new("Line1");
+			using TempFile b = new("Line1\nLine2");
+			using TempFile c = new("Line1\r\nLine2\r\n");
+			using TempFile d = new("Line1\r\nLine2\r\nLine3");
 
 			TestLines(a, "Line1");
 			TestLines(b, "Line1", "Line2");
@@ -77,7 +77,7 @@ namespace Menees.Diffs.Tests
 		public void GetTextLinesTest()
 		{
 			// The GetTextLines function is internally used by GetFileTextLines and GetStringTextLines, so other tests cover it too.
-			using TempFile f = new TempFile("Line1\r\nLine2\r\nLine3");
+			using TempFile f = new("Line1\r\nLine2\r\nLine3");
 			using TextReader reader = new StreamReader(f.FileName);
 			IList<string> actual = DiffUtility.GetTextLines(reader);
 			AreEquivalent(actual, "Line1", "Line2", "Line3");
@@ -87,7 +87,7 @@ namespace Menees.Diffs.Tests
 		public void GetXmlTextLinesTest()
 		{
 			XElement element = XElement.Parse("<a>\n\t<b>\n\n\t\t<c/>\n\t</b>\n</a>");
-			using TempFile a = new TempFile("");
+			using TempFile a = new("");
 			element.Save(a.FileName);
 
 			const string Header = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -115,7 +115,7 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void IsBinaryFileTest()
 		{
-			using (TempFile t = new TempFile("This is text."))
+			using (TempFile t = new("This is text."))
 			{
 				DiffUtility.IsBinaryFile(t.FileName).ShouldBeFalse("text filename");
 				using (Stream s = File.OpenRead(t.FileName))
@@ -124,7 +124,7 @@ namespace Menees.Diffs.Tests
 				}
 			}
 
-			using (TempFile t = new TempFile("Has\0embedded\0nulls."))
+			using (TempFile t = new("Has\0embedded\0nulls."))
 			{
 				DiffUtility.IsBinaryFile(t.FileName).ShouldBeTrue("binary filename");
 				using (Stream s = File.OpenRead(t.FileName))

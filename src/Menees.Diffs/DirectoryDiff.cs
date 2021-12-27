@@ -83,14 +83,14 @@ namespace Menees.Diffs
 		public DirectoryDiffResults Execute(DirectoryInfo directoryA, DirectoryInfo directoryB)
 		{
 			// Create a faux base entry to pass to Execute
-			DirectoryDiffEntry entry = new DirectoryDiffEntry(string.Empty, false, true, true, false);
+			DirectoryDiffEntry entry = new(string.Empty, false, true, true, false);
 
 			// If the base paths are the same, we don't need to check for file differences.
 			bool checkIfFilesAreDifferent = string.Compare(directoryA.FullName, directoryB.FullName, this.comparer.Comparison) != 0;
 
 			this.Execute(directoryA, directoryB, entry, checkIfFilesAreDifferent);
 
-			DirectoryDiffResults results = new DirectoryDiffResults(directoryA, directoryB, entry.Subentries, this.recursive, this.filter);
+			DirectoryDiffResults results = new(directoryA, directoryB, entry.Subentries, this.recursive, this.filter);
 			return results;
 		}
 
@@ -116,7 +116,7 @@ namespace Menees.Diffs
 					if (this.showDifferent || this.showSame)
 					{
 						bool different = false;
-						DirectoryDiffEntry newEntry = new DirectoryDiffEntry(infoA.Name, isFile, true, true, false);
+						DirectoryDiffEntry newEntry = new(infoA.Name, isFile, true, true, false);
 
 						if (isFile)
 						{

@@ -56,7 +56,7 @@ namespace Menees.Common.Tests
 			//I'm intentionally using a case-sensitive dictionary here.
 			//Most places I use case-insensitive, so I want to test
 			//with a mix of comparers.
-			Dictionary<string, object> properties = new Dictionary<string, object>();
+			Dictionary<string, object> properties = new();
 			properties.Add("abc", 123);
 			properties.Add("Even Digits", new int[] { 2, 4, 6, 8 });
 			properties.Add("Company", new TestData("Menees Software"));

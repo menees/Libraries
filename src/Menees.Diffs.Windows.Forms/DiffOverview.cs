@@ -222,7 +222,7 @@ namespace Menees.Diffs.Windows.Forms
 						{
 							// Set the alpha blend to 20% (51/256);
 							const int TwentyPercentAlphaBlend = 51;
-							using (SolidBrush b = new SolidBrush(Color.FromArgb(TwentyPercentAlphaBlend, SystemColors.Highlight)))
+							using (SolidBrush b = new(Color.FromArgb(TwentyPercentAlphaBlend, SystemColors.Highlight)))
 							{
 								r.Intersect(this.viewRect);
 								g.FillRectangle(b, r);
@@ -394,7 +394,7 @@ namespace Menees.Diffs.Windows.Forms
 				// Draw a bitmap in memory that we can render from
 				this.image = new Bitmap(width, height);
 				using (Graphics g = Graphics.FromImage(this.image))
-				using (SolidBrush backBrush = new SolidBrush(this.BackColor))
+				using (SolidBrush backBrush = new(this.BackColor))
 				{
 					g.FillRectangle(backBrush, 0, 0, width, height);
 

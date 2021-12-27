@@ -55,7 +55,7 @@ namespace Menees.Diffs
 		public FileInfo[] Filter(DirectoryInfo directory)
 		{
 			// Get all the files that match the filters
-			List<FileInfo> files = new List<FileInfo>();
+			List<FileInfo> files = new();
 			foreach (string filter in this.individualFilters)
 			{
 				FileInfo[] filterFiles = directory.GetFiles(filter);
@@ -94,7 +94,7 @@ namespace Menees.Diffs
 				FileInfo[] allFiles = directory.GetFiles();
 				Array.Sort(allFiles, this.comparer);
 
-				List<FileInfo> filesToInclude = new List<FileInfo>();
+				List<FileInfo> filesToInclude = new();
 				int numExcludes = files.Count;
 				int numTotal = allFiles.Length;
 				int e = 0;

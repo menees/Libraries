@@ -16,7 +16,7 @@ namespace Menees.Diffs.Tests
 		{
 			AddCopyCollection ac = BinaryDiffTests.Diff("Creative", "Creating", footprintLength: 2);
 			BinaryDiffTests.Check(ac, false, true);
-			using MemoryStream memory = new MemoryStream();
+			using MemoryStream memory = new();
 			ac.GDiff(memory);
 			byte[] gdiff = memory.ToArray();
 			gdiff.Length.ShouldEqual(13);

@@ -64,7 +64,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="window">The window to activate.</param>
 		public static void BringToFront(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 
 			// This came from http://stackoverflow.com/questions/257587/bring-a-window-to-the-front-in-wpf/4831839#4831839
 			if (!window.IsVisible)
@@ -130,7 +130,7 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		public static bool IsInDesignMode(DependencyObject dependencyObject)
 		{
-			Conditions.RequireReference(dependencyObject, () => dependencyObject);
+			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
 
 			// http://stackoverflow.com/questions/834283/is-there-a-way-to-check-if-wpf-is-currently-executing-in-design-mode-or-not
 			bool result = DesignerProperties.GetIsInDesignMode(dependencyObject);
@@ -162,7 +162,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="window">The window to move to the bottom of the Z-order.</param>
 		public static void SendToBack(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 			NativeMethods.SendToBack(window);
 		}
 
@@ -240,7 +240,7 @@ namespace Menees.Windows.Presentation
 		public static void ShowAboutBox(Window owner, Assembly mainAssembly, string repository = null)
 		{
 			// If an assembly wasn't provided, then we want the version of the calling assembly not the current assembly.
-			AboutBox dialog = new AboutBox(mainAssembly ?? Assembly.GetCallingAssembly(), repository);
+			AboutBox dialog = new(mainAssembly ?? Assembly.GetCallingAssembly(), repository);
 			dialog.Execute(owner);
 		}
 
@@ -369,7 +369,7 @@ namespace Menees.Windows.Presentation
 			int? maxLength = null,
 			Func<string, string> validate = null)
 		{
-			InputDialog dialog = new InputDialog();
+			InputDialog dialog = new();
 			if (string.IsNullOrEmpty(title))
 			{
 				dialog.Title = ApplicationInfo.ApplicationName;
@@ -396,7 +396,7 @@ namespace Menees.Windows.Presentation
 		public static ISet<ValidationError> GetValidationErrors(DependencyObject dependencyObject)
 		{
 			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
-			HashSet<ValidationError> result = new HashSet<ValidationError>();
+			HashSet<ValidationError> result = new();
 			GetValidationErrors(dependencyObject, result);
 			return result;
 		}

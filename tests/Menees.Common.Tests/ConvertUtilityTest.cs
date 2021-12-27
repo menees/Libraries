@@ -43,7 +43,7 @@ namespace Menees.Common.Tests
 		public void ConvertValueTest()
 		{
 			Point actual = (Point)ConvertUtility.ConvertValue("1, 2", typeof(Point));
-			Point expected = new Point(1, 2);
+			Point expected = new(1, 2);
 			Assert.AreEqual(expected, actual);
 
 			actual = ConvertUtility.ConvertValue<Point>("3, 4");

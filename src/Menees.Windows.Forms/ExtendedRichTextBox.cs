@@ -359,7 +359,7 @@ namespace Menees.Windows.Forms
 			{
 				try
 				{
-					Guid textDocumentIid = new Guid("8CC497C0-A1DF-11CE-8098-00AA0047BE5D"); // IID_ITextDocument
+					Guid textDocumentIid = new("8CC497C0-A1DF-11CE-8098-00AA0047BE5D"); // IID_ITextDocument
 					int hresult = Marshal.QueryInterface(ptrOleInterface, ref textDocumentIid, out IntPtr textDocumentPtr);
 					Marshal.ThrowExceptionForHR(hresult);
 					try
@@ -388,7 +388,7 @@ namespace Menees.Windows.Forms
 		/// <returns>True if the find text was found and selected.  False otherwise.</returns>
 		public bool Find(FindData findData, FindMode findMode)
 		{
-			TextBoxFinder finder = new TextBoxFinder(this);
+			TextBoxFinder finder = new(this);
 			bool result = finder.Find(this, findData, findMode);
 			return result;
 		}

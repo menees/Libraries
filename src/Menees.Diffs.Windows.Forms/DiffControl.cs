@@ -17,7 +17,7 @@ namespace Menees.Diffs.Windows.Forms
 	{
 		#region Private Data Members
 
-		private readonly FindData findData = new FindData();
+		private readonly FindData findData = new();
 		private bool showColorLegend = true;
 		private bool showToolBar = true;
 		private int currentDiffLine = -1;
@@ -257,7 +257,7 @@ namespace Menees.Diffs.Windows.Forms
 				string textA = this.ViewA.SelectedText;
 				string textB = this.ViewB.SelectedText;
 
-				DifferenceEventArgs diffArgs = new DifferenceEventArgs(textA, textB);
+				DifferenceEventArgs diffArgs = new(textA, textB);
 				this.ShowTextDifferences(this, diffArgs);
 				result = true;
 			}
@@ -418,14 +418,14 @@ namespace Menees.Diffs.Windows.Forms
 				}
 
 				// Draw a border.
-				Rectangle borderRect = new Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1);
+				Rectangle borderRect = new(r.X, r.Y, r.Width - 1, r.Height - 1);
 				ControlPaint.DrawVisualStyleBorder(g, borderRect);
 
 				// Draw the image centered.  (I should probably check the
 				// item's ImageAlign property here, but I know I'm always
 				// using MiddleCenter for all the passed-in items.)
 				Image image = item.Image;
-				Rectangle imageRect = new Rectangle(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
+				Rectangle imageRect = new(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
 				g.DrawImage(image, imageRect);
 			}
 		}

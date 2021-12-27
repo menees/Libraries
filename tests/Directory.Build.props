@@ -13,6 +13,10 @@
 		<!-- https://github.com/microsoft/vstest/pull/2272 says $(ProjectDir) relative paths should work, but I can't get them to. -->
 		<!-- https://github.com/Microsoft/vstest/issues/605 says RunSettingsFilePath only accepts absolute paths. -->
 		<RunSettingsFilePath>$(SolutionDir)\tests\.runsettings</RunSettingsFilePath>
+
+		<!-- Don't run code analyzers on test code. This was a historically bad decision. -->
+		<UseCustomCodeAnalyzers>false</UseCustomCodeAnalyzers>
+		<CodeAnalysisRuleSet></CodeAnalysisRuleSet>
 	</PropertyGroup>
 
 	<ItemGroup>

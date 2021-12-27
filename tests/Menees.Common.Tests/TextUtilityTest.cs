@@ -124,7 +124,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void SplitIntoTokensCollectionTest()
 		{
-			List<string> tokens = new List<string>();
+			List<string> tokens = new();
 			bool result = TextUtility.SplitIntoTokens("A,B,\"C,D\",E", ',', '"', false, tokens);
 			Assert.AreEqual(true, result);
 			CollectionAssert.AreEqual(new[] { "A", "B", "C,D", "E" }, tokens.ToArray());

@@ -16,7 +16,7 @@
 	{
 		#region Public Fields
 
-		public static readonly DiffViewLine Empty = new DiffViewLine();
+		public static readonly DiffViewLine Empty = new();
 
 		#endregion
 
@@ -71,7 +71,7 @@
 			{
 				if (this.FromA)
 				{
-					MyersDiff<char> diff = new MyersDiff<char>(
+					MyersDiff<char> diff = new(
 						GetCharactersToDiff(this.text, options, out int trimCountA),
 						GetCharactersToDiff(this.Counterpart.text, options, out int trimCountB),
 						false); // We don't want Change edits; just Deletes and Inserts.

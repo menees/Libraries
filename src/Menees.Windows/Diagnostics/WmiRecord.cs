@@ -322,7 +322,7 @@ namespace Menees.Windows.Diagnostics
 			}
 
 			ManagementBaseObject wmiOutputParameters = this.wmiObject.InvokeMethod(methodName, wmiInputParameters, null);
-			Dictionary<string, object> result = new Dictionary<string, object>(wmiOutputParameters.Properties.Count);
+			Dictionary<string, object> result = new(wmiOutputParameters.Properties.Count);
 			foreach (var property in wmiOutputParameters.Properties)
 			{
 				result[property.Name] = property.Value;

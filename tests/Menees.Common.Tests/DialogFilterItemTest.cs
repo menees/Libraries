@@ -12,7 +12,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ConstructorTest()
 		{
-			DialogFilterItem item = new DialogFilterItem("cs");
+			DialogFilterItem item = new("cs");
 			item.ItemName.ShouldContainIgnoringCase("C# Source Files");
 			item.Masks.SequenceEqual(new[] { "*.cs" }).ShouldBeTrue();
 			item.ToString().ShouldContainIgnoringCase("C# Source Files (*.cs)|*.cs");
@@ -36,7 +36,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void JoinTest()
 		{
-			DialogFilterItem item = new DialogFilterItem("Text Files", "txt");
+			DialogFilterItem item = new("Text Files", "txt");
 			string actual = DialogFilterItem.Join(item, DialogFilterItem.AllFiles);
 			actual.ShouldEqual("Text Files (*.txt)|*.txt|All Files (*.*)|*.*");
 		}

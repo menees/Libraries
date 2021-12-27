@@ -104,7 +104,7 @@ namespace Menees.Diffs.Tests
 			EditScript edits = null;
 			foreach (HashType hashType in Enum.GetValues(typeof(HashType)))
 			{
-				TextDiff diff = new TextDiff(hashType, ignoreCase, ignoreOuterWhiteSpace, 0, supportChangeEditType);
+				TextDiff diff = new(hashType, ignoreCase, ignoreOuterWhiteSpace, 0, supportChangeEditType);
 				EditScript newEdits = diff.Execute(leftLines, rightLines);
 				if (edits != null)
 				{

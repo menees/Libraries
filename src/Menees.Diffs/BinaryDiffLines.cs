@@ -51,7 +51,7 @@ namespace Menees.Diffs
 					Addition add = (Addition)entry;
 					byte[] bytes = add.GetBytes();
 					int length = bytes.Length;
-					using (MemoryStream stream = new MemoryStream(bytes, false))
+					using (MemoryStream stream = new(bytes, false))
 					{
 						this.AddBytesFromStream(stream, 0, length, false, true);
 					}
@@ -151,8 +151,8 @@ namespace Menees.Diffs
 		{
 			// Each byte takes two hex characters plus a space after it.
 			const int HexByteWidth = 3;
-			StringBuilder hexBuilder = new StringBuilder(length * HexByteWidth);
-			StringBuilder charBuilder = new StringBuilder(length);
+			StringBuilder hexBuilder = new(length * HexByteWidth);
+			StringBuilder charBuilder = new(length);
 
 			for (int i = 0; i < length; i++)
 			{

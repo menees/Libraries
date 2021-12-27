@@ -27,12 +27,12 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void FilterTest()
 		{
-			using TempFile a = new TempFile("A");
-			using TempFile b = new TempFile("B");
+			using TempFile a = new("A");
+			using TempFile b = new("B");
 
 			string directory = Path.GetDirectoryName(a.FileName);
 			directory.ShouldEqual(Path.GetDirectoryName(b.FileName));
-			DirectoryInfo info = new DirectoryInfo(directory);
+			DirectoryInfo info = new(directory);
 			string filterString = Path.GetFileName(a.FileName) + ";" + Path.GetFileName(b.FileName);
 
 			// The first pass will use DirectoryDiff.DefaultNameComparison, which is OrdinalIgnoreCase on Windows.

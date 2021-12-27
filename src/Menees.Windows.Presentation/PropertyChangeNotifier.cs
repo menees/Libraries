@@ -82,7 +82,7 @@
 			PropertyChangedEventHandler handler = this.PropertyChanged;
 			if (handler != null)
 			{
-				PropertyChangedEventArgs args = new PropertyChangedEventArgs(propertyName);
+				PropertyChangedEventArgs args = new(propertyName);
 				handler(this, args);
 			}
 		}

@@ -15,7 +15,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void ConstructorTest()
 		{
-			CommandLine target = new CommandLine();
+			CommandLine target = new();
 			Assert.AreEqual(Environment.UserInteractive, target.UseConsole);
 
 			target = new CommandLine(false);
@@ -29,7 +29,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void AddHeaderTest()
 		{
-			CommandLine target = new CommandLine(false);
+			CommandLine target = new(false);
 			string[] lines = new[] { "First line", "Second line" };
 
 			CommandLine actual = target.AddHeader(lines);
@@ -83,7 +83,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void CreateMessageTest()
 		{
-			CommandLine target = new CommandLine(false);
+			CommandLine target = new(false);
 			target.AddHeader("Header line");
 
 			string expected = GetMessage(target, CommandLineWriteOptions.Header);
@@ -93,7 +93,7 @@ namespace Menees.Common.Tests
 
 		private static string GetMessage(CommandLine target, CommandLineWriteOptions? options = null)
 		{
-			using (StringWriter writer = new StringWriter())
+			using (StringWriter writer = new())
 			{
 				if (options == null)
 				{
@@ -114,12 +114,12 @@ namespace Menees.Common.Tests
 			public bool prompt;
 			public bool verify;
 			public string source;
-			public List<string> targets = new List<string>();
+			public List<string> targets = new();
 		}
 
 		private CommandLine CreateTester(TestData data)
 		{
-			CommandLine result = new CommandLine(false);
+			CommandLine result = new(false);
 
 			result.AddHeader("Copies a source file to one or more target locations.");
 			result.AddHeader(string.Format("Usage: {0} [/B] [/P] [/V] source /T:target [/T:...]", CommandLine.ExecutableFileName));
@@ -165,7 +165,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void ParseInvalidTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/Binary" });
 			Assert.AreEqual(CommandLineParseResult.Invalid, result);
@@ -178,7 +178,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseValidTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/Prompt", "/V", "/bin", @"C:\Input.txt", 
 				@"/t:D:\ColonSeparated.txt", @"/Target", @"E:\SpaceSeparated.txt", @"/Targ=F:\EqualSeparated.txt" });
@@ -195,7 +195,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseHelpTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/?" });
 			Assert.AreEqual(CommandLineParseResult.HelpRequested, result);
@@ -208,8 +208,8 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseStaticTest()
 		{
-			List<string> values = new List<string>();
-			Dictionary<string, string> switches = new Dictionary<string, string>();
+			List<string> values = new();
+			Dictionary<string, string> switches = new();
 			CommandLine.Parse(new[] { "a", "/b=c d" }, values, switches);
 			values.Count.ShouldEqual(1);
 			values[0].ShouldEqual("a");

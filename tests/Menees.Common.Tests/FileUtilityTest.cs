@@ -153,7 +153,7 @@ namespace Menees.Common.Tests
 					@"\\" + machineName + @"\C$\Windows\System32\ActionCenter.dll",
 					@"..",
 				};
-			Dictionary<string, string> expectedExactPaths = new Dictionary<string, string>()
+			Dictionary<string, string> expectedExactPaths = new()
 				{
 					{ @"..", Path.GetDirectoryName(Environment.CurrentDirectory) },
 				};
@@ -185,7 +185,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void IsValidNameTest()
 		{
-			Dictionary<string, bool> tests = new Dictionary<string, bool>()
+			Dictionary<string, bool> tests = new()
 			{
 				{ @"Test", true },
 				{ @"Test.txt", true },
@@ -217,7 +217,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void IsValidPathTest()
 		{
-			Dictionary<string, ValidPathOptions> validPaths = new Dictionary<string,ValidPathOptions>()
+			Dictionary<string, ValidPathOptions> validPaths = new()
 			{
 				{ @"\\.\PhysicalDisk1", ValidPathOptions.AllowDevicePaths },
 				{ @"\\?\C:\Test" + new string('X', 300), ValidPathOptions.AllowLongPaths },
@@ -257,7 +257,7 @@ namespace Menees.Common.Tests
 				{ @"E:\reference\\\h101\//\", ValidPathOptions.AllowTrailingSeparator },
 			};
 
-			Dictionary<string, ValidPathOptions> invalidPaths = new Dictionary<string,ValidPathOptions>()
+			Dictionary<string, ValidPathOptions> invalidPaths = new()
 			{
 				{ @".", ValidPathOptions.None },
 				{ @"..", ValidPathOptions.None },

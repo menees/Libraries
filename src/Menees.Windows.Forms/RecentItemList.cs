@@ -24,9 +24,9 @@ namespace Menees.Windows.Forms
 
 		private const string DefaultSettingsNodeName = "Recent Items";
 
-		private readonly List<string> items = new List<string>();
+		private readonly List<string> items = new();
 		private readonly Dictionary<string, IEnumerable<string>> itemToValuesMap =
-			new Dictionary<string, IEnumerable<string>>(StringComparer.OrdinalIgnoreCase);
+			new(StringComparer.OrdinalIgnoreCase);
 
 		private int maxItems = 10;
 		private FormSaver formSaver;

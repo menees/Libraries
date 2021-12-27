@@ -16,22 +16,22 @@ namespace Menees.Diffs
 		#region Private Data Members
 
 		private static readonly FileSystemInfoComparer CurrentCultureComparer =
-			new FileSystemInfoComparer(StringComparison.CurrentCulture);
+			new(StringComparison.CurrentCulture);
 
 		private static readonly FileSystemInfoComparer CurrentCultureIgnoreCaseComparer =
-			new FileSystemInfoComparer(StringComparison.CurrentCultureIgnoreCase);
+			new(StringComparison.CurrentCultureIgnoreCase);
 
 		private static readonly FileSystemInfoComparer InvariantCultureComparer =
-			new FileSystemInfoComparer(StringComparison.InvariantCulture);
+			new(StringComparison.InvariantCulture);
 
 		private static readonly FileSystemInfoComparer InvariantCultureIgnoreCaseComparer =
-			new FileSystemInfoComparer(StringComparison.InvariantCultureIgnoreCase);
+			new(StringComparison.InvariantCultureIgnoreCase);
 
 		private static readonly FileSystemInfoComparer OrdinalComparer =
-			new FileSystemInfoComparer(StringComparison.Ordinal);
+			new(StringComparison.Ordinal);
 
 		private static readonly FileSystemInfoComparer OrdinalIgnoreCaseComparer =
-			new FileSystemInfoComparer(StringComparison.OrdinalIgnoreCase);
+			new(StringComparison.OrdinalIgnoreCase);
 
 		#endregion
 

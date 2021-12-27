@@ -237,7 +237,7 @@ namespace Menees.Diffs.Windows.Forms
 
 					int numLines = endSel.Line - startSel.Line + 1;
 					const int LineLengthEstimate = 50;
-					StringBuilder sb = new StringBuilder(numLines * LineLengthEstimate);
+					StringBuilder sb = new(numLines * LineLengthEstimate);
 
 					for (int i = startSel.Line; i <= endSel.Line; i++)
 					{
@@ -342,7 +342,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 
 			bool result = false;
-			using (FindDialog dialog = new FindDialog())
+			using (FindDialog dialog = new())
 			{
 				if (dialog.Execute(this, data))
 				{
@@ -657,7 +657,7 @@ namespace Menees.Diffs.Windows.Forms
 			bool result = false;
 			if (maxLineNumber > 0)
 			{
-				using (GoToDialog dialog = new GoToDialog())
+				using (GoToDialog dialog = new())
 				{
 					if (dialog.Execute(this, maxLineNumber, out int line))
 					{
@@ -1036,7 +1036,7 @@ namespace Menees.Diffs.Windows.Forms
 				// or at or below the last visible line.  If so, then
 				// auto-scroll.  Similarly, if we're on the first or last
 				// character or beyond, then auto-scroll.
-				Rectangle r = new Rectangle(this.gutterWidth, 0, this.ClientSize.Width, this.ClientSize.Height);
+				Rectangle r = new(this.gutterWidth, 0, this.ClientSize.Width, this.ClientSize.Height);
 				r.Inflate(-this.charWidth, -this.lineHeight);
 				if (!r.Contains(e.X, e.Y))
 				{
@@ -1120,8 +1120,8 @@ namespace Menees.Diffs.Windows.Forms
 
 			// Create some graphics objects
 			Graphics g = e.Graphics;
-			using (SolidBrush fontBrush = new SolidBrush(this.Enabled ? this.ForeColor : SystemColors.GrayText))
-			using (SolidBrush backBrush = new SolidBrush(this.BackColor))
+			using (SolidBrush fontBrush = new(this.Enabled ? this.ForeColor : SystemColors.GrayText))
+			using (SolidBrush backBrush = new(this.BackColor))
 			{
 				// We can't free GutterBrush since it is a system brush.
 				Brush gutterBrush = SystemBrushes.Control;

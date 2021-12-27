@@ -163,7 +163,7 @@ namespace Menees.Diffs.Windows.Forms
 
 		private void AddEntry(DirectoryDiffEntry entry, TreeNode parentNode)
 		{
-			TreeNode node = new TreeNode
+			TreeNode node = new()
 			{
 				Tag = entry,
 			};

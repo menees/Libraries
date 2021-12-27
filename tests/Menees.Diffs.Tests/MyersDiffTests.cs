@@ -28,7 +28,7 @@ namespace Menees.Diffs.Tests
 			{
 				var diff = Diff(a, b);
 				IList<char> sequence = diff.GetLongestCommonSubsequence();
-				string result = new string(sequence.ToArray());
+				string result = new(sequence.ToArray());
 				return result;
 			}
 
@@ -92,6 +92,6 @@ namespace Menees.Diffs.Tests
 			SimilarityPercent("abc", "def").ShouldEqual(0);
 		}
 
-		private static MyersDiff<char> Diff(string a, string b) => new MyersDiff<char>(a.ToCharArray(), b.ToCharArray(), true);
+		private static MyersDiff<char> Diff(string a, string b) => new(a.ToCharArray(), b.ToCharArray(), true);
 	}
 }

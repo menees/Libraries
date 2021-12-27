@@ -43,7 +43,7 @@
 
 		public IList<Segment> GetChangeSegments(EditScript changeEditScript, bool useA)
 		{
-			List<Segment> result = new List<Segment>();
+			List<Segment> result = new();
 
 			int previousOriginalTextIndex = 0;
 			int previousDisplayTextIndex = 0;
@@ -111,7 +111,7 @@
 		public string GetDisplayText()
 		{
 			string originalText = this.OriginalText;
-			StringBuilder sb = new StringBuilder(originalText.Length);
+			StringBuilder sb = new(originalText.Length);
 			foreach (char ch in originalText)
 			{
 				if (char.IsWhiteSpace(ch))

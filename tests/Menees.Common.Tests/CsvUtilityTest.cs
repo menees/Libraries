@@ -25,7 +25,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ReadLineReaderTest()
 		{
-			using (StringReader reader = new StringReader("A, B, C\r\nD, E, F\r\nG, \"H\r\nh\", \"I\ni\""))
+			using (StringReader reader = new("A, B, C\r\nD, E, F\r\nG, \"H\r\nh\", \"I\ni\""))
 			{
 				var values = CsvUtility.ReadLine(reader).ToArray();
 				CollectionAssert.AreEqual(new[] { "A", "B", "C" }, values);
@@ -44,8 +44,8 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void WriteValueTest()
 		{
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteValue(writer, "A");
 				buffer.ToString().ShouldEqual("A");
@@ -72,7 +72,7 @@ namespace Menees.Common.Tests
 			{
 				DataTable table = CreateTestTable();
 				CsvUtility.WriteTable(tableFileName, table);
-				using (DataTableReader reader = new DataTableReader(table))
+				using (DataTableReader reader = new(table))
 				{
 					CsvUtility.WriteTable(readerFileName, reader);
 				}
@@ -91,9 +91,9 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableContents);
 
-			StringBuilder readerContents = new StringBuilder();
-			using (StringWriter writer = new StringWriter(readerContents))
-			using (DataTableReader reader = new DataTableReader(table))
+			StringBuilder readerContents = new();
+			using (StringWriter writer = new(readerContents))
+			using (DataTableReader reader = new(table))
 			{
 				CsvUtility.WriteTable(writer, reader);
 			}
@@ -112,7 +112,7 @@ namespace Menees.Common.Tests
 
 		private DataTable CreateTestTable()
 		{
-			DataTable result = new DataTable();
+			DataTable result = new();
 			var columns = result.Columns;
 			int numColumns = TestData.GetLength(1);
 			for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
@@ -141,8 +141,8 @@ namespace Menees.Common.Tests
 		{
 			DataTable result = CreateTestTable();
 
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteTable(writer, result);
 			}
@@ -155,7 +155,7 @@ namespace Menees.Common.Tests
 		{
 			tableContents.ShouldEqual(readerContents);
 
-			using (StringReader reader = new StringReader(readerContents))
+			using (StringReader reader = new(readerContents))
 			{
 				IList<string> values;
 				int rowIndex = 0;
@@ -180,8 +180,8 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void WriteLineValuesTest()
 		{
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteLine(writer, new object[] { 1, "A", "B", "C", 4.2m });
 				buffer.ToString().ShouldEqual("1,A,B,C,4.2\r\n");
@@ -243,7 +243,7 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableText);
 
-			using (StringReader reader = new StringReader(tableText))
+			using (StringReader reader = new(tableText))
 			{
 				DataTable newTable = CsvUtility.ReadTable(reader);
 				TestReadTable(table, newTable);
@@ -255,7 +255,7 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableText);
 
-			using (StringReader reader = new StringReader(tableText))
+			using (StringReader reader = new(tableText))
 			{
 				DataTable newTable = CsvUtility.ReadTable(reader, preLoadTable =>
 					{

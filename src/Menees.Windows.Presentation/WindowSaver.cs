@@ -24,7 +24,7 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		public WindowSaver(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 
 			this.AutoLoad = true;
 			this.AutoSave = true;

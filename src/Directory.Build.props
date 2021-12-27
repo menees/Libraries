@@ -11,9 +11,10 @@
 		<LangVersion>latest</LangVersion>
 		<Copyright>Copyright © 2002-2021 Bill Menees</Copyright>
 
-		<!-- These paths must be relative to the projects that include the property (not to this .props file). -->
-		<CodeAnalysisRuleSet>../Menees.Libraries.ruleset</CodeAnalysisRuleSet>
-		<AssemblyOriginatorKeyFile>../Menees.Libraries.snk</AssemblyOriginatorKeyFile>
+		<RepoSrcFolder>$(MSBuildThisFileDirectory)</RepoSrcFolder>
+		<CodeAnalysisRuleSet>$(RepoSrcFolder)/Menees.Libraries.ruleset</CodeAnalysisRuleSet>
+		<AssemblyOriginatorKeyFile>$(RepoSrcFolder)/Menees.Libraries.snk</AssemblyOriginatorKeyFile>
+		<UseCustomCodeAnalyzers>true</UseCustomCodeAnalyzers>
 
 		<!-- Make the assembly, file, and NuGet package versions the same. -->
 		<Version>5.0.0</Version>
@@ -47,7 +48,7 @@
 		</AssemblyAttribute>
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="$(UseCustomCodeAnalyzers)">
 		<PackageReference Include="codecracker.CSharp" Version="1.1.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

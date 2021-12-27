@@ -36,7 +36,7 @@ namespace Menees.Diffs.Tests
 			int tableSize = 97,
 			bool favorLastMatch = false)
 		{
-			BinaryDiff diff = new BinaryDiff();
+			BinaryDiff diff = new();
 			diff.FavorLastMatch = favorLastMatch;
 			diff.FootprintLength = footprintLength;
 			diff.TableSize = tableSize;

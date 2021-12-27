@@ -111,7 +111,7 @@ namespace Menees.Windows
 			try
 			{
 				// From MS example: https://github.com/Microsoft/vs-setup-samples/blob/master/Setup.Configuration.CS/Program.cs
-				SetupConfiguration configuration = new SetupConfiguration();
+				SetupConfiguration configuration = new();
 
 				IEnumSetupInstances instanceEnumerator = configuration.EnumAllInstances();
 				int fetched;

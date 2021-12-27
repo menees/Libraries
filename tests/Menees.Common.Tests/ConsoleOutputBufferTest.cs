@@ -17,8 +17,8 @@ namespace Menees.Common.Tests
 			// We have to execute a DIR command on a directory that has something in it.
 			// If we execute a DIR command that matches no entries, then it will return
 			// exit code 1, which would fail some of our unit tests.
-			ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", @"/c dir C:\");
-			ConsoleOutputBuffer result = new ConsoleOutputBuffer(startInfo, true, waitTime);
+			ProcessStartInfo startInfo = new("cmd.exe", @"/c dir C:\");
+			ConsoleOutputBuffer result = new(startInfo, true, waitTime);
 			return result;
 		}
 

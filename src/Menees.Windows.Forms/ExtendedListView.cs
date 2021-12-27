@@ -42,8 +42,8 @@ namespace Menees.Windows.Forms
 		private const int LvmFirst = 0x1000;
 
 		private readonly Sorter sorter;
-		private readonly Dictionary<int, HeaderData> columnNumberToHeaderDataMap = new Dictionary<int, HeaderData>();
-		private readonly Dictionary<int, ListViewColumnType> columnNumberToTypeMap = new Dictionary<int, ListViewColumnType>();
+		private readonly Dictionary<int, HeaderData> columnNumberToHeaderDataMap = new();
+		private readonly Dictionary<int, ListViewColumnType> columnNumberToTypeMap = new();
 		private IComparer previousSorter;
 		private int sorterUpdateLevel;
 		private int capacity;
@@ -541,7 +541,7 @@ namespace Menees.Windows.Forms
 		/// <returns>The text representation of the list view.</returns>
 		public string GetAsText(string separator, bool includeHeaders)
 		{
-			using (StringWriter writer = new StringWriter())
+			using (StringWriter writer = new())
 			{
 				this.GetAsText(separator, includeHeaders, this.Items, writer);
 				string result = writer.ToString();

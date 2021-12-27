@@ -89,14 +89,14 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ForEachTest()
 		{
-			Exception simple = new Exception("Simple");
-			StringBuilder sb = new StringBuilder();
+			Exception simple = new("Simple");
+			StringBuilder sb = new();
 			Exceptions.ForEach(simple, (ex, depth, parent) => sb.Append(' ', depth).Append(ex.Message).AppendLine());
 			string output = sb.ToString();
 			output.ShouldEqual("Simple\r\n");
 			Trace.Write(output);
 
-			AggregateException aggregate = new AggregateException("Root",
+			AggregateException aggregate = new("Root",
 				new TaskCanceledException("FirstCancel"),
 				new TargetInvocationException("Invocation", new InvalidOperationException("Invalid")),
 				new TaskCanceledException("SecondCancel"));
@@ -110,12 +110,12 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void GetMessageTest()
 		{
-			Exception simple = new Exception("Simple");
+			Exception simple = new("Simple");
 			string output = Exceptions.GetMessage(simple);
 			output.ShouldEqual("Simple");
 			Trace.Write(output);
 
-			AggregateException aggregate = new AggregateException("Root",
+			AggregateException aggregate = new("Root",
 				new TaskCanceledException("FirstCancel"),
 				new TargetInvocationException("Invocation", new InvalidOperationException("Invalid")),
 				new TaskCanceledException("SecondCancel"));
@@ -134,6 +134,6 @@ namespace Menees.Common.Tests
 			actualMessage.ShouldEqual(expectedMessage);
 		}
 
-		private static Dictionary<string, object> CreateProperties() => new Dictionary<string, object>() { { "A", 1 }, { "B", 2 } };
+		private static Dictionary<string, object> CreateProperties() => new() { { "A", 1 }, { "B", 2 } };
 	}
 }

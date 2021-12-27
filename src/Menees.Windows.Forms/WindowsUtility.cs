@@ -192,7 +192,7 @@ namespace Menees.Windows.Forms
 		public static void ShowAboutBox(IWin32Window owner, Assembly mainAssembly, string repository = null)
 		{
 			// If an assembly wasn't provided, then we want the version of the calling assembly not the current assembly.
-			using (AboutBox dialog = new AboutBox(mainAssembly ?? Assembly.GetCallingAssembly(), repository))
+			using (AboutBox dialog = new(mainAssembly ?? Assembly.GetCallingAssembly(), repository))
 			{
 				dialog.Execute(owner);
 			}
@@ -228,7 +228,7 @@ namespace Menees.Windows.Forms
 			int? maxLength,
 			Func<string, string> validate)
 		{
-			using (InputDialog dialog = new InputDialog())
+			using (InputDialog dialog = new())
 			{
 				if (string.IsNullOrEmpty(title))
 				{
@@ -272,7 +272,7 @@ namespace Menees.Windows.Forms
 			else
 			{
 				// See if the icon contains an image of the size we want.
-				using (Icon extractedIcon = new Icon(icon, SmallIconSize))
+				using (Icon extractedIcon = new(icon, SmallIconSize))
 				{
 					if (extractedIcon.Size == SmallIconSize)
 					{
