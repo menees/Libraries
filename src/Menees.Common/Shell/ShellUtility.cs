@@ -8,6 +8,7 @@ namespace Menees.Shell
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Reflection;
+	using System.Runtime.Versioning;
 	using System.Text;
 
 	#endregion
@@ -104,15 +105,48 @@ namespace Menees.Shell
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			if (built != null)
 			{
-				sb.Append(" – ").AppendFormat("{0:d}", built.Value.ToLocalTime());
+				DateTime buildTime = built.Value;
+
+				// Debug builds usually only put a UTC date in the "BuildTime", so we don't need to localize it.
+				if (buildTime.TimeOfDay != TimeSpan.Zero || !ReflectionUtility.IsDebugBuild(assembly))
+				{
+					buildTime = buildTime.ToLocalTime();
+				}
+
+				sb.Append(" – ").AppendFormat("{0:d}", buildTime);
 			}
 
 			sb.Append(Environment.Is64BitProcess ? " – 64-bit" : " – 32-bit");
 
+			TargetFrameworkAttribute? frameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
+			if (frameworkAttribute != null && frameworkAttribute.FrameworkName.IsNotBlank())
+			{
+				// Examples:
+				// [assembly: TargetFramework(".NETCoreApp,Version=v3.1", FrameworkDisplayName = "")]
+				// [assembly: TargetFramework(".NETCoreApp,Version=v6.0", FrameworkDisplayName = "")]
+				// [assembly: TargetFramework(".NETFramework,Version=v4.5", FrameworkDisplayName = ".NET Framework 4.5")]
+				// [assembly: TargetFramework(".NETFramework,Version=v4.8", FrameworkDisplayName = ".NET Framework 4.8")]
+				// [assembly: TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
+				string frameworkName = frameworkAttribute.FrameworkName;
+				const string Prefix = ".NET";
+				int commaIndex = frameworkName.IndexOf(',');
+				if (frameworkName.StartsWith(Prefix) && commaIndex > Prefix.Length)
+				{
+					string target = frameworkName.Substring(Prefix.Length, commaIndex - Prefix.Length);
+					const string Suffix = "App";
+					if (target.EndsWith(Suffix))
+					{
+						target = target.Substring(0, target.Length - Suffix.Length);
+					}
+
+					sb.Append(" – ").Append(target);
+				}
+			}
+
 			// On Vista or later, show whether the user is running as an administrator.
 			OperatingSystem os = Environment.OSVersion;
 			const int WindowsVistaMajorVersion = 6;
-			if (os.Version >= new Version(WindowsVistaMajorVersion, 0) && ApplicationInfo.IsUserRunningAsAdministrator)
+			if (ApplicationInfo.IsWindows && os.Version >= new Version(WindowsVistaMajorVersion, 0) && ApplicationInfo.IsUserRunningAsAdministrator)
 			{
 				sb.Append(" – Administrator");
 			}

@@ -6,6 +6,7 @@ namespace Menees
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using System.Diagnostics.CodeAnalysis;
+	using System.Globalization;
 	using System.IO;
 	using System.Linq;
 	using System.Linq.Expressions;
@@ -64,9 +65,10 @@ namespace Menees
 		{
 			Conditions.RequireReference(assembly, nameof(assembly));
 
+			const DateTimeStyles UseUtc = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal;
 			DateTime? result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
 				.Where(metadata => string.Equals(metadata.Key, "BuildTime"))
-				.Select(metadata => DateTime.TryParse(metadata.Value, out DateTime value) ? value : (DateTime?)null)
+				.Select(metadata => DateTime.TryParse(metadata.Value, null, UseUtc, out DateTime value) ? value : (DateTime?)null)
 				.FirstOrDefault(value => value != null);
 
 			if (result != null)
@@ -77,6 +79,27 @@ namespace Menees
 					DateTimeKind.Local => result.Value.ToUniversalTime(),
 					_ => result.Value,
 				};
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Gets whether the assembly was built with a debug configuration.
+		/// </summary>
+		/// <param name="assembly">The assembly to check.</param>
+		/// <returns>True if the <see cref="AssemblyConfigurationAttribute"/> is present
+		/// and the configuration string contains "Debug". False otherwise.</returns>
+		public static bool IsDebugBuild(Assembly assembly)
+		{
+			Conditions.RequireReference(assembly, nameof(assembly));
+
+			bool result = false;
+
+			if (assembly != null)
+			{
+				var configuration = (AssemblyConfigurationAttribute?)assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute));
+				result = configuration?.Configuration?.Contains("Debug") ?? false;
 			}
 
 			return result;

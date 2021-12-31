@@ -11,9 +11,14 @@
 		<LangVersion>latest</LangVersion>
 		<Copyright>Copyright © 2002-$([System.DateTime]::UtcNow.ToString(`yyyy`)) Bill Menees</Copyright>
 
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<MeneesTargetNetFramework>net48</MeneesTargetNetFramework>
+		<MeneesTargetNetCoreBase>net6.0</MeneesTargetNetCoreBase>
+		<MeneesTargetNetCoreWindows>$(MeneesTargetNetCoreBase)-windows</MeneesTargetNetCoreWindows>
+
 		<RepoSrcFolder>$(MSBuildThisFileDirectory)</RepoSrcFolder>
-		<CodeAnalysisRuleSet>$(RepoSrcFolder)/Menees.Libraries.ruleset</CodeAnalysisRuleSet>
-		<AssemblyOriginatorKeyFile>$(RepoSrcFolder)/Menees.Libraries.snk</AssemblyOriginatorKeyFile>
+		<CodeAnalysisRuleSet>$(RepoSrcFolder)Menees.Libraries.ruleset</CodeAnalysisRuleSet>
+		<AssemblyOriginatorKeyFile>$(RepoSrcFolder)Menees.Libraries.snk</AssemblyOriginatorKeyFile>
 		<UseCustomCodeAnalyzers>true</UseCustomCodeAnalyzers>
 		<Nullable>enable</Nullable>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -21,11 +26,6 @@
 
 		<!-- Make the assembly, file, and NuGet package versions the same. -->
 		<Version>5.0.0</Version>
-
-		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<MeneesTargetNetFramework>net48</MeneesTargetNetFramework>
-		<MeneesTargetNetCoreBase>net6.0</MeneesTargetNetCoreBase>
-		<MeneesTargetNetCoreWindows>net6.0-windows</MeneesTargetNetCoreWindows>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -45,10 +45,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition="'$(BuildTime)' != ''">
-			<_Parameter1>BuildTime</_Parameter1>
-			<_Parameter2>$(BuildTime)</_Parameter2>
-		</AssemblyAttribute>
+		<AssemblyMetadata Condition="'$(BuildTime)' != ''" Include="BuildTime" Value="$(BuildTime)" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UseCustomCodeAnalyzers)">

@@ -48,5 +48,19 @@ namespace Menees.Common.Tests
 				built.Value.TimeOfDay.ShouldBe(TimeSpan.Zero);
 			}
 		}
+
+		[TestMethod]
+		public void IsDebugBuildTest()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			bool expected;
+#if DEBUG
+			expected = true;
+#else
+			expected = false;
+#endif
+
+			ReflectionUtility.IsDebugBuild(assembly).ShouldBe(expected);
+		}
 	}
 }

@@ -119,7 +119,7 @@ namespace Menees
 		/// This depends on the applicationAssembly parameter passed to <see cref="Initialize"/>.
 		/// If <see cref="Initialize"/>, hasn't been called, then this depends on the current assembly.
 		/// </remarks>
-		public static bool IsDebugBuild => isDebugBuild ?? IsDebugAssembly(typeof(ApplicationInfo).Assembly);
+		public static bool IsDebugBuild => isDebugBuild ?? ReflectionUtility.IsDebugBuild(typeof(ApplicationInfo).Assembly);
 
 		#endregion
 
@@ -181,7 +181,7 @@ namespace Menees
 			// Since apps refer to this library via NuGet references, they'll always use the release build of this library.
 			// So we'll check the main assembly's build configuration via reflection instead of using a compile-time constant.
 			Assembly assembly = applicationAssembly ?? Assembly.GetEntryAssembly() ?? typeof(ApplicationInfo).Assembly;
-			isDebugBuild = IsDebugAssembly(assembly);
+			isDebugBuild = ReflectionUtility.IsDebugBuild(assembly);
 
 			// Call SetErrorMode to disable the display of Windows Shell modal error dialogs for
 			// file not found, Windows Error Reporting, and other errors.  From SetErrorMode docs
@@ -248,19 +248,6 @@ namespace Menees
 		#region Private Methods
 
 		static partial void InitializeTargetFramework();
-
-		private static bool IsDebugAssembly(Assembly assembly)
-		{
-			bool result = false;
-
-			if (assembly != null)
-			{
-				var configuration = (AssemblyConfigurationAttribute?)assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute));
-				result = configuration?.Configuration?.Contains("Debug") ?? false;
-			}
-
-			return result;
-		}
 
 		#endregion
 	}

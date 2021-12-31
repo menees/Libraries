@@ -33,6 +33,13 @@ namespace Menees.Common.Tests
 
 			// Runtime bitness check from https://stackoverflow.com/a/3782556/1882616.
 			string expected = "Version 1.2.3 – " + built.Value.ToLocalTime().ToShortDateString() + " – " + 8 * IntPtr.Size + "-bit";
+
+#if NETFRAMEWORK
+			expected += " – Framework";
+#elif NETCOREAPP
+			expected += " – Core";
+#endif
+
 			if (ApplicationInfo.IsUserRunningAsAdministrator)
 			{
 				expected += " – Administrator";
