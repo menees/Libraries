@@ -175,7 +175,7 @@ namespace Menees.Windows
 			"Microsoft.Usage",
 			"CA2201:DoNotRaiseReservedExceptionTypes",
 			Justification = "We have to use PreserveSig, check for S_OK or ERROR_CANCELLED, and throw otherwise.")]
-		internal static string? SelectFolder(IntPtr? ownerHandle, string title, string initialFolder)
+		internal static string? SelectFolder(IntPtr? ownerHandle, string? title, string? initialFolder)
 		{
 			// This uses the "new" IFileDialog implementation rather than the old, awful SHBrowseForFolder dialog.
 			// This implementation was pieced together from several C# and C++ examples:
@@ -210,7 +210,7 @@ namespace Menees.Windows
 				dialog.SetDefaultFolder(currentDirectoryItem);
 			}
 
-			if (!string.IsNullOrEmpty(initialFolder))
+			if (initialFolder.IsNotEmpty())
 			{
 				IShellItem? initialFolderItem = GetShellItemForPath(initialFolder);
 				if (initialFolderItem != null)
@@ -219,7 +219,7 @@ namespace Menees.Windows
 				}
 			}
 
-			if (!string.IsNullOrEmpty(title))
+			if (title.IsNotEmpty())
 			{
 				dialog.SetTitle(title);
 			}

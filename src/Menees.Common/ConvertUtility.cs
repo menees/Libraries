@@ -115,7 +115,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="value">The value to check.</param>
 		/// <returns>True if the value is null or DBNull.Value.  False otherwise.</returns>
-		public static bool IsNull(object? value)
+		public static bool IsNull([NotNullWhen(false)] object? value)
 		{
 			bool result = value == null || value == DBNull.Value;
 			return result;

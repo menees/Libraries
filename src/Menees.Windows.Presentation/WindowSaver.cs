@@ -146,7 +146,7 @@ namespace Menees.Windows.Presentation
 
 			if (!string.IsNullOrEmpty(this.SettingsNodeName))
 			{
-				result = result.GetSubNode(this.SettingsNodeName, createIfNotFound);
+				result = createIfNotFound ? result.GetSubNode(this.SettingsNodeName) : result.TryGetSubNode(this.SettingsNodeName);
 			}
 
 			return result;

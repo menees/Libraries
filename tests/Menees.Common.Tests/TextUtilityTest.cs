@@ -93,6 +93,9 @@ namespace Menees.Common.Tests
 			actual = TextUtility.SplitIntoTokens(" A , B , C ").ToArray();
 			CollectionAssert.AreEqual(new[] { "A", "B", "C" }, actual);
 
+			actual = TextUtility.SplitIntoTokens(",, ,").ToArray();
+			CollectionAssert.AreEqual(new[] { "", "", "", "" }, actual);
+
 			actual = TextUtility.SplitIntoTokens("a=A; b=B;' c=C;See '; d=D", ';', '\'', true).ToArray();
 			CollectionAssert.AreEqual(new[] { "a=A", "b=B", "c=C;See", "d=D" }, actual);
 

@@ -201,13 +201,16 @@ namespace Menees
 			public ISettingsNode? ParentNode => this.parent;
 
 			public string GetValue(string settingName, string defaultValue)
+				=> this.GetValueN(settingName, defaultValue) ?? defaultValue;
+
+			public string? GetValueN(string settingName, string? defaultValue)
 			{
-				string result = defaultValue;
+				string? result = defaultValue;
 
 				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
-					result = settingElement.GetAttributeValue("Value", defaultValue);
+					result = settingElement.GetAttributeValueN("Value", defaultValue);
 				}
 
 				return result;
@@ -305,11 +308,18 @@ namespace Menees
 				}
 			}
 
-			public ISettingsNode? GetSubNode(string nodeNameOrPath, bool createIfNotFound)
+			public ISettingsNode GetSubNode(string nodeNameOrPath)
+			{
+				XElement subElement = this.GetSubNodeElement(nodeNameOrPath, true)!;
+				FileSettingsNode result = new(subElement, this);
+				return result;
+			}
+
+			public ISettingsNode? TryGetSubNode(string nodeNameOrPath)
 			{
 				FileSettingsNode? result = null;
 
-				XElement? subElement = this.GetSubNodeElement(nodeNameOrPath, createIfNotFound);
+				XElement? subElement = this.GetSubNodeElement(nodeNameOrPath, false);
 				if (subElement != null)
 				{
 					result = new FileSettingsNode(subElement, this);

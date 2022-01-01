@@ -112,7 +112,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError(Window,string)"/> to be called.</param>
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly? applicationAssembly = null)
+		public static void InitializeApplication(string applicationName, Action<Exception>? showException, Assembly? applicationAssembly = null)
 		{
 			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly(), () => HandleUtility.IsApplicationActivated);
 
@@ -144,7 +144,8 @@ namespace Menees.Windows.Presentation
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user cancelled).</returns>
-		public static string? SelectFolder(DependencyObject owner, string title, string initialFolder) => SelectFolder(GetWindow(owner), title, initialFolder);
+		public static string? SelectFolder(DependencyObject owner, string? title, string? initialFolder)
+			=> SelectFolder(GetWindow(owner), title, initialFolder);
 
 		/// <summary>
 		/// Selects a file system path and allows the user to type in a path if necessary.
@@ -153,7 +154,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user cancelled).</returns>
-		public static string? SelectFolder(Window? owner, string title, string initialFolder)
+		public static string? SelectFolder(Window? owner, string? title, string? initialFolder)
 			=> HandleUtility.SelectFolder(TryGetHandle(owner), title, initialFolder);
 
 		/// <summary>

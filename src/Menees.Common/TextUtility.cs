@@ -138,18 +138,11 @@ namespace Menees
 		/// <returns>The string with the substring instances replaced.</returns>
 		/// <exception cref="ArgumentNullException">If <paramref name="text"/> or <paramref name="oldValue"/>
 		/// are null or empty.</exception>
-		public static string Replace(string text, string oldValue, string newValue, StringComparison comparisonType)
+		public static string Replace(string text, string oldValue, string? newValue, StringComparison comparisonType)
 		{
 			// Note: It's ok if newValue is null or empty.
-			if (string.IsNullOrEmpty(text))
-			{
-				throw Exceptions.NewArgumentNullException(nameof(text));
-			}
-
-			if (string.IsNullOrEmpty(oldValue))
-			{
-				throw Exceptions.NewArgumentNullException(nameof(oldValue));
-			}
+			Conditions.RequireString(text, nameof(text));
+			Conditions.RequireString(oldValue, nameof(oldValue));
 
 			string result = text;
 			int currentIndex = text.IndexOf(oldValue, comparisonType);

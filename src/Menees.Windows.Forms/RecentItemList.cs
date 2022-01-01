@@ -386,14 +386,14 @@ namespace Menees.Windows.Forms
 		{
 			Conditions.RequireReference(baseNode, nameof(baseNode));
 
-			ISettingsNode? settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
+			ISettingsNode? settingsNode = baseNode.TryGetSubNode(this.SettingsNodeName);
 			if (settingsNode != null)
 			{
 				int itemIndex = 0;
 				while (true)
 				{
-					string item = settingsNode.GetValue(itemIndex.ToString(), string.Empty);
-					if (item.Length == 0)
+					string? item = settingsNode.GetValue(itemIndex.ToString(), string.Empty);
+					if (item.IsEmpty())
 					{
 						break;
 					}
@@ -401,14 +401,14 @@ namespace Menees.Windows.Forms
 					this.items.Add(item);
 
 					// Load any custom values if they exist.
-					ISettingsNode? valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", false);
+					ISettingsNode? valuesNode = settingsNode.TryGetSubNode(itemIndex + "_Values");
 					if (valuesNode != null)
 					{
 						int count = valuesNode.GetValue(nameof(this.Count), 0);
 						string[] values = new string[count];
 						for (int stringIndex = 0; stringIndex < count; stringIndex++)
 						{
-							values[stringIndex] = valuesNode.GetValue(stringIndex.ToString(), string.Empty);
+							values[stringIndex] = valuesNode.GetValue(stringIndex.ToString(), string.Empty) ?? string.Empty;
 						}
 
 						this.itemToValuesMap[item] = values;
@@ -430,14 +430,14 @@ namespace Menees.Windows.Forms
 			Conditions.RequireReference(baseNode, nameof(baseNode));
 
 			// Clear out any old settings.
-			ISettingsNode? settingsNode = baseNode.GetSubNode(this.SettingsNodeName, false);
+			ISettingsNode? settingsNode = baseNode.TryGetSubNode(this.SettingsNodeName);
 			if (settingsNode != null)
 			{
 				baseNode.DeleteSubNode(this.SettingsNodeName);
 			}
 
 			// (Re)Create the section key.
-			settingsNode = baseNode.GetSubNode(this.SettingsNodeName, true);
+			settingsNode = baseNode.GetSubNode(this.SettingsNodeName);
 			if (settingsNode != null)
 			{
 				int numItems = this.items.Count;
@@ -450,7 +450,7 @@ namespace Menees.Windows.Forms
 					this.itemToValuesMap.TryGetValue(item, out IEnumerable<string>? values);
 					if (values != null)
 					{
-						ISettingsNode valuesNode = settingsNode.GetSubNode(itemIndex + "_Values", true)!;
+						ISettingsNode valuesNode = settingsNode.GetSubNode(itemIndex + "_Values")!;
 						int count = values.Count();
 						valuesNode.SetValue(nameof(this.Count), count);
 						int stringIndex = 0;

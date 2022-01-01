@@ -84,7 +84,7 @@ namespace Menees.Windows.Forms
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError"/> to be called.</param>
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly? applicationAssembly = null)
+		public static void InitializeApplication(string applicationName, Action<Exception>? showException, Assembly? applicationAssembly = null)
 		{
 			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly(), () => HandleUtility.IsApplicationActivated);
 
@@ -123,7 +123,7 @@ namespace Menees.Windows.Forms
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user canceled).</returns>
-		public static string? SelectFolder(IWin32Window? owner, string title, string initialFolder)
+		public static string? SelectFolder(IWin32Window? owner, string? title, string? initialFolder)
 		{
 			IntPtr? ownerHandle = owner != null ? owner.Handle : (IntPtr?)null;
 			string? result = HandleUtility.SelectFolder(ownerHandle, title, initialFolder);

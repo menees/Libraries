@@ -231,13 +231,13 @@ namespace Menees
 		/// </summary>
 		/// <param name="writer">The writer to write to.</param>
 		/// <param name="values">The values to write.</param>
-		public static void WriteLine(TextWriter writer, IEnumerable<object> values)
+		public static void WriteLine(TextWriter writer, IEnumerable<object?> values)
 		{
 			Conditions.RequireReference(writer, nameof(writer));
 			Conditions.RequireReference(values, nameof(values));
 
 			bool firstValue = true;
-			foreach (object value in values)
+			foreach (object? value in values)
 			{
 				WriteValue(writer, value, firstValue);
 				if (firstValue)
@@ -373,7 +373,7 @@ namespace Menees
 
 		#region Private Methods
 
-		private static void WriteValue(TextWriter writer, object value, bool firstValueInLine)
+		private static void WriteValue(TextWriter writer, object? value, bool firstValueInLine)
 		{
 			if (!firstValueInLine)
 			{

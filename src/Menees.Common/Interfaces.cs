@@ -53,6 +53,14 @@ namespace Menees
 		string GetValue(string settingName, string defaultValue);
 
 		/// <summary>
+		/// Gets a setting's value as a string.
+		/// </summary>
+		/// <param name="settingName">The name of a setting.</param>
+		/// <param name="defaultValue">The default value to return if the setting isn't found.</param>
+		/// <returns>The setting's current value or the default value.</returns>
+		string? GetValueN(string settingName, string? defaultValue);
+
+		/// <summary>
 		/// Sets a setting's value as a string.
 		/// </summary>
 		/// <param name="settingName">The name of a new or existing setting.</param>
@@ -131,14 +139,18 @@ namespace Menees
 		void DeleteSubNode(string nodeNameOrPath);
 
 		/// <summary>
-		/// Gets an existing sub-node or optionally creates a new sub-node with the specified name.
+		/// Gets an existing sub-node or creates a new sub-node with the specified name.
 		/// </summary>
 		/// <param name="nodeNameOrPath">The name or '\'-separated path of a sub-node.</param>
-		/// <param name="createIfNotFound">Whether a new sub-node should be created using
-		/// <paramref name="nodeNameOrPath"/> if one doesn't already exist.</param>
-		/// <returns>An existing node if one is found, or a new node if <paramref name="createIfNotFound"/>
-		/// is true, or null otherwise.</returns>
-		ISettingsNode? GetSubNode(string nodeNameOrPath, bool createIfNotFound);
+		/// <returns>An existing node if one is found or a new node if necessary.</returns>
+		ISettingsNode GetSubNode(string nodeNameOrPath);
+
+		/// <summary>
+		/// Gets a sub-node if it already exists.
+		/// </summary>
+		/// <param name="nodeNameOrPath">The name or '\'-separated path of a sub-node.</param>
+		/// <returns>An existing node if one is found, or null otherwise.</returns>
+		ISettingsNode? TryGetSubNode(string nodeNameOrPath);
 
 		#endregion
 	}
