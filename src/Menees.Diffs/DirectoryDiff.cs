@@ -18,7 +18,7 @@ namespace Menees.Diffs
 		private readonly bool showOnlyInA;
 		private readonly bool showOnlyInB;
 		private readonly bool showSame;
-		private readonly DirectoryDiffFileFilter filter;
+		private readonly DirectoryDiffFileFilter? filter;
 		private readonly FileSystemInfoComparer comparer;
 
 		#endregion
@@ -32,7 +32,7 @@ namespace Menees.Diffs
 			bool showSame,
 			bool recursive,
 			bool ignoreDirectoryComparison,
-			DirectoryDiffFileFilter filter)
+			DirectoryDiffFileFilter? filter)
 			: this(
 				showOnlyInA,
 				showOnlyInB,
@@ -52,7 +52,7 @@ namespace Menees.Diffs
 			bool showSame,
 			bool recursive,
 			bool ignoreDirectoryComparison,
-			DirectoryDiffFileFilter filter,
+			DirectoryDiffFileFilter? filter,
 			StringComparison nameComparison)
 		{
 			this.showOnlyInA = showOnlyInA;
