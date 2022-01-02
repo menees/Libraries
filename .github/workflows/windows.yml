@@ -13,7 +13,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: windows-2022
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1
+      uses: microsoft/setup-msbuild@v1.1
       
     - name: Restore NuGet packages
       run: msbuild Libraries.sln /p:Configuration=Release /t:Restore
