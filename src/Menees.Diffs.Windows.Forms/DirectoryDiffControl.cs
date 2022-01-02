@@ -43,9 +43,9 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Events
 
-		public event EventHandler RecompareNeeded;
+		public event EventHandler? RecompareNeeded;
 
-		public event EventHandler<DifferenceEventArgs> ShowFileDifferences;
+		public event EventHandler<DifferenceEventArgs>? ShowFileDifferences;
 
 		#endregion
 
@@ -58,7 +58,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			get
 			{
-				DirectoryDiffEntry entry = this.SelectedEntry;
+				DirectoryDiffEntry? entry = this.SelectedEntry;
 				bool result = entry != null && entry.IsFile && entry.InA && entry.InB && this.ShowFileDifferences != null;
 				return result;
 			}
@@ -134,12 +134,12 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Private Properties
 
-		private DirectoryDiffEntry SelectedEntry
+		private DirectoryDiffEntry? SelectedEntry
 		{
 			get
 			{
 				TreeNode selectedNode = this.TreeB.Focused ? this.TreeB.SelectedNode : this.TreeA.SelectedNode;
-				DirectoryDiffEntry result = DirectoryDiffTreeView.GetEntryForNode(selectedNode);
+				DirectoryDiffEntry? result = DirectoryDiffTreeView.GetEntryForNode(selectedNode);
 				return result;
 			}
 		}
@@ -154,7 +154,7 @@ namespace Menees.Diffs.Windows.Forms
 
 			if (this.CanRecompare)
 			{
-				this.RecompareNeeded(this, EventArgs.Empty);
+				this.RecompareNeeded?.Invoke(this, EventArgs.Empty);
 				result = true;
 			}
 
@@ -192,13 +192,18 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			if (this.CanShowDifferences)
 			{
-				DirectoryDiffEntry entry = this.SelectedEntry;
+				DirectoryDiffEntry? entry = this.SelectedEntry;
+				if (entry != null)
+				{
+					GetNodes(entry, out TreeNode? nodeA, out TreeNode? nodeB);
+					if (nodeA != null && nodeB != null)
+					{
+						string fileA = this.TreeA.GetFullNameForNode(nodeA);
+						string fileB = this.TreeB.GetFullNameForNode(nodeB);
 
-				GetNodes(entry, out TreeNode nodeA, out TreeNode nodeB);
-				string fileA = this.TreeA.GetFullNameForNode(nodeA);
-				string fileB = this.TreeB.GetFullNameForNode(nodeB);
-
-				this.ShowFileDifferences(this, new DifferenceEventArgs(fileA, fileB));
+						this.ShowFileDifferences?.Invoke(this, new DifferenceEventArgs(fileA, fileB));
+					}
+				}
 			}
 		}
 
@@ -214,10 +219,10 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Private Methods
 
-		private static void GetNodes(DirectoryDiffEntry entry, out TreeNode nodeA, out TreeNode nodeB)
+		private static void GetNodes(DirectoryDiffEntry entry, out TreeNode? nodeA, out TreeNode? nodeB)
 		{
-			nodeA = (TreeNode)entry.TagA;
-			nodeB = (TreeNode)entry.TagB;
+			nodeA = (TreeNode?)entry.TagA;
+			nodeB = (TreeNode?)entry.TagB;
 		}
 
 		private static bool IsScrollingKey(KeyEventArgs e)
@@ -242,43 +247,43 @@ namespace Menees.Diffs.Windows.Forms
 			return result;
 		}
 
-		private void Recompare_Click(object sender, EventArgs e)
+		private void Recompare_Click(object? sender, EventArgs e)
 		{
 			this.Recompare();
 		}
 
-		private void ShowDifferences_Click(object sender, EventArgs e)
+		private void ShowDifferences_Click(object? sender, EventArgs e)
 		{
 			this.ShowDifferences();
 		}
 
-		private void View_Click(object sender, EventArgs e)
+		private void View_Click(object? sender, EventArgs e)
 		{
 			this.View();
 		}
 
 		[SuppressMessage("Design", "CC0091:Use static method", Justification = "Windows Forms designer prefers non-static.")]
-		private void ColorLegend_Paint(object sender, PaintEventArgs e)
+		private void ColorLegend_Paint(object? sender, PaintEventArgs e)
 		{
 			DiffControl.PaintColorLegendItem(sender as ToolStripItem, e);
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			this.UpdateColors();
 		}
 
-		private void DirDiffControl_SizeChanged(object sender, EventArgs e)
+		private void DirDiffControl_SizeChanged(object? sender, EventArgs e)
 		{
 			this.pnlLeft.Width = (this.Width - this.Splitter.Width) / 2;
 		}
 
 		private void SyncTreeViewScrollPositions(DirectoryDiffTreeView source)
 		{
-			DirectoryDiffEntry entry = DirectoryDiffTreeView.GetEntryForNode(source.TopNode);
+			DirectoryDiffEntry? entry = DirectoryDiffTreeView.GetEntryForNode(source.TopNode);
 			if (entry != null)
 			{
-				GetNodes(entry, out TreeNode nodeA, out TreeNode nodeB);
+				GetNodes(entry, out TreeNode? nodeA, out TreeNode? nodeB);
 				if (nodeA != null && nodeB != null)
 				{
 					this.TreeA.TopNode = nodeA;
@@ -308,12 +313,12 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void TreeA_MouseWheelMsg(object sender, EventArgs e)
+		private void TreeA_MouseWheelMsg(object? sender, EventArgs e)
 		{
 			this.SyncTreeViewScrollPositions(this.TreeA);
 		}
 
-		private void TreeA_VScroll(object sender, EventArgs e)
+		private void TreeA_VScroll(object? sender, EventArgs e)
 		{
 			this.SyncTreeViewScrollPositions(this.TreeA);
 		}
@@ -327,22 +332,22 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void TreeB_MouseWheelMsg(object sender, EventArgs e)
+		private void TreeB_MouseWheelMsg(object? sender, EventArgs e)
 		{
 			this.SyncTreeViewScrollPositions(this.TreeB);
 		}
 
-		private void TreeB_VScroll(object sender, EventArgs e)
+		private void TreeB_VScroll(object? sender, EventArgs e)
 		{
 			this.SyncTreeViewScrollPositions(this.TreeB);
 		}
 
 		private void TreeNode_SelectChanged(object sender, TreeViewEventArgs e)
 		{
-			DirectoryDiffEntry entry = DirectoryDiffTreeView.GetEntryForNode(e.Node);
+			DirectoryDiffEntry? entry = DirectoryDiffTreeView.GetEntryForNode(e.Node);
 			if (entry != null)
 			{
-				GetNodes(entry, out TreeNode nodeA, out TreeNode nodeB);
+				GetNodes(entry, out TreeNode? nodeA, out TreeNode? nodeB);
 				if (nodeA != null && nodeB != null)
 				{
 					this.TreeA.SelectedNode = nodeA;
@@ -356,10 +361,10 @@ namespace Menees.Diffs.Windows.Forms
 		[SuppressMessage("Design", "CC0091:Use static method", Justification = "Windows Forms designer prefers non-static.")]
 		private void TreeNode_StateChange(object sender, TreeViewEventArgs e)
 		{
-			DirectoryDiffEntry entry = DirectoryDiffTreeView.GetEntryForNode(e.Node);
+			DirectoryDiffEntry? entry = DirectoryDiffTreeView.GetEntryForNode(e.Node);
 			if (entry != null)
 			{
-				GetNodes(entry, out TreeNode nodeA, out TreeNode nodeB);
+				GetNodes(entry, out TreeNode? nodeA, out TreeNode? nodeB);
 				if (nodeA != null && nodeB != null)
 				{
 					if (e.Action == TreeViewAction.Collapse)
@@ -394,14 +399,14 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void TreeView_DoubleClick(object sender, EventArgs e)
+		private void TreeView_DoubleClick(object? sender, EventArgs e)
 		{
 			this.ShowDifferences();
 		}
 
-		private void TreeView_Enter(object sender, EventArgs e)
+		private void TreeView_Enter(object? sender, EventArgs e)
 		{
-			this.activeTree = (DirectoryDiffTreeView)sender;
+			this.activeTree = (DirectoryDiffTreeView)sender!;
 			this.UpdateButtons();
 		}
 

@@ -27,8 +27,8 @@
 		private const string DefaultFindCaption = "Find In Output";
 		private const int RichTextBoxDefaultTabStopWidth = 36; // From ITextDocument.DefaultTabStop
 
-		private readonly List<int> highlights = new List<int>();
-		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new Dictionary<Guid, int>();
+		private readonly List<int> highlights = new();
+		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new();
 		private int indentWidth;
 
 		#endregion
@@ -179,7 +179,7 @@
 		/// Gets or sets a delegate that can remove a custom line prefix after a line is double-clicked
 		/// and before the line's file reference is parsed and opened.
 		/// </summary>
-		public Func<string, string> RemoveLinePrefix { get; set; }
+		public Func<string, string>? RemoveLinePrefix { get; set; }
 
 		/// <summary>
 		/// Gets or sets the pixel width of each output window indent and tab stop.
@@ -259,7 +259,7 @@
 		/// <returns>True if the find text was found and selected.  False otherwise.</returns>
 		public bool Find(FindData findData, FindMode findMode)
 		{
-			TextBoxFinder finder = new TextBoxFinder(this.output);
+			TextBoxFinder finder = new(this.output);
 			bool result = finder.Find(this.OwnerWindow, findData, findMode);
 			return result;
 		}
@@ -423,7 +423,7 @@
 
 		private void RichTextBox_LinkClicked(object sender, LinkClickedEventArgs e)
 		{
-			WindowsUtility.ShellExecute(this.OwnerWindow, e.LinkText);
+			WindowsUtility.ShellExecute(this.OwnerWindow, e.LinkText ?? string.Empty);
 		}
 
 		#endregion
@@ -535,7 +535,7 @@
 		{
 			bool result = false;
 
-			using (var doc = new ComInterfaceRef<ITextDocument>((ITextDocument)this.output.GetOleInterface()))
+			using (var doc = new ComInterfaceRef<ITextDocument>((ITextDocument?)this.output.GetOleInterface()))
 			{
 				if (doc.Ref != null)
 				{
@@ -631,7 +631,7 @@
 		{
 			#region Constructors
 
-			public ComInterfaceRef(T reference)
+			public ComInterfaceRef(T? reference)
 			{
 				this.Ref = reference;
 			}
@@ -640,7 +640,7 @@
 
 			#region Public Properties
 
-			public T Ref { get; private set; }
+			public T? Ref { get; private set; }
 
 			#endregion
 

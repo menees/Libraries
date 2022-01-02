@@ -28,7 +28,7 @@
 		{
 			#region Private Data Members
 
-			private static readonly Dictionary<string, string> SpecialCases = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+			private static readonly Dictionary<string, string> SpecialCases = new(StringComparer.OrdinalIgnoreCase)
 			{
 				// These should all be in lowercase (for PreserveCase logic).
 				{ "deer", "deer" },
@@ -47,50 +47,49 @@
 			// https://github.com/Microsoft/referencesource/blob/master/System.Data.Entity.Design/...
 			//  ... System/Data/Entity/Design/PluralizationService/EnglishPluralizationService.cs
 			[SuppressMessage("Design", "MEN010:Avoid magic numbers", Justification = "The length values are clear in context.")]
-			public static string MakePlural(string word)
+			[return: NotNullIfNotNull("word")]
+			public static string? MakePlural(string? word)
 			{
-				string result;
+				string? result = word;
 
-				int length = word?.Length ?? 0;
+				if (word.IsNotEmpty())
+				{
+					if (SpecialCases.TryGetValue(word, out string? plural))
+					{
+						result = plural;
+					}
+					else if (IsSuffix(word, "ss", "ch"))
+					{
+						result = word + "es";
+					}
+					else if (IsSuffix(word, "rix", "dex"))
+					{
+						result = Prefix(word, -2) + "ices";
+					}
+					else if (IsSuffix(word, "man"))
+					{
+						result = Prefix(word, -2) + "en";
+					}
+					else if (IsSuffix(word, "ay", "ey", "iy", "oy", "uy"))
+					{
+						result = word + "s";
+					}
+					else if (IsSuffix(word, "y"))
+					{
+						result = Prefix(word, -1) + "ies";
+					}
+					else if (!IsSuffix(word, "s"))
+					{
+						result = word + "s";
+					}
+					else
+					{
+						result = word;
+					}
 
-				if (length == 0)
-				{
-					result = word;
-				}
-				else if (SpecialCases.TryGetValue(word, out string plural))
-				{
-					result = plural;
-				}
-				else if (IsSuffix(word, "ss", "ch"))
-				{
-					result = word + "es";
-				}
-				else if (IsSuffix(word, "rix", "dex"))
-				{
-					result = Prefix(word, -2) + "ices";
-				}
-				else if (IsSuffix(word, "man"))
-				{
-					result = Prefix(word, -2) + "en";
-				}
-				else if (IsSuffix(word, "ay", "ey", "iy", "oy", "uy"))
-				{
-					result = word + "s";
-				}
-				else if (IsSuffix(word, "y"))
-				{
-					result = Prefix(word, -1) + "ies";
-				}
-				else if (!IsSuffix(word, "s"))
-				{
-					result = word + "s";
-				}
-				else
-				{
-					result = word;
+					result = PreserveCase(word, result);
 				}
 
-				result = PreserveCase(word, result);
 				return result;
 			}
 

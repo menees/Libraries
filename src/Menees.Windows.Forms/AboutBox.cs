@@ -28,7 +28,7 @@
 
 		#region Constructors
 
-		public AboutBox(Assembly callingAssembly, string repository)
+		public AboutBox(Assembly callingAssembly, string? repository)
 		{
 			this.InitializeComponent();
 
@@ -46,7 +46,7 @@
 
 		#region Public Methods
 
-		public void Execute(IWin32Window owner)
+		public void Execute(IWin32Window? owner)
 		{
 			bool useDesktopAsOwner = owner == null;
 
@@ -93,9 +93,12 @@
 
 			if (this.icon.Image == null)
 			{
-				using (Icon appIcon = Icon.ExtractAssociatedIcon(ApplicationInfo.ExecutableFile))
+				using (Icon? appIcon = Icon.ExtractAssociatedIcon(ApplicationInfo.ExecutableFile))
 				{
-					this.icon.Image = appIcon.ToBitmap();
+					if (appIcon != null)
+					{
+						this.icon.Image = appIcon.ToBitmap();
+					}
 				}
 			}
 
@@ -106,7 +109,7 @@
 
 		#region Private Methods
 
-		private void VisitLink(LinkLabel linkLabel, string linkUrl = null)
+		private void VisitLink(LinkLabel linkLabel, string? linkUrl = null)
 		{
 			if (WindowsUtility.ShellExecute(this, linkUrl ?? linkLabel.Text))
 			{
@@ -134,10 +137,10 @@
 
 		private void UpdateChecker_DoWork(object sender, DoWorkEventArgs e)
 		{
-			Release latest = Release.FindGithubLatest(this.repository);
+			Release? latest = Release.FindGithubLatest(this.repository);
 			if (latest != null)
 			{
-				Version appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
+				Version? appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
 				if (latest.Version > appVersion)
 				{
 					e.Result = latest;

@@ -30,11 +30,11 @@ namespace Menees.Windows.Diagnostics
 			Conditions.RequireString(query, nameof(query));
 			Conditions.RequireReference(recordAction, nameof(recordAction));
 
-			using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", query))
+			using (ManagementObjectSearcher searcher = new("root\\CIMV2", query))
 			{
 				foreach (ManagementObject wmiObject in searcher.Get())
 				{
-					using (WmiRecord record = new WmiRecord(wmiObject))
+					using (WmiRecord record = new(wmiObject))
 					{
 						recordAction(record);
 					}
@@ -58,11 +58,11 @@ namespace Menees.Windows.Diagnostics
 			bool result = true;
 			if (!TryAction(() =>
 				{
-					using (ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2", query))
+					using (ManagementObjectSearcher searcher = new("root\\CIMV2", query))
 					{
 						foreach (ManagementObject wmiObject in searcher.Get())
 						{
-							using (WmiRecord record = new WmiRecord(wmiObject))
+							using (WmiRecord record = new(wmiObject))
 							{
 								if (!TryAction(() => recordAction(record)))
 								{

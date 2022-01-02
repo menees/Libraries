@@ -20,7 +20,7 @@
 	{
 		#region Private Data Members
 
-		private Func<string, string> validate;
+		private Func<string, string>? validate;
 
 		#endregion
 
@@ -35,12 +35,12 @@
 
 		#region Public Methods
 
-		public string Execute(
-			Window owner,
+		public string? Execute(
+			Window? owner,
 			string prompt,
-			string defaultValue,
+			string? defaultValue,
 			int? maxLength,
-			Func<string, string> validate)
+			Func<string, string>? validate)
 		{
 			this.prompt.Text = prompt;
 			this.value.Text = defaultValue;
@@ -58,7 +58,7 @@
 				this.ShowInTaskbar = true;
 			}
 
-			string result = null;
+			string? result = null;
 			if (this.ShowDialog() ?? false)
 			{
 				result = this.value.Text;
@@ -73,9 +73,9 @@
 
 		private void OKClicked(object sender, RoutedEventArgs e)
 		{
-			string error = this.validate?.Invoke(this.value.Text);
+			string? error = this.validate?.Invoke(this.value.Text);
 
-			if (string.IsNullOrEmpty(error))
+			if (error.IsEmpty())
 			{
 				this.DialogResult = true;
 			}

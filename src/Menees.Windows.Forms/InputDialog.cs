@@ -16,7 +16,7 @@ namespace Menees.Windows.Forms
 	{
 		#region Private Data Members
 
-		private Func<string, string> validate;
+		private Func<string, string>? validate;
 
 		#endregion
 
@@ -31,12 +31,12 @@ namespace Menees.Windows.Forms
 
 		#region Public Methods
 
-		public string Execute(
-			IWin32Window owner,
+		public string? Execute(
+			IWin32Window? owner,
 			string prompt,
-			string defaultValue,
+			string? defaultValue,
 			int? maxLength,
-			Func<string, string> validate)
+			Func<string, string>? validate)
 		{
 			this.prompt.Text = prompt;
 			this.value.Text = defaultValue;
@@ -53,7 +53,7 @@ namespace Menees.Windows.Forms
 				this.ShowInTaskbar = true;
 			}
 
-			string result = null;
+			string? result = null;
 			if (this.ShowDialog(owner) == DialogResult.OK)
 			{
 				result = this.value.Text;

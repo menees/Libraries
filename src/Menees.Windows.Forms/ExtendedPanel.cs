@@ -84,7 +84,7 @@ namespace Menees.Windows.Forms
 			if (this.UseVisualStyleBorder)
 			{
 				Rectangle rectClient = this.ClientRectangle;
-				Rectangle rectBorder = new Rectangle(rectClient.X, rectClient.Y, rectClient.Width - 1, rectClient.Height - 1);
+				Rectangle rectBorder = new(rectClient.X, rectClient.Y, rectClient.Width - 1, rectClient.Height - 1);
 				if (Application.RenderWithVisualStyles)
 				{
 					ControlPaint.DrawVisualStyleBorder(e.Graphics, rectBorder);

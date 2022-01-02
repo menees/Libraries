@@ -75,7 +75,7 @@ namespace Menees
 		internal static string GetModuleFileName(IntPtr module)
 		{
 			const int BufferSize = 32768;
-			StringBuilder sb = new StringBuilder(BufferSize);
+			StringBuilder sb = new(BufferSize);
 			uint result = GetModuleFileName(module, sb, sb.Capacity);
 			if (result == 0)
 			{
@@ -134,7 +134,7 @@ namespace Menees
 				for (int i = 0; i < numberOfArgs; i++)
 				{
 					IntPtr lpwstr = Marshal.ReadIntPtr(ptrToSplitArgs, i * IntPtr.Size);
-					splitArgs[i] = Marshal.PtrToStringUni(lpwstr);
+					splitArgs[i] = Marshal.PtrToStringUni(lpwstr)!;
 				}
 
 				return splitArgs;
@@ -147,9 +147,9 @@ namespace Menees
 			}
 		}
 
-		internal static string GetShellFileTypeAndIcon(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr> useIconHandle)
+		internal static string? GetShellFileTypeAndIcon(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr>? useIconHandle)
 		{
-			Conditions.RequireString(fileName, () => fileName);
+			Conditions.RequireString(fileName, nameof(fileName));
 			Conditions.RequireArgument(
 				(iconOptions == IconOptions.None && useIconHandle == null) || (iconOptions != IconOptions.None && useIconHandle != null),
 				"The iconOptions and useIconHandle arguments must be compatible.");
@@ -205,7 +205,7 @@ namespace Menees
 				}
 			}
 
-			string result = null;
+			string? result = null;
 			if (SHGetFileInfo(fileName, fileAttributes, out info, (uint)cbFileInfo, flags) != IntPtr.Zero)
 			{
 				result = info.szTypeName;
@@ -252,7 +252,6 @@ namespace Menees
 		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private struct SHFILEINFO
 		{
-#pragma warning disable CC0074 // Make field readonly
 			public IntPtr hIcon;
 			public int iIcon;
 			public uint dwAttributes;
@@ -262,7 +261,6 @@ namespace Menees
 
 			[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
 			public string szTypeName;
-#pragma warning restore CC0074 // Make field readonly
 		}
 
 		#endregion

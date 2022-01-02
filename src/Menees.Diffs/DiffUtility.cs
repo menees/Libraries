@@ -59,7 +59,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetFileTextLines(string fileName)
 		{
-			using (StreamReader reader = new StreamReader(fileName, Encoding.Default, true))
+			using (StreamReader reader = new(fileName, Encoding.Default, true))
 			{
 				return GetTextLines(reader);
 			}
@@ -67,7 +67,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetStringTextLines(string text)
 		{
-			using (StringReader reader = new StringReader(text))
+			using (StringReader reader = new(text))
 			{
 				return GetTextLines(reader);
 			}
@@ -79,8 +79,11 @@ namespace Menees.Diffs
 
 			while (reader.Peek() > -1)
 			{
-				string line = reader.ReadLine();
-				result.Add(line);
+				string? line = reader.ReadLine();
+				if (line != null)
+				{
+					result.Add(line);
+				}
 			}
 
 			return result;
@@ -88,7 +91,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetXmlTextLines(string fileName, bool ignoreInsignificantWhiteSpace)
 		{
-			using (StreamReader reader = new StreamReader(fileName, Encoding.Default, true))
+			using (StreamReader reader = new(fileName, Encoding.Default, true))
 			{
 				return GetXmlTextLines(reader, ignoreInsignificantWhiteSpace);
 			}
@@ -96,7 +99,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetXmlTextLines(XmlReader reader)
 		{
-			XmlWriterSettings settings = new XmlWriterSettings
+			XmlWriterSettings settings = new()
 			{
 				CheckCharacters = false,
 				CloseOutput = true,
@@ -105,7 +108,7 @@ namespace Menees.Diffs
 				NewLineOnAttributes = true,
 			};
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb = new();
 			using (XmlWriter writer = XmlWriter.Create(sb, settings))
 			{
 				writer.WriteNode(reader, false);
@@ -117,7 +120,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetXmlTextLinesFromXml(string xml, bool ignoreInsignificantWhiteSpace)
 		{
-			using (StringReader reader = new StringReader(xml))
+			using (StringReader reader = new(xml))
 			{
 				return GetXmlTextLines(reader, ignoreInsignificantWhiteSpace);
 			}
@@ -140,7 +143,7 @@ namespace Menees.Diffs
 			// auto-detection logic.
 			bool detectedEncoding;
 			const int BufferSize = 1024;
-			using (StreamReader reader = new StreamReader(stream, Encoding.Default, true, BufferSize, leaveOpen: true))
+			using (StreamReader reader = new(stream, Encoding.Default, true, BufferSize, leaveOpen: true))
 			{
 				reader.Read(); // We have to force a Read for it to auto-detect.
 				detectedEncoding = reader.CurrentEncoding != Encoding.Default;
@@ -173,7 +176,7 @@ namespace Menees.Diffs
 
 		private static IList<string> GetXmlTextLines(TextReader textReader, bool ignoreInsignificantWhitespace)
 		{
-			XmlReaderSettings settings = new XmlReaderSettings
+			XmlReaderSettings settings = new()
 			{
 				CheckCharacters = false,
 				CloseInput = true,

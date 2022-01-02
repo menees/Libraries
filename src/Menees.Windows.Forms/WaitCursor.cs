@@ -14,11 +14,8 @@ namespace Menees.Windows.Forms
 	{
 		#region Private Data Members
 
-		private readonly Cursor previous;
-
-#pragma warning disable CA2213 // WaitCursor doesn't own control, so it shouldn't call Dispose on it.
-		private readonly Control control;
-#pragma warning restore CA2213
+		private readonly Cursor? previous;
+		private readonly Control? control;
 
 		#endregion
 
@@ -28,7 +25,7 @@ namespace Menees.Windows.Forms
 		/// Creates a new instance for the specified control.
 		/// </summary>
 		/// <param name="control">The control whose Cursor property should be changed.</param>
-		public WaitCursor(Control control)
+		public WaitCursor(Control? control)
 		{
 			this.control = control;
 
@@ -103,9 +100,9 @@ namespace Menees.Windows.Forms
 
 		#region Private Methods
 
-		private void SetCursor(Cursor newCursor)
+		private void SetCursor(Cursor? newCursor)
 		{
-			bool useWaitCursor = newCursor == Cursors.WaitCursor;
+			bool useWaitCursor = newCursor is not null && newCursor == Cursors.WaitCursor;
 
 			if (this.control != null)
 			{

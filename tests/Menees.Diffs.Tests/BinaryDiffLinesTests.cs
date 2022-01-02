@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Linq;
 
 namespace Menees.Diffs.Tests
@@ -19,8 +19,8 @@ namespace Menees.Diffs.Tests
 			AddCopyCollection ac = BinaryDiffTests.Diff(baseText, "The second one", footprintLength: 4);
 			BinaryDiffTests.Check(ac, false, true, false);
 
-			using MemoryStream baseStream = new MemoryStream(Encoding.UTF8.GetBytes(baseText));
-			BinaryDiffLines lines = new BinaryDiffLines(baseStream, ac, 4);
+			using MemoryStream baseStream = new(Encoding.UTF8.GetBytes(baseText));
+			BinaryDiffLines lines = new(baseStream, ac, 4);
 			Check(lines.BaseLines,
 				"00000000    54 68 65 20    The ",
 				"00000004    66 69 72 73    firs",

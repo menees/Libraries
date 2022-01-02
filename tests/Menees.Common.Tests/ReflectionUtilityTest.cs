@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -13,118 +14,53 @@ namespace Menees.Common.Tests
 		public void GetCopyrightTest()
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
-			string actual = ReflectionUtility.GetCopyright(asm);
-			actual.ShouldEqual("Copyright For Unit Test");
+			string? actual = ReflectionUtility.GetCopyright(asm);
+			actual.ShouldBe("Copyright For Unit Test");
 		}
 
 		[TestMethod]
 		public void GetVersionTest()
 		{
 			Assembly asm = Assembly.GetExecutingAssembly();
-			Version actual = ReflectionUtility.GetVersion(asm);
-			actual.ShouldEqual(Version.Parse("1.2.3.0"));
+			Version? actual = ReflectionUtility.GetVersion(asm);
+			actual.ShouldBe(Version.Parse("1.2.3.0"));
 
 			actual = ReflectionUtility.GetVersion(typeof(ReflectionUtility).Assembly);
+			actual.ShouldNotBeNull();
 			actual.CompareTo(Version.Parse("4.9.10")).ShouldBeGreaterThanOrEqualTo(0, "Common Version >= 4.9.10");
-		}
-
-		[TestMethod]
-		public void GetNameOfTest()
-		{
-			GetNameOfTester test = new GetNameOfTester();
-			test.TestGetNameOf("Must pass a parameter for testing.");
-		}
-
-		[TestMethod]
-		public void GetNameOfCallerTest()
-		{
-			string actual = ReflectionUtility.GetNameOfCaller();
-			actual.ShouldEqual("GetNameOfCallerTest");
-
-			GetNameOfTester.CallerName.ShouldEqual("CallerName");
-		}
-
-		private sealed class GetNameOfTester
-		{
-			private readonly string name;
-
-			public GetNameOfTester()
-			{
-				this.name = "Tester";
-			}
-
-			public static string CallerName
-			{
-				get
-				{
-					string result = ReflectionUtility.GetNameOfCaller();
-					return result;
-				}
-			}
-
-			public string Name => this.name;
-
-			public void SayHello()
-			{
-				this.SayHelloTo(this.name);
-			}
-
-			public void SayHelloTo(string target)
-			{
-				Log.Info(typeof(GetNameOfTester), "Hello, " + target);
-			}
-
-			public double GetSqrtPi() => Math.Sqrt(Math.PI);
-
-			public void TestGetNameOf(string paramName)
-			{
-				// Get the name of a local variable.
-				int localVariable = 0;
-				string actual = ReflectionUtility.GetNameOf(() => localVariable);
-				actual.ShouldEqual("localVariable");
-
-				// Get the name of a parameter.
-				actual = ReflectionUtility.GetNameOf(() => paramName);
-				actual.ShouldEqual("paramName");
-
-				// Get the name of a property.
-				actual = ReflectionUtility.GetNameOf(() => Name);
-				actual.ShouldEqual("Name");
-
-				// Get the name of a field.
-				actual = ReflectionUtility.GetNameOf(() => name);
-				actual.ShouldEqual("name");
-
-				// Get the name of a method.
-				actual = ReflectionUtility.GetNameOf(() => SayHello());
-				actual.ShouldEqual("SayHello");
-				actual = ReflectionUtility.GetNameOf(() => SayHelloTo("Bill"));
-				actual.ShouldEqual("SayHelloTo");
-				actual = ReflectionUtility.GetNameOf(() => GetSqrtPi());
-				actual.ShouldEqual("GetSqrtPi");
-
-				// Get the name of a type.
-				actual = ReflectionUtility.GetNameOf<GetNameOfTester>();
-				actual.ShouldEqual("GetNameOfTester");
-			}
 		}
 
 		[TestMethod]
 		public void GetBuildTimeTest()
 		{
-			// The Menees.Common.Tests assembly is built with Deterministic = false, so it will have a build time.
+			// The Menees.Common.Tests assembly is built with a hardcoded build time.
 			Assembly assembly = Assembly.GetExecutingAssembly();
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			built.ShouldNotBeNull("Menees.Common.Tests assembly");
-			FileInfo fileInfo = new FileInfo(assembly.Location);
-			fileInfo.Exists.ShouldBeTrue();
-			DateTime lastWriteTimeUtc = fileInfo.LastWriteTimeUtc;
-			TimeSpan timeDiff = lastWriteTimeUtc - built.Value;
-			Math.Abs(timeDiff.TotalSeconds).ShouldBeLessThan(60);
+			DateTime expected = DateTime.Parse("2021-12-26 17:50:00Z", null, DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal);
+			built.ShouldBe(expected);
 
-			// The Menees.Common assembly is built with Deterministic = true, so it will NOT have a build time.
+			// The Menees.Common assembly is built with a date in debug builds and a datetime in release builds.
 			built = ReflectionUtility.GetBuildTime(typeof(Conditions).Assembly);
-			built.ShouldBeNull("Menees.Common assembly");
+			built.ShouldNotBeNull("Menees.Common assembly");
+			if (ApplicationInfo.IsDebugBuild)
+			{
+				built.Value.TimeOfDay.ShouldBe(TimeSpan.Zero);
+			}
+		}
+
+		[TestMethod]
+		public void IsDebugBuildTest()
+		{
+			Assembly assembly = Assembly.GetExecutingAssembly();
+			bool expected;
+#if DEBUG
+			expected = true;
+#else
+			expected = false;
+#endif
+
+			ReflectionUtility.IsDebugBuild(assembly).ShouldBe(expected);
 		}
 	}
 }

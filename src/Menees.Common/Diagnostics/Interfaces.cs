@@ -5,6 +5,7 @@ namespace Menees.Diagnostics
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Linq;
 	using System.Text;
 
@@ -43,7 +44,7 @@ namespace Menees.Diagnostics
 		/// <summary>
 		/// Tries to get the value associated with the specified key.
 		/// </summary>
-		bool TryGetValue<T>(string key, out T value);
+		bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T? value);
 	}
 
 	#endregion

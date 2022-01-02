@@ -70,10 +70,15 @@ namespace Menees.Common.Tests
 			Assert.AreEqual("Testing", actual);
 			actual = element.GetAttributeValue("missing", "Default");
 			Assert.AreEqual("Default", actual);
+		}
 
-			actual = element.GetAttributeValue("empty", "Default", true);
+		[TestMethod()]
+		public void GetAttributeValueStringNTest()
+		{
+			XElement element = GetXElement();
+			string? actual = element.GetAttributeValueN("empty", "Default", true);
 			Assert.AreEqual("Default", actual);
-			actual = element.GetAttributeValue("empty", "Default", false);
+			actual = element.GetAttributeValueN("empty", "Default", false);
 			Assert.AreEqual("", actual);
 		}
 
@@ -87,7 +92,7 @@ namespace Menees.Common.Tests
 			string badSchemaText = schemaText.Replace("<xs:attribute name='empty' type='xs:string' use='required' />", "<xs:attribute name='empty' type='xs:string' use='unknown' />");
 			XElement badSchemaElement = XElement.Parse(badSchemaText, LoadOptions.SetLineInfo);
 
-			List<ValidationEventArgs> errors = new List<ValidationEventArgs>();
+			List<ValidationEventArgs> errors = new();
 			schema = XmlUtility.CreateSchemaSet(new[] { badSchemaElement }, errors);
 			Assert.IsNotNull(schema);
 			Assert.AreEqual(1, errors.Count);

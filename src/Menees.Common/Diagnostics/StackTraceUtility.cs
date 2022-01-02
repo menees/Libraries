@@ -16,7 +16,7 @@ namespace Menees.Diagnostics
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<Type> SkipTypes = new HashSet<Type>
+		private static readonly HashSet<Type> SkipTypes = new()
 		{
 			typeof(StackTraceUtility), typeof(Conditions), typeof(Log), typeof(Exceptions),
 		};
@@ -28,15 +28,18 @@ namespace Menees.Diagnostics
 		public static string CaptureSourceStackTrace(string indentPrefix)
 		{
 			// We can't use Environment.StackTrace because it won't ignore our SkipTypes.
-			StackFrame[] frames = CaptureSourceStack(true, false);
+			StackFrame?[] frames = CaptureSourceStack(true, false);
 			const int FrameSizeEstimate = 50;
-			StringBuilder sb = new StringBuilder(FrameSizeEstimate * frames.Length);
+			StringBuilder sb = new(FrameSizeEstimate * frames.Length);
 
-			foreach (StackFrame frame in frames)
+			foreach (StackFrame? frame in frames)
 			{
-				sb.Append(indentPrefix);
-				Append(sb, frame);
-				sb.AppendLine();
+				if (frame != null)
+				{
+					sb.Append(indentPrefix);
+					Append(sb, frame);
+					sb.AppendLine();
+				}
 			}
 
 			string result = sb.ToString();
@@ -47,10 +50,10 @@ namespace Menees.Diagnostics
 		{
 			string result = string.Empty;
 
-			MethodBase method = FindSourceMethodBase();
+			MethodBase? method = FindSourceMethodBase();
 			if (method != null)
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				Append(sb, method);
 				result = sb.ToString();
 			}
@@ -63,57 +66,61 @@ namespace Menees.Diagnostics
 		/// </summary>
 		public static string GetFullName(Type type, bool includeGenericArguments)
 		{
-			// If we have a nested type, then we need to go all the way up to the top-level type.
-			Stack<Type> typeStack = new Stack<Type>();
-			do
+			StringBuilder sb = new();
+
+			if (type != null)
 			{
-				typeStack.Push(type);
-				type = type.DeclaringType;
-			}
-			while (type != null);
-			Debug.Assert(typeStack.Count >= 1, "Type stack must be non-empty.");
-
-			StringBuilder sb = new StringBuilder();
-
-			// Append the root type's namespace, which could be empty.
-			type = typeStack.Pop();
-			sb.Append(type.Namespace);
-
-			// Append each type's name.
-			do
-			{
-				if (sb.Length > 0)
+				// If we have a nested type, then we need to go all the way up to the top-level type.
+				Stack<Type> typeStack = new();
+				Type? currentType = type;
+				do
 				{
-					sb.Append('.');
+					typeStack.Push(currentType);
+					currentType = currentType.DeclaringType;
 				}
+				while (currentType != null);
+				Debug.Assert(typeStack.Count >= 1, "Type stack must be non-empty.");
 
-				string name = type.Name;
-				if (type.IsGenericType)
+				// Append the root type's namespace, which could be empty.
+				currentType = typeStack.Pop();
+				sb.Append(currentType.Namespace);
+
+				// Append each type's name.
+				do
 				{
-					// In Reflection, generic type names contain a tick mark and the number of generic parameters.
-					// I'm stripping the tick marked portion off because it isn't there in C# declarations or usage.
-					int tickPos = name.IndexOf('`');
-					if (tickPos >= 0)
+					if (sb.Length > 0)
 					{
-						name = name.Substring(0, tickPos);
+						sb.Append('.');
 					}
 
-					sb.Append(name);
-
-					if (includeGenericArguments)
+					string name = currentType.Name;
+					if (currentType.IsGenericType)
 					{
-						AppendGenericArguments(sb, type.GetGenericArguments());
-					}
-				}
-				else
-				{
-					sb.Append(name);
-				}
+						// In Reflection, generic type names contain a tick mark and the number of generic parameters.
+						// I'm stripping the tick marked portion off because it isn't there in C# declarations or usage.
+						int tickPos = name.IndexOf('`');
+						if (tickPos >= 0)
+						{
+							name = name.Substring(0, tickPos);
+						}
 
-				// Get the next type off the stack.
-				type = typeStack.Count > 0 ? typeStack.Pop() : null;
+						sb.Append(name);
+
+						if (includeGenericArguments)
+						{
+							AppendGenericArguments(sb, currentType.GetGenericArguments());
+						}
+					}
+					else
+					{
+						sb.Append(name);
+					}
+
+					// Get the next type off the stack.
+					currentType = typeStack.Count > 0 ? typeStack.Pop() : null;
+				}
+				while (currentType != null);
 			}
-			while (type != null);
 
 			return sb.ToString();
 		}
@@ -122,10 +129,10 @@ namespace Menees.Diagnostics
 		{
 			Type result = defaultSourceType;
 
-			MethodBase method = FindSourceMethodBase();
+			MethodBase? method = FindSourceMethodBase();
 			if (method != null)
 			{
-				Type declaringType = method.DeclaringType;
+				Type? declaringType = method.DeclaringType;
 				if (declaringType != null)
 				{
 					// Some .NET methods may not have a declaring type (e.g., in C++).
@@ -144,7 +151,7 @@ namespace Menees.Diagnostics
 		{
 			// Most of this code was ripped off from System.Diagnostics.StackTrace.ToString()
 			// because StackFrame.ToString() returns horrible output.
-			MethodBase baseMethod = frame.GetMethod();
+			MethodBase? baseMethod = frame.GetMethod();
 			if (baseMethod != null)
 			{
 				sb.Append("at ");
@@ -154,7 +161,7 @@ namespace Menees.Diagnostics
 				// Append the debug information if we can get it.
 				if (frame.GetILOffset() != -1)
 				{
-					string fileName = null;
+					string? fileName = null;
 					try
 					{
 						fileName = frame.GetFileName();
@@ -189,7 +196,7 @@ namespace Menees.Diagnostics
 			// using Reflector, but I've made a few minor tweaks notated in the comments.
 
 			// Append the type and method names.
-			Type type = baseMethod.DeclaringType;
+			Type? type = baseMethod.DeclaringType;
 			if (type != null)
 			{
 				sb.Append(GetFullName(type, true));
@@ -199,7 +206,7 @@ namespace Menees.Diagnostics
 			sb.Append(baseMethod.Name);
 
 			// Append any generic method arguments.
-			MethodInfo baseInfo = baseMethod as MethodInfo;
+			MethodInfo? baseInfo = baseMethod as MethodInfo;
 			if (baseInfo != null && baseInfo.IsGenericMethod)
 			{
 				// Like <T> for Array.Resize<T>.
@@ -247,22 +254,22 @@ namespace Menees.Diagnostics
 			sb.Append(">");
 		}
 
-		private static StackFrame[] CaptureSourceStack(bool needFileInfo, bool topFrameOnly)
+		private static StackFrame?[] CaptureSourceStack(bool needFileInfo, bool topFrameOnly)
 		{
-			StackTrace st = new StackTrace(1, needFileInfo);
+			StackTrace st = new(1, needFileInfo);
 			int frameCount = st.FrameCount;
 			int sourceStartIndex = frameCount;
 
 			for (int i = 0; i < frameCount; i++)
 			{
-				StackFrame frame = st.GetFrame(i);
+				StackFrame? frame = st.GetFrame(i);
 				if (frame != null)
 				{
-					MethodBase method = frame.GetMethod();
+					MethodBase? method = frame.GetMethod();
 					if (method != null)
 					{
 						// Some .NET methods may not have a declaring type (e.g., in C++).
-						Type currentType = method.DeclaringType;
+						Type? currentType = method.DeclaringType;
 						if (currentType == null || !SkipTypes.Contains(currentType))
 						{
 							sourceStartIndex = i;
@@ -278,25 +285,25 @@ namespace Menees.Diagnostics
 				sourceFrameCount = 1;
 			}
 
-			StackFrame[] result = new StackFrame[sourceFrameCount];
+			StackFrame?[] result = new StackFrame[sourceFrameCount];
 			if (sourceFrameCount > 0)
 			{
-				StackFrame[] allFrames = st.GetFrames();
+				StackFrame?[] allFrames = st.GetFrames();
 				Array.Copy(allFrames, sourceStartIndex, result, 0, sourceFrameCount);
 			}
 
 			return result;
 		}
 
-		private static MethodBase FindSourceMethodBase()
+		private static MethodBase? FindSourceMethodBase()
 		{
-			MethodBase result = null;
+			MethodBase? result = null;
 
-			StackFrame[] frames = CaptureSourceStack(false, true);
+			StackFrame?[] frames = CaptureSourceStack(false, true);
 			if (frames.Length > 0)
 			{
-				StackFrame frame = frames[0];
-				result = frame.GetMethod();
+				StackFrame? frame = frames[0];
+				result = frame?.GetMethod();
 			}
 
 			return result;

@@ -29,7 +29,7 @@ namespace Menees
 		/// An XmlSchemaException will be thrown if an error occurs.
 		/// </remarks>
 		public static XmlSchemaSet CreateSchemaSet(IEnumerable<XElement> schemaElements)
-			=> CreateSchemaSet(schemaElements, (ValidationEventHandler)null);
+			=> CreateSchemaSet(schemaElements, (ValidationEventHandler?)null);
 
 		/// <summary>
 		///  Creates a new XmlSchemaSet from the XElement containing the schema and stores
@@ -51,7 +51,7 @@ namespace Menees
 		/// <param name="handler">The handler used to process errors and warnings.  This can be null,
 		/// which means an XmlSchemaException will be thrown if an error occurs.</param>
 		/// <returns>The new XmlSchemaSet instance.</returns>
-		public static XmlSchemaSet CreateSchemaSet(IEnumerable<XElement> schemaElements, ValidationEventHandler handler)
+		public static XmlSchemaSet CreateSchemaSet(IEnumerable<XElement> schemaElements, ValidationEventHandler? handler)
 		{
 			Conditions.RequireReference(schemaElements, nameof(schemaElements));
 
@@ -59,14 +59,17 @@ namespace Menees
 			// will modify it.  To use it thread-safely, we have to create the XmlSchemaSet too, and even then
 			// the resulting set is only thread-safe if it's used from a validating reader (which our Validate does).
 			// http://blogs.msdn.com/b/marcelolr/archive/2009/03/16/xmlschema-and-xmlschemaset-thread-safety.aspx
-			XmlSchemaSet result = new XmlSchemaSet();
+			XmlSchemaSet result = new();
 
 			foreach (XElement schemaElement in schemaElements)
 			{
 				using (XmlReader reader = schemaElement.CreateReader())
 				{
-					XmlSchema schema = XmlSchema.Read(reader, handler);
-					result.Add(schema);
+					XmlSchema? schema = XmlSchema.Read(reader, handler);
+					if (schema != null)
+					{
+						result.Add(schema);
+					}
 				}
 			}
 
@@ -87,10 +90,14 @@ namespace Menees
 		/// or if the specified attribute isn't found.</exception>
 		public static string GetAttributeValue(this XElement element, XName name)
 		{
-			string result = GetAttributeValue(element, name, null);
+			string? result = GetAttributeValueN(element, name, null, false);
 			if (result == null)
 			{
 				throw Exceptions.NewArgumentException($"The {element.Name} element does not have a {name} attribute.");
+			}
+			else if (string.IsNullOrEmpty(result))
+			{
+				throw Exceptions.NewArgumentException($"The {element.Name} element has an empty {name} attribute.");
 			}
 
 			return result;
@@ -104,42 +111,7 @@ namespace Menees
 		/// <param name="defaultValue">The value to return if the attribute isn't found or has an empty value.</param>
 		/// <returns>The value of the attribute, or the default value if the attribute isn't found or has an empty value.</returns>
 		public static string GetAttributeValue(this XElement element, XName name, string defaultValue)
-			=> GetAttributeValue(element, name, defaultValue, true);
-
-		/// <summary>
-		/// Gets the specified attribute's value or a default value if the attribute isn't present.
-		/// </summary>
-		/// <param name="element">The element to get the attribute from.</param>
-		/// <param name="name">The name of the attribute to read.</param>
-		/// <param name="defaultValue">The value to return if the attribute isn't found.</param>
-		/// <param name="useDefaultIfEmptyValue">If the attribute is present but with an empty value,
-		/// then this parameter determines whether the <paramref name="defaultValue"/> should be
-		/// returned (if true) or the actual, empty attribute value should be returned (if false).
-		/// Normally, this should be true, but false is useful if you need to allow the user to explicitly
-		/// set an empty attribute value to override a non-empty default value.
-		/// </param>
-		/// <returns>The value of the attribute, or the default value if the attribute isn't found.</returns>
-		public static string GetAttributeValue(this XElement element, XName name, string defaultValue, bool useDefaultIfEmptyValue)
-		{
-			// It's ok if defaultValue is null.
-			Conditions.RequireReference(element, nameof(element));
-			Conditions.RequireReference(name, nameof(name));
-
-			string result = defaultValue;
-
-			XAttribute attr = element.Attribute(name);
-			if (attr != null)
-			{
-				result = attr.Value;
-
-				if (useDefaultIfEmptyValue && string.IsNullOrEmpty(result))
-				{
-					result = defaultValue;
-				}
-			}
-
-			return result;
-		}
+			=> GetAttributeValueN(element, name, defaultValue, true)!;
 
 		/// <summary>
 		/// Gets the specified attribute's value or a default value if the attribute isn't present.
@@ -150,7 +122,7 @@ namespace Menees
 		/// <returns>The value of the attribute, or the default value if the attribute isn't found.</returns>
 		public static int GetAttributeValue(this XElement element, XName name, int defaultValue)
 		{
-			string textValue = element.GetAttributeValue(name, null);
+			string? textValue = element.GetAttributeValueN(name, null);
 			int result = ConvertUtility.ToInt32(textValue, defaultValue);
 			return result;
 		}
@@ -164,7 +136,7 @@ namespace Menees
 		/// <returns>The value of the attribute, or the default value if the attribute isn't found.</returns>
 		public static bool GetAttributeValue(this XElement element, XName name, bool defaultValue)
 		{
-			string textValue = element.GetAttributeValue(name, null);
+			string? textValue = element.GetAttributeValueN(name, null);
 			bool result = ConvertUtility.ToBoolean(textValue, defaultValue);
 			return result;
 		}
@@ -179,8 +151,53 @@ namespace Menees
 		public static T GetAttributeValue<T>(this XElement element, XName name, T defaultValue)
 			where T : struct
 		{
-			string textValue = element.GetAttributeValue(name, null);
+			string? textValue = element.GetAttributeValueN(name, null);
 			T result = ConvertUtility.GetValue(textValue, defaultValue);
+			return result;
+		}
+
+		/// <summary>
+		/// Gets the specified attribute's value or a default value if the attribute isn't present or is empty.
+		/// </summary>
+		/// <param name="element">The element to get the attribute from.</param>
+		/// <param name="name">The name of the attribute to read.</param>
+		/// <param name="defaultValue">The value to return if the attribute isn't found or has an empty value.</param>
+		/// <returns>The value of the attribute, or the default value if the attribute isn't found or has an empty value.</returns>
+		public static string? GetAttributeValueN(this XElement element, XName name, string? defaultValue)
+			=> GetAttributeValueN(element, name, defaultValue, true);
+
+		/// <summary>
+		/// Gets the specified attribute's value or a default value if the attribute isn't present.
+		/// </summary>
+		/// <param name="element">The element to get the attribute from.</param>
+		/// <param name="name">The name of the attribute to read.</param>
+		/// <param name="defaultValue">The value to return if the attribute isn't found.</param>
+		/// <param name="useDefaultIfEmptyValue">If the attribute is present but with an empty value,
+		/// then this parameter determines whether the <paramref name="defaultValue"/> should be
+		/// returned (if true) or the actual, empty attribute value should be returned (if false).
+		/// Normally, this should be true, but false is useful if you need to allow the user to explicitly
+		/// set an empty attribute value to override a non-empty default value.
+		/// </param>
+		/// <returns>The value of the attribute, or the default value if the attribute isn't found.</returns>
+		public static string? GetAttributeValueN(this XElement element, XName name, string? defaultValue, bool useDefaultIfEmptyValue)
+		{
+			// It's ok if defaultValue is null.
+			Conditions.RequireReference(element, nameof(element));
+			Conditions.RequireReference(name, nameof(name));
+
+			string? result = defaultValue;
+
+			XAttribute? attr = element.Attribute(name);
+			if (attr != null)
+			{
+				result = attr.Value;
+
+				if (useDefaultIfEmptyValue && string.IsNullOrEmpty(result))
+				{
+					result = defaultValue;
+				}
+			}
+
 			return result;
 		}
 
@@ -195,7 +212,7 @@ namespace Menees
 			IList<ValidationEventArgs> errors = xml.Validate(schemas);
 			if (errors.Count > 0)
 			{
-				StringBuilder sb = new StringBuilder();
+				StringBuilder sb = new();
 				foreach (var error in errors)
 				{
 					if (sb.Length > 0)
@@ -240,7 +257,7 @@ namespace Menees
 					}
 				}
 
-				XmlSchemaValidationException result = new XmlSchemaValidationException(sb.ToString());
+				XmlSchemaValidationException result = new(sb.ToString());
 				result.Data.Add("ValidationErrors", errors);
 				throw Exceptions.Log(result);
 			}
@@ -257,9 +274,9 @@ namespace Menees
 			Conditions.RequireReference(xml, nameof(xml));
 			Conditions.RequireReference(schemas, "schema");
 
-			List<ValidationEventArgs> result = new List<ValidationEventArgs>();
+			List<ValidationEventArgs> result = new();
 
-			XmlReaderSettings settings = new XmlReaderSettings
+			XmlReaderSettings settings = new()
 			{
 				Schemas = schemas,
 				ValidationType = ValidationType.Schema,

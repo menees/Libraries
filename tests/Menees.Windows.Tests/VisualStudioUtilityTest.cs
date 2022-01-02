@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Windows.Tests
 {
@@ -20,12 +20,12 @@ namespace Menees.Windows.Tests
 		public void OpenFileTest()
 		{
 			// This has to call a method so the compiler can fill in the [CallerFilePath] and [CallerLineNumber] parameters.
-			TestOpenFile();
+			VisualStudioUtilityTest.TestOpenFile();
 		}
 
-		private void TestOpenFile([CallerFilePath] string sourceFilePath = null, [CallerLineNumber] int sourceLineNumber = 0)
+		private static void TestOpenFile([CallerFilePath] string? sourceFilePath = null, [CallerLineNumber] int sourceLineNumber = 0)
 		{
-			if (AffectUI && !string.IsNullOrEmpty(sourceFilePath) && File.Exists(sourceFilePath))
+			if (AffectUI && sourceFilePath.IsNotEmpty() && File.Exists(sourceFilePath))
 			{
 				Process[] processes = Process.GetProcessesByName("DevEnv");
 				if (processes.Length > 0)
@@ -50,8 +50,8 @@ namespace Menees.Windows.Tests
 			// Try to make this unit test work for 20 years or so (assuming 2 year release cycles).
 			for (int vsMajorVersion = 15; vsMajorVersion <= 25; vsMajorVersion++)
 			{
-				string vsExePath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.exe", vsMajorVersion, vsMajorVersion);
-				string vsComPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.com", vsMajorVersion, vsMajorVersion);
+				string? vsExePath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.exe", vsMajorVersion, vsMajorVersion);
+				string? vsComPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.com", vsMajorVersion, vsMajorVersion);
 				if (File.Exists(vsExePath))
 				{
 					File.Exists(vsComPath).ShouldBeTrue("DevEnv.com should exist since DevEnv.exe exists.");
@@ -63,20 +63,20 @@ namespace Menees.Windows.Tests
 				}
 			}
 
-			string foundVersionPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DoesNotExist.exe", foundVersion, foundVersion, true);
+			string? foundVersionPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DoesNotExist.exe", foundVersion, foundVersion, true);
 			foundVersionPath.ShouldBeNull($"Version {foundVersion} exists, but the requested path doesn't exist.");
 
 			foundVersionPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DoesNotExist.exe", foundVersion, foundVersion, false);
 			foundVersionPath.ShouldNotBeNull($"Version {foundVersion} exists, and the path can be resolved (but doesn't exist).");
 
-			string missingVersionPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.exe", missingVersion, missingVersion);
+			string? missingVersionPath = VisualStudioUtility.ResolvePath(ver => @"Common7\IDE\DevEnv.exe", missingVersion, missingVersion);
 			missingVersionPath.ShouldBeNull($"Version {missingVersion} doesn't exist.");
 		}
 
 		[TestMethod]
 		public void ResolvePathMsBuildTest()
 		{
-			string msBuildPath = VisualStudioUtility.ResolvePath(version =>
+			string? msBuildPath = VisualStudioUtility.ResolvePath(version =>
 				{
 					string versionPath = version.Major == VisualStudioUtility.VS2017MajorVersion ? $"{VisualStudioUtility.VS2017MajorVersion}.0" : "Current";
 					return $@"MSBuild\{versionPath}\Bin\Roslyn";

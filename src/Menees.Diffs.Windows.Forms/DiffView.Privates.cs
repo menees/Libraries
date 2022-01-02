@@ -27,20 +27,20 @@
 			TextFormatFlags.PreserveGraphicsClipping | TextFormatFlags.PreserveGraphicsTranslateTransform |
 			TextFormatFlags.SingleLine | TextFormatFlags.NoPrefix | TextFormatFlags.NoPadding | TextFormatFlags.TextBoxControl;
 
-		private static readonly Size MaxSize = new Size(int.MaxValue, int.MaxValue);
+		private static readonly Size MaxSize = new(int.MaxValue, int.MaxValue);
 
 		private readonly BorderStyle borderStyle = BorderStyle.Fixed3D;
 		private readonly Timer autoScrollTimer;
 		private bool capturedMouse;
 		private bool showWhitespace;
-		private Caret caret;
+		private Caret? caret;
 		private int charWidth = 1;
 		private int gutterWidth = 1;
 		private int horizontalAutoScrollAmount;
 		private int lineHeight = 1;
 		private int verticalAutoScrollAmount;
 		private int wheelDelta;
-		private DiffViewLines lines;
+		private DiffViewLines? lines;
 		private DiffViewPosition position;
 		private DiffViewPosition selectionStart = DiffViewPosition.Empty;
 		private string gutterFormat = "{0}";
@@ -103,7 +103,7 @@
 			return result.Width;
 		}
 
-		private void AutoScrollTimer_Tick(object sender, EventArgs e)
+		private void AutoScrollTimer_Tick(object? sender, EventArgs e)
 		{
 			this.VScrollPos += this.verticalAutoScrollAmount;
 			this.HScrollPos += this.horizontalAutoScrollAmount;
@@ -124,7 +124,7 @@
 			}
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			// The colors and/or tab width changed.
 			this.UpdateTextMetrics(true);
@@ -140,7 +140,7 @@
 		{
 			if (deadSpace)
 			{
-				using (Brush deadBrush = DiffOptions.TryCreateDeadSpaceBrush(brush.Color))
+				using (Brush? deadBrush = DiffOptions.TryCreateDeadSpaceBrush(brush.Color))
 				{
 					// If hatching is turned off, then we have to fallback to the solid brush.
 					g.FillRectangle(deadBrush ?? brush, this.gutterWidth, y, this.ClientSize.Width, this.lineHeight);
@@ -271,7 +271,7 @@
 				// extra work until the user requests to see the changed line.  It's still
 				// the same amount of work if they view every line, but it makes the
 				// user interface more responsive to split it up like this.
-				EditScript changeEditScript = line.GetChangeEditScript(this.ChangeDiffOptions);
+				EditScript? changeEditScript = line.GetChangeEditScript(this.ChangeDiffOptions);
 				if (changeEditScript != null)
 				{
 					this.DrawChangedLineBackground(g, displayLine, lineText, changeEditScript, line.FromA, x, y);
@@ -284,7 +284,7 @@
 			if (lineHasSelection)
 			{
 				// Draw the background
-				RectangleF r = new RectangleF(selStartX, y, selEndX - selStartX, this.lineHeight);
+				RectangleF r = new(selStartX, y, selEndX - selStartX, this.lineHeight);
 				Brush brush = hasFocus ? SystemBrushes.Highlight : SystemBrushes.Control;
 				g.FillRectangle(brush, r);
 
@@ -292,7 +292,7 @@
 				// changes the clipping region so that only the portion inside the highlighted
 				// rectangle will paint with the selected text color.
 				Region originalClipRegion = g.Clip;
-				using (Region textClip = new Region(r))
+				using (Region textClip = new(r))
 				{
 					g.Clip = textClip;
 					brush = hasFocus ? SystemBrushes.HighlightText : SystemBrushes.WindowText;
@@ -433,7 +433,7 @@
 		private DisplayLine GetDisplayLine(int line)
 		{
 			DisplayLine result;
-			if (line >= 0 && line < this.LineCount)
+			if (line >= 0 && line < this.LineCount && this.lines != null)
 			{
 				result = this.GetDisplayLine(this.lines[line]);
 			}
@@ -447,7 +447,7 @@
 
 		private DisplayLine GetDisplayLine(DiffViewLine line)
 		{
-			DisplayLine result = new DisplayLine(line, this.showWhitespace, DiffOptions.SpacesPerTab);
+			DisplayLine result = new(line, this.showWhitespace, DiffOptions.SpacesPerTab);
 			return result;
 		}
 
@@ -499,7 +499,7 @@
 			}
 		}
 
-		private bool GetSingleLineSelectedText(out string text)
+		private bool GetSingleLineSelectedText(out string? text)
 		{
 			text = null;
 			bool result = false;
@@ -518,7 +518,7 @@
 			return result;
 		}
 
-		private int GetXForColumn(Graphics g, DisplayLine displayLine, string displayText, int column)
+		private int GetXForColumn(Graphics g, DisplayLine displayLine, string? displayText, int column)
 		{
 			if (displayText == null)
 			{
@@ -569,7 +569,7 @@
 		{
 			// Invalidate the gutter portion for the line with the caret.
 			Point point = this.GetPointFromPos(this.position.Line, 0);
-			Rectangle r = new Rectangle(0, point.Y, this.gutterWidth, this.lineHeight);
+			Rectangle r = new(0, point.Y, this.gutterWidth, this.lineHeight);
 			this.Invalidate(r);
 		}
 
@@ -580,7 +580,7 @@
 				int firstLine = Math.Min(this.selectionStart.Line, this.position.Line);
 				Point point = this.GetPointFromPos(firstLine, 0);
 				int numLines = Math.Abs(this.selectionStart.Line - this.position.Line) + 1;
-				Rectangle r = new Rectangle(this.gutterWidth, point.Y, this.ClientSize.Width, numLines * this.lineHeight);
+				Rectangle r = new(this.gutterWidth, point.Y, this.ClientSize.Width, numLines * this.lineHeight);
 				this.Invalidate(r);
 			}
 		}
@@ -761,7 +761,7 @@
 			// Invalidate new selection
 			int firstLine = Math.Min(originalLine, line);
 			Point point = this.GetPointFromPos(firstLine, 0);
-			Rectangle r = new Rectangle(this.gutterWidth, point.Y, this.ClientSize.Width, (numLines + 1) * this.lineHeight);
+			Rectangle r = new(this.gutterWidth, point.Y, this.ClientSize.Width, (numLines + 1) * this.lineHeight);
 			this.Invalidate(r);
 
 			if (selectionChanged)
@@ -884,7 +884,7 @@
 			// pixel so we can have a separator line, and then
 			// a small separator window-colored area.
 			int maxLineNumChars = 1;
-			if (this.LineCount > 0)
+			if (this.LineCount > 0 && this.lines != null)
 			{
 				// Get the largest number.  Add 1 to it because we will
 				// when we display it.  This is important when the number
@@ -906,10 +906,10 @@
 
 			// Build the gutter format string
 			const int BufferSize = 20;
-			StringBuilder sb = new StringBuilder(BufferSize);
+			StringBuilder sb = new(BufferSize);
 			sb.Append("{0:");
 			sb.Append('0', maxLineNumChars);
-			sb.Append("}");
+			sb.Append('}');
 			this.gutterFormat = sb.ToString();
 
 			// Update the caret position (Gutter width or Font changes affect it)

@@ -31,7 +31,7 @@ namespace Menees.Windows.Forms
 			// See the notes in our WINDOWPLACEMENT struct for why the original
 			// RECT isn't the same as a .NET Rectangle and why we have to de-skew it.
 			Rectangle skewed = placement.rcNormalPosition;
-			Rectangle result = new Rectangle(
+			Rectangle result = new(
 				skewed.Left,
 				skewed.Top,
 				skewed.Width - skewed.Left,

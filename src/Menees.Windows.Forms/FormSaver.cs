@@ -23,10 +23,10 @@ namespace Menees.Windows.Forms
 		#region Private Data Members
 
 		private const string FormLayout = "Form Layout";
-		private ContainerControl containerControl;
-		private Form form;
-		private EventHandler loadHandler;
-		private FormClosedEventHandler closedHandler;
+		private ContainerControl? containerControl;
+		private Form? form;
+		private EventHandler? loadHandler;
+		private FormClosedEventHandler? closedHandler;
 
 		#endregion
 
@@ -72,7 +72,7 @@ namespace Menees.Windows.Forms
 		[Browsable(true)]
 		[Category("Serialization")]
 		[Description("Called when settings are being loaded.")]
-		public event EventHandler<SettingsEventArgs> LoadSettings;
+		public event EventHandler<SettingsEventArgs>? LoadSettings;
 
 		/// <summary>
 		/// Called when settings are being saved.
@@ -80,7 +80,7 @@ namespace Menees.Windows.Forms
 		[Browsable(true)]
 		[Category("Serialization")]
 		[Description("Called when settings are being saved.")]
-		public event EventHandler<SettingsEventArgs> SaveSettings;
+		public event EventHandler<SettingsEventArgs>? SaveSettings;
 
 		#endregion
 
@@ -88,11 +88,11 @@ namespace Menees.Windows.Forms
 
 		// Called before any LoadSettings events.
 		[Browsable(false)]
-		internal event EventHandler<SettingsEventArgs> InternalLoadSettings;
+		internal event EventHandler<SettingsEventArgs>? InternalLoadSettings;
 
 		// Called after any SaveSettings events.
 		[Browsable(true)]
-		internal event EventHandler<SettingsEventArgs> InternalSaveSettings;
+		internal event EventHandler<SettingsEventArgs>? InternalSaveSettings;
 
 		#endregion
 
@@ -141,7 +141,7 @@ namespace Menees.Windows.Forms
 		[DefaultValue(null)]
 		[Category("Helper Objects")]
 		[Description("The form to save the settings for.  This must be set.")]
-		public ContainerControl ContainerControl
+		public ContainerControl? ContainerControl
 		{
 			get
 			{
@@ -158,7 +158,7 @@ namespace Menees.Windows.Forms
 		/// <summary>
 		/// Gets or sets the site for the current component.
 		/// </summary>
-		public override ISite Site
+		public override ISite? Site
 		{
 			set
 			{
@@ -183,7 +183,7 @@ namespace Menees.Windows.Forms
 
 		#region Private Properties
 
-		private Form Form
+		private Form? Form
 		{
 			set
 			{
@@ -238,7 +238,7 @@ namespace Menees.Windows.Forms
 			{
 				using (ISettingsStore store = ApplicationInfo.CreateUserSettingsStore())
 				{
-					ISettingsNode formLayoutNode = this.GetFormLayoutNode(store, false);
+					ISettingsNode? formLayoutNode = this.GetFormLayoutNode(store, false);
 					if (formLayoutNode != null)
 					{
 						result = true;
@@ -305,7 +305,7 @@ namespace Menees.Windows.Forms
 			{
 				using (ISettingsStore store = ApplicationInfo.CreateUserSettingsStore())
 				{
-					ISettingsNode formLayoutNode = this.GetFormLayoutNode(store, true);
+					ISettingsNode? formLayoutNode = this.GetFormLayoutNode(store, true);
 					if (formLayoutNode != null)
 					{
 						// If the form is currently minimized or maximized, then pulling the form's current Bounds
@@ -336,19 +336,19 @@ namespace Menees.Windows.Forms
 
 		#region Private Methods
 
-		private ISettingsNode GetFormLayoutNode(ISettingsStore store, bool createIfNotFound)
+		private ISettingsNode? GetFormLayoutNode(ISettingsStore store, bool createIfNotFound)
 		{
-			ISettingsNode result = store.RootNode;
+			ISettingsNode? result = store.RootNode;
 
 			if (!string.IsNullOrEmpty(this.SettingsNodeName))
 			{
-				result = result.GetSubNode(this.SettingsNodeName, createIfNotFound);
+				result = createIfNotFound ? result.GetSubNode(this.SettingsNodeName) : result.TryGetSubNode(this.SettingsNodeName);
 			}
 
 			return result;
 		}
 
-		private void OnFormLoad(object sender, EventArgs e)
+		private void OnFormLoad(object? sender, EventArgs e)
 		{
 			if (this.AutoLoad)
 			{
@@ -356,7 +356,7 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void OnFormClosed(object sender, FormClosedEventArgs e)
+		private void OnFormClosed(object? sender, FormClosedEventArgs e)
 		{
 			if (this.AutoSave)
 			{

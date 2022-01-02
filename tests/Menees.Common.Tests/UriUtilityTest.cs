@@ -9,7 +9,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void AppendToPathTest()
 		{
-			Uri baseUri = new Uri("ftp://testing");
+			Uri baseUri = new("ftp://testing");
 			Uri actual = UriUtility.AppendToPath(baseUri, string.Empty);
 			Assert.AreEqual(baseUri, actual);
 

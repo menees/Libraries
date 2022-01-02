@@ -18,7 +18,7 @@ namespace Menees.Diffs
 		private readonly bool inB;
 		private readonly bool isFile;
 		private readonly string name;
-		private DirectoryDiffEntryCollection subentries;
+		private DirectoryDiffEntryCollection? subentries;
 
 		#endregion
 
@@ -39,7 +39,7 @@ namespace Menees.Diffs
 
 		public bool Different { get; internal set; }
 
-		public string Error { get; internal set; }
+		public string? Error { get; internal set; }
 
 		public bool InA => this.inA;
 
@@ -49,11 +49,11 @@ namespace Menees.Diffs
 
 		public string Name => this.name;
 
-		public object TagA { get; set; }
+		public object? TagA { get; set; }
 
-		public object TagB { get; set; }
+		public object? TagB { get; set; }
 
-		public DirectoryDiffEntryCollection Subentries
+		public DirectoryDiffEntryCollection? Subentries
 		{
 			get
 			{

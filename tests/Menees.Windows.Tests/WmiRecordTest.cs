@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Management;
 using Menees.Windows.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Windows.Tests
 {
@@ -20,28 +20,28 @@ namespace Menees.Windows.Tests
 				record =>
 				{
 					foundRecord = true;
-					record.GetInt32("ProcessId").ShouldEqual(processId);
+					record.GetInt32("ProcessId").ShouldBe(processId);
 
 					// The Handle is a string version of the process ID.
-					record.GetInt64("Handle").ShouldEqual(processId);
+					record.GetInt64("Handle").ShouldBe(processId);
 					record.GetInt64N("Handle").ShouldNotBeNull("Handle");
-					record.GetString("Handle").ShouldEqual(processId.ToString());
+					record.GetString("Handle").ShouldBe(processId.ToString());
 
 					DateTime creationDate = record.GetDateTime("CreationDate");
-					creationDate.ShouldBeBefore(DateTime.Now);
+					creationDate.ShouldBeLessThan(DateTime.Now);
 
 					DateTime? installDate = record.GetDateTimeN("InstallDate");
 					installDate.ShouldBeNull("InstallDate");
 
-					string path = record.GetString("ExecutablePath");
-					object pathValue = record.GetValue("ExecutablePath");
+					string? path = record.GetString("ExecutablePath");
+					object? pathValue = record.GetValue("ExecutablePath");
 					pathValue.ShouldBeOfType(typeof(string));
-					path.ShouldEqual(pathValue.ToString());
+					path.ShouldBe(pathValue.ToString());
 
 					// Internally, this calls GetValue, which tries to convert to the correct .NET type.
-					object coercedCreationDate = record["CreationDate"];
+					object? coercedCreationDate = record["CreationDate"];
 					coercedCreationDate.ShouldBeOfType(typeof(DateTime));
-					coercedCreationDate.ShouldEqual(creationDate);
+					coercedCreationDate.ShouldBe(creationDate);
 				});
 			foundRecord.ShouldBeTrue("Found first record");
 			result.ShouldBeTrue("First query");
@@ -58,7 +58,7 @@ namespace Menees.Windows.Tests
 						// DST should always be enabled in the Central time zone.  DST may not be in effect though.
 						bool? daylightInEffect = record.GetBooleanN("DaylightInEffect");
 						daylightInEffect.ShouldNotBeNull("DaylightInEffect");
-						daylightInEffect.ShouldEqual(local.IsDaylightSavingTime(DateTime.Now));
+						daylightInEffect.ShouldBe(local.IsDaylightSavingTime(DateTime.Now));
 					}
 					else if (local.Id == "UTC")
 					{
@@ -98,12 +98,12 @@ namespace Menees.Windows.Tests
 					// http://msdn.microsoft.com/en-us/library/windows/desktop/aa390460(v=vs.85).aspx
 					object[] args = new object[2];
 					object gotOwner = record.InvokeMethod("GetOwner", args);
-					Convert.ToInt32(gotOwner).ShouldEqual(0);
+					Convert.ToInt32(gotOwner).ShouldBe(0);
 					string.Equals((string)args[0], Environment.UserName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("User");
 					string.Equals((string)args[1], Environment.UserDomainName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("Domain");
 
-					IDictionary<string, object> output = record.InvokeMethod("GetOwner", (IDictionary<string, object>)null);
-					Convert.ToInt32(output["ReturnValue"]).ShouldEqual(0);
+					IDictionary<string, object> output = record.InvokeMethod("GetOwner", (IDictionary<string, object>?)null);
+					Convert.ToInt32(output["ReturnValue"]).ShouldBe(0);
 					string.Equals((string)output["User"], Environment.UserName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("User");
 					string.Equals((string)output["Domain"], Environment.UserDomainName, StringComparison.OrdinalIgnoreCase).ShouldBeTrue("Domain");
 				});

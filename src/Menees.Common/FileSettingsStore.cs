@@ -5,6 +5,7 @@ namespace Menees
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.IO;
 	using System.Linq;
 	using System.Security;
@@ -29,7 +30,7 @@ namespace Menees
 			{
 				// Make sure the file exists and isn't zero length.  If a process was killed while saving data,
 				// then the settings store file may be empty.  If so, we'll pretend it isn't there.
-				FileInfo file = new FileInfo(fileName);
+				FileInfo file = new(fileName);
 				if (file.Exists && file.Length > 0)
 				{
 					this.root = XElement.Load(fileName);
@@ -57,15 +58,18 @@ namespace Menees
 		public void Save()
 		{
 			bool saved = false;
-			Dictionary<string, object> errorLogProperties = new Dictionary<string, object>();
+			Dictionary<string, object> errorLogProperties = new();
 
 			foreach (string fileName in GetPotentialFileNames())
 			{
 				try
 				{
 					// Make sure the directory we're trying to save to actually exists.
-					string directoryName = Path.GetDirectoryName(fileName);
-					Directory.CreateDirectory(directoryName);
+					string? directoryName = Path.GetDirectoryName(fileName);
+					if (!string.IsNullOrEmpty(directoryName))
+					{
+						Directory.CreateDirectory(directoryName);
+					}
 
 					if (File.Exists(fileName))
 					{
@@ -119,7 +123,7 @@ namespace Menees
 		{
 			string fileName = ApplicationInfo.ApplicationName + "-" + Environment.UserDomainName + "-" + Environment.UserName + ".stgx";
 
-			List<string> result = new List<string>();
+			List<string> result = new();
 
 			// First, try the application's base directory.  That gives the best isolation for side-by-side app usage,
 			// but a non-admin user may not have permissions to write to this directory.
@@ -151,13 +155,13 @@ namespace Menees
 			#region Private Data Members
 
 			private readonly XElement element;
-			private readonly FileSettingsNode parent;
+			private readonly FileSettingsNode? parent;
 
 			#endregion
 
 			#region Constructors
 
-			public FileSettingsNode(XElement element, FileSettingsNode parent)
+			public FileSettingsNode(XElement element, FileSettingsNode? parent)
 			{
 				this.element = element;
 				this.parent = parent;
@@ -194,24 +198,27 @@ namespace Menees
 				}
 			}
 
-			public ISettingsNode ParentNode => this.parent;
+			public ISettingsNode? ParentNode => this.parent;
 
 			public string GetValue(string settingName, string defaultValue)
-			{
-				string result = defaultValue;
+				=> this.GetValueN(settingName, defaultValue) ?? defaultValue;
 
-				XElement settingElement = this.GetSettingElement(settingName, false);
+			public string? GetValueN(string settingName, string? defaultValue)
+			{
+				string? result = defaultValue;
+
+				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
-					result = settingElement.GetAttributeValue("Value", defaultValue);
+					result = settingElement.GetAttributeValueN("Value", defaultValue);
 				}
 
 				return result;
 			}
 
-			public void SetValue(string settingName, string value)
+			public void SetValue(string settingName, string? value)
 			{
-				XElement settingElement = this.GetSettingElement(settingName, true);
+				XElement settingElement = this.GetSettingElement(settingName, true)!;
 				settingElement.SetAttributeValue("Value", value);
 			}
 
@@ -219,7 +226,7 @@ namespace Menees
 			{
 				int result = defaultValue;
 
-				XElement settingElement = this.GetSettingElement(settingName, false);
+				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
 					result = settingElement.GetAttributeValue("Value", defaultValue);
@@ -237,7 +244,7 @@ namespace Menees
 			{
 				bool result = defaultValue;
 
-				XElement settingElement = this.GetSettingElement(settingName, false);
+				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
 					result = settingElement.GetAttributeValue("Value", defaultValue);
@@ -256,7 +263,7 @@ namespace Menees
 			{
 				T result = defaultValue;
 
-				XElement settingElement = this.GetSettingElement(settingName, false);
+				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
 					result = settingElement.GetAttributeValue("Value", defaultValue);
@@ -279,7 +286,7 @@ namespace Menees
 
 			public void DeleteSetting(string settingName)
 			{
-				XElement settingElement = this.GetSettingElement(settingName, false);
+				XElement? settingElement = this.GetSettingElement(settingName, false);
 				if (settingElement != null)
 				{
 					settingElement.Remove();
@@ -294,18 +301,25 @@ namespace Menees
 
 			public void DeleteSubNode(string nodeNameOrPath)
 			{
-				XElement subElement = this.GetSubNodeElement(nodeNameOrPath, false);
+				XElement? subElement = this.GetSubNodeElement(nodeNameOrPath, false);
 				if (subElement != null)
 				{
 					subElement.Remove();
 				}
 			}
 
-			public ISettingsNode GetSubNode(string nodeNameOrPath, bool createIfNotFound)
+			public ISettingsNode GetSubNode(string nodeNameOrPath)
 			{
-				FileSettingsNode result = null;
+				XElement subElement = this.GetSubNodeElement(nodeNameOrPath, true)!;
+				FileSettingsNode result = new(subElement, this);
+				return result;
+			}
 
-				XElement subElement = this.GetSubNodeElement(nodeNameOrPath, createIfNotFound);
+			public ISettingsNode? TryGetSubNode(string nodeNameOrPath)
+			{
+				FileSettingsNode? result = null;
+
+				XElement? subElement = this.GetSubNodeElement(nodeNameOrPath, false);
 				if (subElement != null)
 				{
 					result = new FileSettingsNode(subElement, this);
@@ -321,7 +335,7 @@ namespace Menees
 			internal static XElement CreateNodeElement(string nodeName)
 			{
 				Conditions.RequireString(nodeName, nameof(nodeName));
-				XElement result = new XElement("Settings", new XAttribute("Name", nodeName));
+				XElement result = new("Settings", new XAttribute("Name", nodeName));
 				return result;
 			}
 
@@ -359,11 +373,11 @@ namespace Menees
 				return result;
 			}
 
-			private XElement GetSubNodeElement(string nodeNameOrPath, bool createIfNotFound)
+			private XElement? GetSubNodeElement(string nodeNameOrPath, bool createIfNotFound)
 			{
 				Conditions.RequireString(nodeNameOrPath, nameof(nodeNameOrPath));
 
-				XElement result = null;
+				XElement? result = null;
 				XElement currentElement = this.element;
 
 				// Use backslash as the path separator because that's what RegistryKey.OpenSubKey uses,
@@ -390,9 +404,9 @@ namespace Menees
 				return result;
 			}
 
-			private XElement GetSettingElement(string settingName, bool createIfNotFound)
+			private XElement? GetSettingElement(string settingName, bool createIfNotFound)
 			{
-				XElement result = this.GetSettingElements().SingleOrDefault(e => GetSettingName(e) == settingName);
+				XElement? result = this.GetSettingElements().SingleOrDefault(e => GetSettingName(e) == settingName);
 				if (result == null && createIfNotFound)
 				{
 					result = new XElement("Setting", new XAttribute("Name", settingName));

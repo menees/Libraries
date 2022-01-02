@@ -17,7 +17,7 @@ namespace Menees.Diffs.Windows.Forms
 	{
 		#region Private Data Members
 
-		private readonly FindData findData = new FindData();
+		private readonly FindData findData = new();
 		private bool showColorLegend = true;
 		private bool showToolBar = true;
 		private int currentDiffLine = -1;
@@ -49,11 +49,11 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Events
 
-		public event EventHandler LineDiffSizeChanged;
+		public event EventHandler? LineDiffSizeChanged;
 
-		public event EventHandler RecompareNeeded;
+		public event EventHandler? RecompareNeeded;
 
-		public event EventHandler<DifferenceEventArgs> ShowTextDifferences;
+		public event EventHandler<DifferenceEventArgs>? ShowTextDifferences;
 
 		#endregion
 
@@ -163,11 +163,6 @@ namespace Menees.Diffs.Windows.Forms
 		}
 
 		[DefaultValue(false)]
-		[SuppressMessage(
-			"Microsoft.Naming",
-			"CA1702:CompoundWordsShouldBeCasedCorrectly",
-			MessageId = "InLine",
-			Justification = "'inline' is not an appropriate term here.")]
 		public bool ShowWhiteSpaceInLineDiff
 		{
 			get
@@ -257,8 +252,8 @@ namespace Menees.Diffs.Windows.Forms
 				string textA = this.ViewA.SelectedText;
 				string textB = this.ViewB.SelectedText;
 
-				DifferenceEventArgs diffArgs = new DifferenceEventArgs(textA, textB);
-				this.ShowTextDifferences(this, diffArgs);
+				DifferenceEventArgs diffArgs = new(textA, textB);
+				this.ShowTextDifferences?.Invoke(this, diffArgs);
 				result = true;
 			}
 
@@ -307,7 +302,7 @@ namespace Menees.Diffs.Windows.Forms
 
 			if (this.CanRecompare)
 			{
-				this.RecompareNeeded(this, EventArgs.Empty);
+				this.RecompareNeeded?.Invoke(this, EventArgs.Empty);
 				result = true;
 			}
 
@@ -402,7 +397,7 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Internal Methods
 
-		internal static void PaintColorLegendItem(ToolStripItem item, PaintEventArgs e)
+		internal static void PaintColorLegendItem(ToolStripItem? item, PaintEventArgs e)
 		{
 			if (item != null)
 			{
@@ -418,14 +413,14 @@ namespace Menees.Diffs.Windows.Forms
 				}
 
 				// Draw a border.
-				Rectangle borderRect = new Rectangle(r.X, r.Y, r.Width - 1, r.Height - 1);
+				Rectangle borderRect = new(r.X, r.Y, r.Width - 1, r.Height - 1);
 				ControlPaint.DrawVisualStyleBorder(g, borderRect);
 
 				// Draw the image centered.  (I should probably check the
 				// item's ImageAlign property here, but I know I'm always
 				// using MiddleCenter for all the passed-in items.)
 				Image image = item.Image;
-				Rectangle imageRect = new Rectangle(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
+				Rectangle imageRect = new(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
 				g.DrawImage(image, imageRect);
 			}
 		}
@@ -434,57 +429,57 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Private Methods
 
-		private void Copy_Click(object sender, EventArgs e)
+		private void Copy_Click(object? sender, EventArgs e)
 		{
 			this.Copy();
 		}
 
-		private void Find_Click(object sender, EventArgs e)
+		private void Find_Click(object? sender, EventArgs e)
 		{
 			this.Find();
 		}
 
-		private void FindNext_Click(object sender, EventArgs e)
+		private void FindNext_Click(object? sender, EventArgs e)
 		{
 			this.FindNext();
 		}
 
-		private void FindPrevious_Click(object sender, EventArgs e)
+		private void FindPrevious_Click(object? sender, EventArgs e)
 		{
 			this.FindPrevious();
 		}
 
-		private void FirstDiff_Click(object sender, EventArgs e)
+		private void FirstDiff_Click(object? sender, EventArgs e)
 		{
 			this.GoToFirstDiff();
 		}
 
-		private void GotoLine_Click(object sender, EventArgs e)
+		private void GotoLine_Click(object? sender, EventArgs e)
 		{
 			this.GoToLine();
 		}
 
-		private void LastDiff_Click(object sender, EventArgs e)
+		private void LastDiff_Click(object? sender, EventArgs e)
 		{
 			this.GoToLastDiff();
 		}
 
-		private void NextDiff_Click(object sender, EventArgs e)
+		private void NextDiff_Click(object? sender, EventArgs e)
 		{
 			this.GoToNextDiff();
 		}
 
-		private void PrevDiff_Click(object sender, EventArgs e)
+		private void PrevDiff_Click(object? sender, EventArgs e)
 		{
 			this.GoToPreviousDiff();
 		}
 
-		private void Recompare_Click(object sender, EventArgs e)
+		private void Recompare_Click(object? sender, EventArgs e)
 		{
 			this.Recompare();
 		}
 
-		private void ViewFile_Click(object sender, EventArgs e)
+		private void ViewFile_Click(object? sender, EventArgs e)
 		{
 			this.ViewFile();
 		}
@@ -495,17 +490,17 @@ namespace Menees.Diffs.Windows.Forms
 			PaintColorLegendItem(sender as ToolStripItem, e);
 		}
 
-		private void DiffControl_SizeChanged(object sender, EventArgs e)
+		private void DiffControl_SizeChanged(object? sender, EventArgs e)
 		{
 			this.pnlLeft.Width = (this.Width - this.pnlLeft.Left - this.MiddleSplitter.Width) / 2;
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			this.UpdateColors();
 		}
 
-		private void TextDiff_Click(object sender, EventArgs e)
+		private void TextDiff_Click(object? sender, EventArgs e)
 		{
 			this.CompareSelectedText();
 		}
@@ -555,11 +550,11 @@ namespace Menees.Diffs.Windows.Forms
 			{
 				this.currentDiffLine = line;
 
-				DiffViewLine lineOne = null;
-				DiffViewLine lineTwo = null;
+				DiffViewLine? lineOne = null;
+				DiffViewLine? lineTwo = null;
 				if (line < this.ViewA.LineCount)
 				{
-					lineOne = this.ViewA.Lines[line];
+					lineOne = this.ViewA.Lines?[line];
 				}
 
 				// Normally, ViewA.LineCount == ViewB.LineCount, but during
@@ -567,7 +562,7 @@ namespace Menees.Diffs.Windows.Forms
 				// rebuilds its lines.
 				if (line < this.ViewB.LineCount)
 				{
-					lineTwo = this.ViewB.Lines[line];
+					lineTwo = this.ViewB.Lines?[line];
 				}
 
 				if (lineOne != null && lineTwo != null)
@@ -577,7 +572,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void View_PositionChanged(object sender, EventArgs e)
+		private void View_PositionChanged(object? sender, EventArgs e)
 		{
 			DiffView view = this.ActiveView;
 			DiffViewPosition pos = view.Position;
@@ -590,27 +585,27 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void ViewA_HScrollPosChanged(object sender, EventArgs e)
+		private void ViewA_HScrollPosChanged(object? sender, EventArgs e)
 		{
 			this.ViewB.HScrollPos = this.ViewA.HScrollPos;
 		}
 
-		private void ViewA_VScrollPosChanged(object sender, EventArgs e)
+		private void ViewA_VScrollPosChanged(object? sender, EventArgs e)
 		{
 			this.ViewB.VScrollPos = this.ViewA.VScrollPos;
 		}
 
-		private void ViewB_HScrollPosChanged(object sender, EventArgs e)
+		private void ViewB_HScrollPosChanged(object? sender, EventArgs e)
 		{
 			this.ViewA.HScrollPos = this.ViewB.HScrollPos;
 		}
 
-		private void ViewB_VScrollPosChanged(object sender, EventArgs e)
+		private void ViewB_VScrollPosChanged(object? sender, EventArgs e)
 		{
 			this.ViewA.VScrollPos = this.ViewB.VScrollPos;
 		}
 
-		private void ViewLineDiff_SizeChanged(object sender, EventArgs e)
+		private void ViewLineDiff_SizeChanged(object? sender, EventArgs e)
 		{
 			this.LineDiffSizeChanged?.Invoke(this, e);
 		}

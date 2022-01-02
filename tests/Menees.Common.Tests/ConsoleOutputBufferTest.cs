@@ -12,13 +12,13 @@ namespace Menees.Common.Tests
 	{
 		private static readonly TimeSpan defaultWaitTime = TimeSpan.MaxValue;
 
-		private ConsoleOutputBuffer Create(TimeSpan waitTime)
+		private static ConsoleOutputBuffer Create(TimeSpan waitTime)
 		{
 			// We have to execute a DIR command on a directory that has something in it.
 			// If we execute a DIR command that matches no entries, then it will return
 			// exit code 1, which would fail some of our unit tests.
-			ProcessStartInfo startInfo = new ProcessStartInfo("cmd.exe", @"/c dir C:\");
-			ConsoleOutputBuffer result = new ConsoleOutputBuffer(startInfo, true, waitTime);
+			ProcessStartInfo startInfo = new("cmd.exe", @"/c dir C:\");
+			ConsoleOutputBuffer result = new(startInfo, true, waitTime);
 			return result;
 		}
 
@@ -30,7 +30,7 @@ namespace Menees.Common.Tests
 			Assert.IsTrue(actual.Length > 0, "Number of lines > 0");
 
 			// Sometimes there will be an extra blank line at the beginning of the DIR output.
-			string firstNonEmptyLine = null;
+			string? firstNonEmptyLine = null;
 			foreach (string line in actual)
 			{
 				Trace.WriteLine(line);

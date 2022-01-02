@@ -8,6 +8,7 @@ namespace Menees.Shell
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Reflection;
+	using System.Runtime.Versioning;
 	using System.Text;
 
 	#endregion
@@ -28,9 +29,9 @@ namespace Menees.Shell
 		/// If a copyright isn't found in the passed-in assembly or if it is null or empty,
 		/// then the copyright information from the current assembly will be returned.
 		/// </remarks>
-		public static string GetCopyrightInfo(Assembly assembly)
+		public static string? GetCopyrightInfo(Assembly? assembly)
 		{
-			string result = null;
+			string? result = null;
 
 			if (assembly != null)
 			{
@@ -69,7 +70,7 @@ namespace Menees.Shell
 		/// must copy/clone the icon if it needs to use it later.
 		/// </param>
 		/// <returns>The shell's file type name (e.g., "Visual C# Source file" for a ".cs" file).</returns>
-		public static string GetFileTypeInfo(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr> useIconHandle)
+		public static string? GetFileTypeInfo(string fileName, bool useExistingFile, IconOptions iconOptions, Action<IntPtr>? useIconHandle)
 			=> NativeMethods.GetShellFileTypeAndIcon(fileName, useExistingFile, iconOptions, useIconHandle);
 
 		/// <summary>
@@ -81,35 +82,71 @@ namespace Menees.Shell
 		{
 			Conditions.RequireReference(assembly, nameof(assembly));
 
-			StringBuilder sb = new StringBuilder("Version ");
+			StringBuilder sb = new("Version ");
 
 			// Show at least Major.Minor, but only show Build and Revision if they're non-zero.
-			Version displayVersion = ReflectionUtility.GetVersion(assembly);
+			Version? displayVersion = ReflectionUtility.GetVersion(assembly);
 			const int MaxVersionFields = 4;
 			int versionFieldsToDisplay = MaxVersionFields;
-			if (displayVersion.Revision == 0)
+			if (displayVersion != null)
 			{
-				versionFieldsToDisplay--;
-				if (displayVersion.Build == 0)
+				if (displayVersion.Revision == 0)
 				{
 					versionFieldsToDisplay--;
+					if (displayVersion.Build == 0)
+					{
+						versionFieldsToDisplay--;
+					}
 				}
-			}
 
-			sb.Append(displayVersion.ToString(versionFieldsToDisplay));
+				sb.Append(displayVersion.ToString(versionFieldsToDisplay));
+			}
 
 			DateTime? built = ReflectionUtility.GetBuildTime(assembly);
 			if (built != null)
 			{
-				sb.Append(" – ").AppendFormat("{0:d}", built.Value.ToLocalTime());
+				DateTime buildTime = built.Value;
+
+				// Debug builds usually only put a UTC date in the "BuildTime", so we don't need to localize it.
+				if (buildTime.TimeOfDay != TimeSpan.Zero || !ReflectionUtility.IsDebugBuild(assembly))
+				{
+					buildTime = buildTime.ToLocalTime();
+				}
+
+				sb.Append(" – ").AppendFormat("{0:d}", buildTime);
 			}
 
 			sb.Append(Environment.Is64BitProcess ? " – 64-bit" : " – 32-bit");
 
+			TargetFrameworkAttribute? frameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
+			if (frameworkAttribute != null && frameworkAttribute.FrameworkName.IsNotBlank())
+			{
+				// Examples:
+				// [assembly: TargetFramework(".NETCoreApp,Version=v3.1", FrameworkDisplayName = "")]
+				// [assembly: TargetFramework(".NETCoreApp,Version=v6.0", FrameworkDisplayName = "")]
+				// [assembly: TargetFramework(".NETFramework,Version=v4.5", FrameworkDisplayName = ".NET Framework 4.5")]
+				// [assembly: TargetFramework(".NETFramework,Version=v4.8", FrameworkDisplayName = ".NET Framework 4.8")]
+				// [assembly: TargetFramework(".NETStandard,Version=v2.0", FrameworkDisplayName = "")]
+				string frameworkName = frameworkAttribute.FrameworkName;
+				const string Prefix = ".NET";
+				int commaIndex = frameworkName.IndexOf(',');
+				if (frameworkName.StartsWith(Prefix) && commaIndex > Prefix.Length)
+				{
+					string target = frameworkName.Substring(Prefix.Length, commaIndex - Prefix.Length);
+					const string Suffix = "App";
+					if (target.EndsWith(Suffix))
+					{
+						target = target.Substring(0, target.Length - Suffix.Length);
+					}
+
+					sb.Append(" – ").Append(target);
+				}
+			}
+
 			// On Vista or later, show whether the user is running as an administrator.
 			OperatingSystem os = Environment.OSVersion;
 			const int WindowsVistaMajorVersion = 6;
-			if (os.Version >= new Version(WindowsVistaMajorVersion, 0) && ApplicationInfo.IsUserRunningAsAdministrator)
+			if (ApplicationInfo.IsWindows && os.Version >= new Version(WindowsVistaMajorVersion, 0) && ApplicationInfo.IsUserRunningAsAdministrator)
 			{
 				sb.Append(" – Administrator");
 			}
@@ -124,7 +161,7 @@ namespace Menees.Shell
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <returns>The process started by executing the file.</returns>
 		/// <exception cref="Win32Exception">An error occurred when opening the associated file.</exception>
-		public static Process ShellExecute(IntPtr? ownerHandle, string fileName) => ShellExecute(ownerHandle, fileName, string.Empty);
+		public static Process? ShellExecute(IntPtr? ownerHandle, string fileName) => ShellExecute(ownerHandle, fileName, string.Empty);
 
 		/// <summary>
 		/// Executes an action on the specified file using the Windows shell.
@@ -134,11 +171,11 @@ namespace Menees.Shell
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
 		/// <exception cref="Win32Exception">An error occurred when opening the associated file.</exception>
-		public static Process ShellExecute(IntPtr? ownerHandle, string fileName, string verb)
+		public static Process? ShellExecute(IntPtr? ownerHandle, string fileName, string verb)
 		{
 			Conditions.RequireString(fileName, nameof(fileName));
 
-			ProcessStartInfo startInfo = new ProcessStartInfo { ErrorDialog = true };
+			ProcessStartInfo startInfo = new() { ErrorDialog = true };
 			if (ownerHandle != null)
 			{
 				startInfo.ErrorDialogParentHandle = ownerHandle.Value;
@@ -148,7 +185,7 @@ namespace Menees.Shell
 			startInfo.UseShellExecute = true;
 			startInfo.Verb = verb;
 
-			Process result = Process.Start(startInfo);
+			Process? result = Process.Start(startInfo);
 			return result;
 		}
 

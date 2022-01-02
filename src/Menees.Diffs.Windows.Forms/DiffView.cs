@@ -24,10 +24,6 @@ namespace Menees.Diffs.Windows.Forms
 	{
 		#region Constructors
 
-		[SuppressMessage(
-			"Microsoft.Mobility",
-			"CA1601:DoNotUseTimersThatPreventPowerStateChanges",
-			Justification = "This timer is only used to auto-scroll while the mouse is captured and dragging.")]
 		public DiffView()
 		{
 			// Set some important control styles
@@ -44,9 +40,11 @@ namespace Menees.Diffs.Windows.Forms
 
 			this.UpdateTextMetrics(true);
 
-			this.autoScrollTimer = new Timer();
-			this.autoScrollTimer.Enabled = false;
-			this.autoScrollTimer.Interval = 100;
+			this.autoScrollTimer = new Timer
+			{
+				Enabled = false,
+				Interval = 100,
+			};
 			this.autoScrollTimer.Tick += this.AutoScrollTimer_Tick;
 
 			DiffOptions.OptionsChanged += this.DiffOptionsChanged;
@@ -58,15 +56,15 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Events
 
-		public event EventHandler HScrollPosChanged;
+		public event EventHandler? HScrollPosChanged;
 
-		public event EventHandler LinesChanged;
+		public event EventHandler? LinesChanged;
 
-		public event EventHandler PositionChanged;
+		public event EventHandler? PositionChanged;
 
-		public event EventHandler SelectionChanged;
+		public event EventHandler? SelectionChanged;
 
-		public event EventHandler VScrollPosChanged;
+		public event EventHandler? VScrollPosChanged;
 
 		#endregion
 
@@ -143,10 +141,6 @@ namespace Menees.Diffs.Windows.Forms
 		}
 
 		[Browsable(false)]
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1811:AvoidUncalledPrivateCode",
-			Justification = "The get_CenterVisibleLine accessor is only called by the Windows Forms designer via reflection.")]
 		public int CenterVisibleLine
 		{
 			get
@@ -206,7 +200,7 @@ namespace Menees.Diffs.Windows.Forms
 		/// Stores each line's text, color, and original number.
 		/// </summary>
 		[Browsable(false)]
-		public DiffViewLines Lines => this.lines;
+		public DiffViewLines? Lines => this.lines;
 
 		[Browsable(false)]
 		public DiffViewPosition Position
@@ -237,7 +231,7 @@ namespace Menees.Diffs.Windows.Forms
 
 					int numLines = endSel.Line - startSel.Line + 1;
 					const int LineLengthEstimate = 50;
-					StringBuilder sb = new StringBuilder(numLines * LineLengthEstimate);
+					StringBuilder sb = new(numLines * LineLengthEstimate);
 
 					for (int i = startSel.Line; i <= endSel.Line; i++)
 					{
@@ -336,13 +330,13 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			// If text is selected on a single line, then use that for the new Find text.
 			string originalFindText = data.Text;
-			if (this.GetSingleLineSelectedText(out string selectedText))
+			if (this.GetSingleLineSelectedText(out string? selectedText) && selectedText != null)
 			{
 				data.Text = selectedText;
 			}
 
 			bool result = false;
-			using (FindDialog dialog = new FindDialog())
+			using (FindDialog dialog = new())
 			{
 				if (dialog.Execute(this, data))
 				{
@@ -617,7 +611,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			bool result = false;
 
-			if (this.CanGoToFirstDiff)
+			if (this.CanGoToFirstDiff && this.lines != null)
 			{
 				this.GoToPosition(this.lines.DiffStartLines[0], this.position.Column);
 				result = true;
@@ -630,7 +624,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			bool result = false;
 
-			if (this.CanGoToLastDiff)
+			if (this.CanGoToLastDiff && this.lines != null)
 			{
 				int[] starts = this.lines.DiffStartLines;
 				this.GoToPosition(starts[starts.Length - 1], this.position.Column);
@@ -643,21 +637,24 @@ namespace Menees.Diffs.Windows.Forms
 		public bool GoToLine()
 		{
 			int maxLineNumber = 0;
-			for (int i = this.lines.Count - 1; i >= 0; i--)
+			if (this.lines != null)
 			{
-				DiffViewLine line = this.lines[i];
-				if (line.Number.HasValue)
+				for (int i = this.lines.Count - 1; i >= 0; i--)
 				{
-					// Add 1 because display numbers are 1-based.
-					maxLineNumber = line.Number.Value + 1;
-					break;
+					DiffViewLine line = this.lines[i];
+					if (line.Number.HasValue)
+					{
+						// Add 1 because display numbers are 1-based.
+						maxLineNumber = line.Number.Value + 1;
+						break;
+					}
 				}
 			}
 
 			bool result = false;
 			if (maxLineNumber > 0)
 			{
-				using (GoToDialog dialog = new GoToDialog())
+				using (GoToDialog dialog = new())
 				{
 					if (dialog.Execute(this, maxLineNumber, out int line))
 					{
@@ -695,7 +692,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			bool result = false;
 
-			if (this.CanGoToNextDiff)
+			if (this.CanGoToNextDiff && this.lines != null)
 			{
 				int[] starts = this.lines.DiffStartLines;
 				int numStarts = starts.Length;
@@ -717,7 +714,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			bool result = false;
 
-			if (this.CanGoToPreviousDiff)
+			if (this.CanGoToPreviousDiff && this.lines != null)
 			{
 				int[] ends = this.lines.DiffEndLines;
 				int numEnds = ends.Length;
@@ -795,14 +792,17 @@ namespace Menees.Diffs.Windows.Forms
 				throw new ArgumentException("The counterpart view has a different number of view lines.", nameof(counterpartView));
 			}
 
-			for (int i = 0; i < numLines; i++)
+			if (this.lines != null && counterpartView.lines != null)
 			{
-				DiffViewLine line = this.lines[i];
-				DiffViewLine counterpart = counterpartView.lines[i];
+				for (int i = 0; i < numLines; i++)
+				{
+					DiffViewLine line = this.lines[i];
+					DiffViewLine counterpart = counterpartView.lines[i];
 
-				// Make the counterpart lines refer to each other.
-				line.Counterpart = counterpart;
-				counterpart.Counterpart = line;
+					// Make the counterpart lines refer to each other.
+					line.Counterpart = counterpart;
+					counterpart.Counterpart = line;
+				}
 			}
 		}
 
@@ -1036,7 +1036,7 @@ namespace Menees.Diffs.Windows.Forms
 				// or at or below the last visible line.  If so, then
 				// auto-scroll.  Similarly, if we're on the first or last
 				// character or beyond, then auto-scroll.
-				Rectangle r = new Rectangle(this.gutterWidth, 0, this.ClientSize.Width, this.ClientSize.Height);
+				Rectangle r = new(this.gutterWidth, 0, this.ClientSize.Width, this.ClientSize.Height);
 				r.Inflate(-this.charWidth, -this.lineHeight);
 				if (!r.Contains(e.X, e.Y))
 				{
@@ -1120,8 +1120,8 @@ namespace Menees.Diffs.Windows.Forms
 
 			// Create some graphics objects
 			Graphics g = e.Graphics;
-			using (SolidBrush fontBrush = new SolidBrush(this.Enabled ? this.ForeColor : SystemColors.GrayText))
-			using (SolidBrush backBrush = new SolidBrush(this.BackColor))
+			using (SolidBrush fontBrush = new(this.Enabled ? this.ForeColor : SystemColors.GrayText))
+			using (SolidBrush backBrush = new(this.BackColor))
 			{
 				// We can't free GutterBrush since it is a system brush.
 				Brush gutterBrush = SystemBrushes.Control;
@@ -1144,23 +1144,26 @@ namespace Menees.Diffs.Windows.Forms
 				this.GetForwardOrderSelection(out DiffViewPosition startSel, out DiffViewPosition endSel);
 
 				// Paint each line
-				for (int i = firstLine; i <= lastLine; i++)
+				if (this.lines != null)
 				{
-					// If we get inside this loop there must be at least one line.
-					Debug.Assert(this.LineCount > 0, "There must be at least one line.");
-
-					int x = (this.charWidth * (-posX)) + this.gutterWidth;
-					int y = this.lineHeight * (i - posY);
-
-					DiffViewLine line = this.lines[i];
-					if (paintLine)
+					for (int i = firstLine; i <= lastLine; i++)
 					{
-						this.DrawLine(g, fontBrush, backBrush, hasFocus, i, line, x, y, hasSelection, startSel, endSel);
-					}
+						// If we get inside this loop there must be at least one line.
+						Debug.Assert(this.LineCount > 0, "There must be at least one line.");
 
-					if (paintGutter)
-					{
-						this.DrawGutter(g, fontBrush, backBrush, hasFocus, i, line, y, gutterBrush, lineNumIndent);
+						int x = (this.charWidth * (-posX)) + this.gutterWidth;
+						int y = this.lineHeight * (i - posY);
+
+						DiffViewLine line = this.lines[i];
+						if (paintLine)
+						{
+							this.DrawLine(g, fontBrush, backBrush, hasFocus, i, line, x, y, hasSelection, startSel, endSel);
+						}
+
+						if (paintGutter)
+						{
+							this.DrawGutter(g, fontBrush, backBrush, hasFocus, i, line, y, gutterBrush, lineNumIndent);
+						}
 					}
 				}
 

@@ -1,7 +1,7 @@
 ﻿using Menees;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -25,12 +25,12 @@ namespace Menees.Common.Tests
 			}
 
 			bool state = true;
-			Conditions.RequireArgument(state, "True", () => state);
+			Conditions.RequireArgument(state, "True", nameof(state));
 
 			try
 			{
 				state = false;
-				Conditions.RequireArgument(state, "False", () => state);
+				Conditions.RequireArgument(state, "False", nameof(state));
 				Assert.Fail("An exception should have been thrown before this.");
 			}
 			catch (ArgumentException ex)
@@ -53,7 +53,7 @@ namespace Menees.Common.Tests
 			catch (ArgumentException ex)
 			{
 				Assert.AreEqual("False", ex.Message);
-				Assert.IsNull(ex.ParamName);
+				ex.ParamName.ShouldBeNullOrEmpty();
 			}
 		}
 
@@ -64,26 +64,26 @@ namespace Menees.Common.Tests
 
 			try
 			{
-				Conditions.RequireReference((string)null, "test");
+				Conditions.RequireReference((string?)null, "test");
 				Assert.Fail("An exception should have been thrown before this.");
 			}
 			catch (ArgumentNullException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 
-			string testRef = "Valid";
-			Conditions.RequireReference(testRef, () => testRef);
+			string? testRef = "Valid";
+			Conditions.RequireReference(testRef, nameof(testRef));
 
 			try
 			{
 				testRef = null;
-				Conditions.RequireReference(testRef, () => testRef);
+				Conditions.RequireReference(testRef, nameof(testRef));
 				Assert.Fail("An exception should have been thrown before this.");
 			}
 			catch (ArgumentNullException ex)
 			{
-				ex.ParamName.ShouldEqual("testRef");
+				ex.ParamName.ShouldBe("testRef");
 			}
 		}
 
@@ -116,21 +116,21 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 
 			test = "Valid";
-			Conditions.RequireString(test, () => test);
+			Conditions.RequireString(test, nameof(test));
 
 			try
 			{
 				test = string.Empty;
-				Conditions.RequireString(test, () => test);
+				Conditions.RequireString(test, nameof(test));
 				Assert.Fail("An exception should have been thrown before this.");
 			}
 			catch (ArgumentException ex)
 			{
-				ex.ParamName.ShouldEqual("test");
+				ex.ParamName.ShouldBe("test");
 			}
 		}
 	}

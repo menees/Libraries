@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:m="clr-namespace:Menees.Windows.Presentation"
 	mc:Ignorable="d"
-	SizeToContent="WidthAndHeight" Loaded="ExtendedDialog_Loaded">
+	SizeToContent="WidthAndHeight" Loaded="ExtendedDialog_LoadedAsync">
 	<Grid x:Name="grid" HorizontalAlignment="Center" VerticalAlignment="Center" Width="{Binding ActualWidth, ElementName=banner, Mode=OneWay}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition MinWidth="110" Width="Auto"/>

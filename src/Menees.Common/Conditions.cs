@@ -27,9 +27,9 @@ namespace Menees
 		/// <param name="argState">The argument's state.</param>
 		/// <param name="explanation">The name of the arg to put in the exception.</param>
 		/// <exception cref="ArgumentException">If <paramref name="argState"/> is false.</exception>
-		public static void RequireArgument(bool argState, string explanation)
+		public static void RequireArgument([DoesNotReturnIf(false)] bool argState, string explanation)
 		{
-			RequireArgument(argState, explanation, (string)null);
+			RequireArgument(argState, explanation, string.Empty);
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace Menees
 		/// <param name="explanation">The explanation to put in the exception.</param>
 		/// <param name="argName">The name of the arg to put in the exception.</param>
 		/// <exception cref="ArgumentException">If <paramref name="argState"/> is false.</exception>
-		public static void RequireArgument(bool argState, string explanation, string argName)
+		public static void RequireArgument([DoesNotReturnIf(false)] bool argState, string explanation, string argName)
 		{
 			if (!argState)
 			{
@@ -48,23 +48,14 @@ namespace Menees
 		}
 
 		/// <summary>
-		/// Requires that the named argument's state is valid (i.e., true).
+		/// Makes sure a collection is non-null and non-empty.
 		/// </summary>
-		/// <param name="argState">The argument's state.</param>
-		/// <param name="explanation">The explanation to put in the exception.</param>
-		/// <param name="argExpression">An expression that returns the arg, which will be used to get the arg name.</param>
-		/// <exception cref="ArgumentException">If <paramref name="argState"/> is false.</exception>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The expression argument is built by the C# compiler.")]
-		public static void RequireArgument<T>(bool argState, string explanation, Expression<Func<T>> argExpression)
+		/// <typeparam name="T">The type of item in the collection.</typeparam>
+		/// <param name="arg">The collection to check.</param>
+		/// <param name="paramName">The name of the argument to put in the exception.</param>
+		public static void RequireCollection<T>([NotNull] IEnumerable<T>? arg, string paramName)
 		{
-			if (!argState)
-			{
-				string argName = argExpression != null ? ReflectionUtility.GetNameOf(argExpression) : null;
-				throw Exceptions.NewArgumentException(explanation, argName);
-			}
+			RequireArgument(!CollectionUtility.IsNullOrEmpty(arg), paramName, "The collection must be non-empty.");
 		}
 
 		/// <summary>
@@ -73,31 +64,11 @@ namespace Menees
 		/// <param name="reference">The reference to check.</param>
 		/// <param name="argName">The arg name to put in the exception.</param>
 		/// <exception cref="ArgumentNullException">If <paramref name="reference"/> is null.</exception>
-		public static void RequireReference<T>(T reference, string argName)
+		public static void RequireReference<T>([NotNull] T? reference, string argName)
 			where T : class
 		{
 			if (reference == null)
 			{
-				throw Exceptions.NewArgumentNullException(argName);
-			}
-		}
-
-		/// <summary>
-		/// Requires that a reference is non-null.
-		/// </summary>
-		/// <param name="reference">The reference to check.</param>
-		/// <param name="argExpression">An expression that returns the arg, which will be used to get the arg name.</param>
-		/// <exception cref="ArgumentNullException">If <paramref name="reference"/> is null.</exception>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The expression argument is built by the C# compiler.")]
-		public static void RequireReference<T>(T reference, Expression<Func<T>> argExpression)
-			where T : class
-		{
-			if (reference == null)
-			{
-				string argName = argExpression != null ? ReflectionUtility.GetNameOf(argExpression) : null;
 				throw Exceptions.NewArgumentNullException(argName);
 			}
 		}
@@ -108,7 +79,7 @@ namespace Menees
 		/// <param name="state">The state to check.</param>
 		/// <param name="explanation">The explanation to put in the exception.</param>
 		/// <exception cref="InvalidOperationException">If <paramref name="state"/> is false.</exception>
-		public static void RequireState(bool state, string explanation)
+		public static void RequireState([DoesNotReturnIf(false)] bool state, string explanation)
 		{
 			if (!state)
 			{
@@ -122,25 +93,12 @@ namespace Menees
 		/// <param name="arg">The string to check.</param>
 		/// <param name="argName">The name of the arg to put in the exception.</param>
 		/// <exception cref="ArgumentException">If <paramref name="arg"/> is null or empty.</exception>
-		public static void RequireString(string arg, string argName)
+		public static void RequireString([NotNull] string? arg, string argName)
 		{
 			RequireArgument(!string.IsNullOrEmpty(arg), "The string must be non-empty.", argName);
+#pragma warning disable CS8777 // Parameter must have a non-null value when exiting. Code ensures arg is non-null.
 		}
-
-		/// <summary>
-		/// Requires that a string is non-null and non-empty.
-		/// </summary>
-		/// <param name="arg">The string to check.</param>
-		/// <param name="argExpression">An expression that returns the arg, which will be used to get the arg name.</param>
-		/// <exception cref="ArgumentException">If <paramref name="arg"/> is null or empty.</exception>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1006:DoNotNestGenericTypesInMemberSignatures",
-			Justification = "The expression argument is built by the C# compiler.")]
-		public static void RequireString(string arg, Expression<Func<string>> argExpression)
-		{
-			RequireArgument(!string.IsNullOrEmpty(arg), "The string must be non-empty.", argExpression);
-		}
+#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
 
 		#endregion
 	}

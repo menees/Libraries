@@ -26,7 +26,7 @@ namespace Menees
 		/// <param name="settings">A settings node.</param>
 		public SettingsEventArgs(ISettingsNode settings)
 		{
-			Conditions.RequireReference(settings, () => settings);
+			Conditions.RequireReference(settings, nameof(settings));
 			this.settings = settings;
 		}
 

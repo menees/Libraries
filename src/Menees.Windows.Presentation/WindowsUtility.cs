@@ -64,7 +64,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="window">The window to activate.</param>
 		public static void BringToFront(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 
 			// This came from http://stackoverflow.com/questions/257587/bring-a-window-to-the-front-in-wpf/4831839#4831839
 			if (!window.IsVisible)
@@ -92,9 +92,9 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		/// <param name="dependencyObject">A dependency object or null.</param>
 		/// <returns>A Window reference to the host window, or null if <paramref name="dependencyObject"/> is null.</returns>
-		public static Window GetWindow(DependencyObject dependencyObject)
+		public static Window? GetWindow(DependencyObject dependencyObject)
 		{
-			Window result = null;
+			Window? result = null;
 
 			if (dependencyObject != null)
 			{
@@ -112,7 +112,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="showException">The action to call when an exception needs to be shown.  This can be null,
 		/// which will cause <see cref="ShowError(Window,string)"/> to be called.</param>
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
-		public static void InitializeApplication(string applicationName, Action<Exception> showException, Assembly applicationAssembly = null)
+		public static void InitializeApplication(string applicationName, Action<Exception>? showException, Assembly? applicationAssembly = null)
 		{
 			ApplicationInfo.Initialize(applicationName, applicationAssembly ?? Assembly.GetCallingAssembly(), () => HandleUtility.IsApplicationActivated);
 
@@ -130,7 +130,7 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		public static bool IsInDesignMode(DependencyObject dependencyObject)
 		{
-			Conditions.RequireReference(dependencyObject, () => dependencyObject);
+			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
 
 			// http://stackoverflow.com/questions/834283/is-there-a-way-to-check-if-wpf-is-currently-executing-in-design-mode-or-not
 			bool result = DesignerProperties.GetIsInDesignMode(dependencyObject);
@@ -144,7 +144,8 @@ namespace Menees.Windows.Presentation
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user cancelled).</returns>
-		public static string SelectFolder(DependencyObject owner, string title, string initialFolder) => SelectFolder(GetWindow(owner), title, initialFolder);
+		public static string? SelectFolder(DependencyObject owner, string? title, string? initialFolder)
+			=> SelectFolder(GetWindow(owner), title, initialFolder);
 
 		/// <summary>
 		/// Selects a file system path and allows the user to type in a path if necessary.
@@ -153,7 +154,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="title">A short title for the path being selected.</param>
 		/// <param name="initialFolder">The initial path to select.</param>
 		/// <returns>The path the user selected if they pressed OK.  Null otherwise (e.g., the user cancelled).</returns>
-		public static string SelectFolder(Window owner, string title, string initialFolder)
+		public static string? SelectFolder(Window? owner, string? title, string? initialFolder)
 			=> HandleUtility.SelectFolder(TryGetHandle(owner), title, initialFolder);
 
 		/// <summary>
@@ -162,7 +163,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="window">The window to move to the bottom of the Z-order.</param>
 		public static void SendToBack(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 			NativeMethods.SendToBack(window);
 		}
 
@@ -184,7 +185,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
-		public static Process ShellExecute(DependencyObject dependencyObject, string fileName, string verb)
+		public static Process? ShellExecute(DependencyObject dependencyObject, string fileName, string verb)
 			=> ShellExecute(GetWindow(dependencyObject), fileName, verb);
 
 		/// <summary>
@@ -193,13 +194,13 @@ namespace Menees.Windows.Presentation
 		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <returns>Whether the file was opened/executed successfully.</returns>
-		public static bool ShellExecute(Window owner, string fileName)
+		public static bool ShellExecute(Window? owner, string fileName)
 		{
 			bool result = false;
 
 			try
 			{
-				using (Process process = ShellExecute(owner, fileName, string.Empty))
+				using (Process? process = ShellExecute(owner, fileName, string.Empty))
 				{
 					result = true;
 				}
@@ -221,7 +222,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="fileName">The text or filename to execute.</param>
 		/// <param name="verb">The shell action that should be taken.  Pass an empty string for the default action.</param>
 		/// <returns>The process started by executing the file.</returns>
-		public static Process ShellExecute(Window owner, string fileName, string verb)
+		public static Process? ShellExecute(Window? owner, string fileName, string verb)
 			=> ShellUtility.ShellExecute(TryGetHandle(owner), fileName, verb);
 
 		/// <summary>
@@ -237,10 +238,10 @@ namespace Menees.Windows.Presentation
 		/// which the version and copyright information will be read from.</param>
 		/// <param name="repository">The name of a GitHub repository. If null, then
 		/// <see cref="ApplicationInfo.ApplicationName"/> is used.</param>
-		public static void ShowAboutBox(Window owner, Assembly mainAssembly, string repository = null)
+		public static void ShowAboutBox(Window? owner, Assembly mainAssembly, string? repository = null)
 		{
 			// If an assembly wasn't provided, then we want the version of the calling assembly not the current assembly.
-			AboutBox dialog = new AboutBox(mainAssembly ?? Assembly.GetCallingAssembly(), repository);
+			AboutBox dialog = new(mainAssembly ?? Assembly.GetCallingAssembly(), repository);
 			dialog.Execute(owner);
 		}
 
@@ -251,7 +252,7 @@ namespace Menees.Windows.Presentation
 		/// This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
-		public static void ShowError(DependencyObject dependencyObject, string message, string caption = null)
+		public static void ShowError(DependencyObject dependencyObject, string message, string? caption = null)
 		{
 			ShowError(GetWindow(dependencyObject), message, caption);
 		}
@@ -262,7 +263,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
-		public static void ShowError(Window owner, string message, string caption = null)
+		public static void ShowError(Window? owner, string message, string? caption = null)
 		{
 			if (caption == null)
 			{
@@ -287,7 +288,7 @@ namespace Menees.Windows.Presentation
 		/// This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
-		public static void ShowInfo(DependencyObject dependencyObject, string message, string caption = null)
+		public static void ShowInfo(DependencyObject dependencyObject, string message, string? caption = null)
 		{
 			ShowInfo(GetWindow(dependencyObject), message, caption);
 		}
@@ -298,7 +299,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="owner">The dialog owner window.  This can be null to use the desktop as the owner.</param>
 		/// <param name="message">The message to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
-		public static void ShowInfo(Window owner, string message, string caption = null)
+		public static void ShowInfo(Window? owner, string message, string? caption = null)
 		{
 			if (caption == null)
 			{
@@ -323,7 +324,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="yesNoQuestion">The yes/no question to display.</param>
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
 		/// <param name="defaultYes">Whether the default button should be Yes (instead of No).</param>
-		public static bool ShowQuestion(Window owner, string yesNoQuestion, string caption = null, bool defaultYes = true)
+		public static bool ShowQuestion(Window? owner, string yesNoQuestion, string? caption = null, bool defaultYes = true)
 		{
 			if (caption == null)
 			{
@@ -361,15 +362,15 @@ namespace Menees.Windows.Presentation
 		/// The function should return a null if the input passes validation, and it should return an error
 		/// message to display to the end user if the input fails validation.</param>
 		/// <returns>The user-entered value if they pressed OK, or null if Cancel was pressed.</returns>
-		public static string ShowInputBox(
-			Window owner,
+		public static string? ShowInputBox(
+			Window? owner,
 			string prompt,
-			string title,
-			string defaultValue,
+			string? title,
+			string? defaultValue,
 			int? maxLength = null,
-			Func<string, string> validate = null)
+			Func<string, string>? validate = null)
 		{
-			InputDialog dialog = new InputDialog();
+			InputDialog dialog = new();
 			if (string.IsNullOrEmpty(title))
 			{
 				dialog.Title = ApplicationInfo.ApplicationName;
@@ -379,7 +380,7 @@ namespace Menees.Windows.Presentation
 				dialog.Title = title;
 			}
 
-			string result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
+			string? result = dialog.Execute(owner, prompt, defaultValue, maxLength, validate);
 			return result;
 		}
 
@@ -396,7 +397,7 @@ namespace Menees.Windows.Presentation
 		public static ISet<ValidationError> GetValidationErrors(DependencyObject dependencyObject)
 		{
 			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
-			HashSet<ValidationError> result = new HashSet<ValidationError>();
+			HashSet<ValidationError> result = new();
 			GetValidationErrors(dependencyObject, result);
 			return result;
 		}
@@ -420,7 +421,7 @@ namespace Menees.Windows.Presentation
 			}
 		}
 
-		private static IntPtr? TryGetHandle(Window window)
+		private static IntPtr? TryGetHandle(Window? window)
 		{
 			IntPtr? result = null;
 

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -28,14 +28,14 @@ namespace Menees.Diffs.Tests
 			{
 				var diff = Diff(a, b);
 				IList<char> sequence = diff.GetLongestCommonSubsequence();
-				string result = new string(sequence.ToArray());
+				string result = new(sequence.ToArray());
 				return result;
 			}
 
-			Lcs("abcdef", "abc").ShouldEqual("abc");
-			Lcs("abcdef", "def").ShouldEqual("def");
-			Lcs("abcdef", "abdeg").ShouldEqual("abde");
-			Lcs("abc", "def").ShouldEqual("");
+			Lcs("abcdef", "abc").ShouldBe("abc");
+			Lcs("abcdef", "def").ShouldBe("def");
+			Lcs("abcdef", "abdeg").ShouldBe("abde");
+			Lcs("abc", "def").ShouldBe("");
 		}
 
 		[TestMethod]
@@ -48,10 +48,10 @@ namespace Menees.Diffs.Tests
 				return result;
 			}
 
-			LcsLen("abcdef", "abc").ShouldEqual(3);
-			LcsLen("abcdef", "def").ShouldEqual(3);
-			LcsLen("abcdef", "abdeg").ShouldEqual(4);
-			LcsLen("abc", "def").ShouldEqual(0);
+			LcsLen("abcdef", "abc").ShouldBe(3);
+			LcsLen("abcdef", "def").ShouldBe(3);
+			LcsLen("abcdef", "abdeg").ShouldBe(4);
+			LcsLen("abc", "def").ShouldBe(0);
 		}
 
 		[TestMethod]
@@ -62,15 +62,15 @@ namespace Menees.Diffs.Tests
 				var diff = Diff(a, b);
 				int result = diff.GetShortestEditScriptLength();
 				int reverseResult = diff.GetReverseShortestEditScriptLength();
-				result.ShouldEqual(reverseResult);
+				result.ShouldBe(reverseResult);
 				return result;
 			}
 
-			SesLen("abcdef", "abc").ShouldEqual(3);
-			SesLen("abcdef", "def").ShouldEqual(3);
-			SesLen("abcd", "abcdef").ShouldEqual(2);
-			SesLen("abcdef", "abdeg").ShouldEqual(3);
-			SesLen("abc", "def").ShouldEqual(6);
+			SesLen("abcdef", "abc").ShouldBe(3);
+			SesLen("abcdef", "def").ShouldBe(3);
+			SesLen("abcd", "abcdef").ShouldBe(2);
+			SesLen("abcdef", "abdeg").ShouldBe(3);
+			SesLen("abc", "def").ShouldBe(6);
 		}
 
 		[TestMethod]
@@ -84,14 +84,14 @@ namespace Menees.Diffs.Tests
 				return result;
 			}
 
-			SimilarityPercent("abc", "abc").ShouldEqual(100);
-			SimilarityPercent("abcdef", "abc").ShouldEqual(67);
-			SimilarityPercent("abcdef", "def").ShouldEqual(67);
-			SimilarityPercent("abcd", "abcdef").ShouldEqual(80);
-			SimilarityPercent("abcdef", "abdeg").ShouldEqual(73);
-			SimilarityPercent("abc", "def").ShouldEqual(0);
+			SimilarityPercent("abc", "abc").ShouldBe(100);
+			SimilarityPercent("abcdef", "abc").ShouldBe(67);
+			SimilarityPercent("abcdef", "def").ShouldBe(67);
+			SimilarityPercent("abcd", "abcdef").ShouldBe(80);
+			SimilarityPercent("abcdef", "abdeg").ShouldBe(73);
+			SimilarityPercent("abc", "def").ShouldBe(0);
 		}
 
-		private static MyersDiff<char> Diff(string a, string b) => new MyersDiff<char>(a.ToCharArray(), b.ToCharArray(), true);
+		private static MyersDiff<char> Diff(string a, string b) => new(a.ToCharArray(), b.ToCharArray(), true);
 	}
 }

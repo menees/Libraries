@@ -43,7 +43,7 @@ namespace Menees.Diffs
 			int[] hashA = this.HashStringList(listA);
 			int[] hashB = this.HashStringList(listB);
 
-			MyersDiff<int> diff = new MyersDiff<int>(hashA, hashB, this.supportChangeEditType);
+			MyersDiff<int> diff = new(hashA, hashB, this.supportChangeEditType);
 			EditScript result = diff.Execute();
 			return result;
 		}

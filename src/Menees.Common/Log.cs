@@ -36,9 +36,9 @@ namespace Menees
 
 		#region Private Data Members
 
-		private static readonly ConcurrentDictionary<string, Log> LogCache = new ConcurrentDictionary<string, Log>(StringComparer.Ordinal);
-		private static readonly GlobalLogContext GlobalContextValue = new GlobalLogContext();
-		private static readonly ThreadLogContext ThreadContextValue = new ThreadLogContext();
+		private static readonly ConcurrentDictionary<string, Log> LogCache = new(StringComparer.Ordinal);
+		private static readonly GlobalLogContext GlobalContextValue = new();
+		private static readonly ThreadLogContext ThreadContextValue = new();
 
 		// Good articles on TraceSource, which is the .NET 2.0+ recommended way to trace (although it's still weaker than log4net).
 		// http://msdn.microsoft.com/en-us/library/ms228993.aspx
@@ -142,7 +142,7 @@ namespace Menees
 		public static Log GetLog(Type category)
 		{
 			Conditions.RequireReference(category, nameof(category));
-			Log result = InternalGetLog(category.FullName);
+			Log result = InternalGetLog(category.FullName ?? string.Empty);
 			return result;
 		}
 
@@ -170,7 +170,7 @@ namespace Menees
 		/// <param name="category">A type whose full name will be used as the log category.  This must be non-null.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Debug(Type category, object messageData)
+		public static void Debug(Type category, object? messageData)
 		{
 			Debug(category, messageData, null, null);
 		}
@@ -182,7 +182,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Debug(Type category, object messageData, Exception ex)
+		public static void Debug(Type category, object? messageData, Exception? ex)
 		{
 			Debug(category, messageData, ex, null);
 		}
@@ -196,7 +196,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Debug(Type category, object messageData, IDictionary<string, object> contextProperties)
+		public static void Debug(Type category, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Debug(category, messageData, null, contextProperties);
 		}
@@ -211,7 +211,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Debug(Type category, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Debug(Type category, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Debug(messageData, ex, contextProperties);
@@ -227,7 +227,7 @@ namespace Menees
 		/// <param name="category">A type whose full name will be used as the log category.  This must be non-null.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Info(Type category, object messageData)
+		public static void Info(Type category, object? messageData)
 		{
 			Info(category, messageData, null, null);
 		}
@@ -239,7 +239,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Info(Type category, object messageData, Exception ex)
+		public static void Info(Type category, object? messageData, Exception? ex)
 		{
 			Info(category, messageData, ex, null);
 		}
@@ -253,7 +253,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Info(Type category, object messageData, IDictionary<string, object> contextProperties)
+		public static void Info(Type category, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Info(category, messageData, null, contextProperties);
 		}
@@ -268,7 +268,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Info(Type category, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Info(Type category, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Info(messageData, ex, contextProperties);
@@ -284,7 +284,7 @@ namespace Menees
 		/// <param name="category">A type whose full name will be used as the log category.  This must be non-null.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Warning(Type category, object messageData)
+		public static void Warning(Type category, object? messageData)
 		{
 			Warning(category, messageData, null, null);
 		}
@@ -296,7 +296,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Warning(Type category, object messageData, Exception ex)
+		public static void Warning(Type category, object? messageData, Exception? ex)
 		{
 			Warning(category, messageData, ex, null);
 		}
@@ -310,7 +310,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Warning(Type category, object messageData, IDictionary<string, object> contextProperties)
+		public static void Warning(Type category, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Warning(category, messageData, null, contextProperties);
 		}
@@ -325,7 +325,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Warning(Type category, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Warning(Type category, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Warning(messageData, ex, contextProperties);
@@ -341,7 +341,7 @@ namespace Menees
 		/// <param name="category">A type whose full name will be used as the log category.  This must be non-null.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Error(Type category, object messageData)
+		public static void Error(Type category, object? messageData)
 		{
 			Error(category, messageData, null, null);
 		}
@@ -353,7 +353,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Error(Type category, object messageData, Exception ex)
+		public static void Error(Type category, object? messageData, Exception? ex)
 		{
 			Error(category, messageData, ex, null);
 		}
@@ -367,7 +367,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Error(Type category, object messageData, IDictionary<string, object> contextProperties)
+		public static void Error(Type category, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Error(category, messageData, null, contextProperties);
 		}
@@ -382,7 +382,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Error(Type category, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Error(Type category, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Error(messageData, ex, contextProperties);
@@ -398,7 +398,7 @@ namespace Menees
 		/// <param name="category">A type whose full name will be used as the log category.  This must be non-null.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Fatal(Type category, object messageData)
+		public static void Fatal(Type category, object? messageData)
 		{
 			Fatal(category, messageData, null, null);
 		}
@@ -410,7 +410,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Fatal(Type category, object messageData, Exception ex)
+		public static void Fatal(Type category, object? messageData, Exception? ex)
 		{
 			Fatal(category, messageData, ex, null);
 		}
@@ -424,7 +424,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Fatal(Type category, object messageData, IDictionary<string, object> contextProperties)
+		public static void Fatal(Type category, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Fatal(category, messageData, null, contextProperties);
 		}
@@ -439,7 +439,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Fatal(Type category, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Fatal(Type category, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Fatal(messageData, ex, contextProperties);
@@ -456,7 +456,7 @@ namespace Menees
 		/// <param name="level">The severity level of the message.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public static void Write(Type category, LogLevel level, object messageData)
+		public static void Write(Type category, LogLevel level, object? messageData)
 		{
 			Write(category, level, messageData, null, null);
 		}
@@ -469,7 +469,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public static void Write(Type category, LogLevel level, object messageData, Exception ex)
+		public static void Write(Type category, LogLevel level, object? messageData, Exception? ex)
 		{
 			Write(category, level, messageData, ex, null);
 		}
@@ -484,7 +484,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Write(Type category, LogLevel level, object messageData, IDictionary<string, object> contextProperties)
+		public static void Write(Type category, LogLevel level, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			Write(category, level, messageData, null, contextProperties);
 		}
@@ -500,7 +500,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public static void Write(Type category, LogLevel level, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public static void Write(Type category, LogLevel level, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			Log log = GetLog(category);
 			log.Write(level, messageData, ex, contextProperties);
@@ -515,7 +515,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Debug(object messageData)
+		public void Debug(object? messageData)
 		{
 			this.Debug(messageData, null, null);
 		}
@@ -526,7 +526,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Debug(object messageData, Exception ex)
+		public void Debug(object? messageData, Exception? ex)
 		{
 			this.Debug(messageData, ex, null);
 		}
@@ -539,7 +539,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Debug(object messageData, IDictionary<string, object> contextProperties)
+		public void Debug(object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Debug(messageData, null, contextProperties);
 		}
@@ -553,7 +553,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Debug(object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Debug(object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(LogLevel.Debug, messageData, ex, contextProperties);
 		}
@@ -567,7 +567,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Info(object messageData)
+		public void Info(object? messageData)
 		{
 			this.Info(messageData, null, null);
 		}
@@ -578,7 +578,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Info(object messageData, Exception ex)
+		public void Info(object? messageData, Exception? ex)
 		{
 			this.Info(messageData, ex, null);
 		}
@@ -591,7 +591,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Info(object messageData, IDictionary<string, object> contextProperties)
+		public void Info(object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Info(messageData, null, contextProperties);
 		}
@@ -605,7 +605,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Info(object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Info(object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(LogLevel.Info, messageData, ex, contextProperties);
 		}
@@ -619,7 +619,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Warning(object messageData)
+		public void Warning(object? messageData)
 		{
 			this.Warning(messageData, null, null);
 		}
@@ -630,7 +630,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Warning(object messageData, Exception ex)
+		public void Warning(object? messageData, Exception? ex)
 		{
 			this.Warning(messageData, ex, null);
 		}
@@ -643,7 +643,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Warning(object messageData, IDictionary<string, object> contextProperties)
+		public void Warning(object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Warning(messageData, null, contextProperties);
 		}
@@ -657,7 +657,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Warning(object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Warning(object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(LogLevel.Warning, messageData, ex, contextProperties);
 		}
@@ -671,7 +671,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Error(object messageData)
+		public void Error(object? messageData)
 		{
 			this.Error(messageData, null, null);
 		}
@@ -682,7 +682,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Error(object messageData, Exception ex)
+		public void Error(object? messageData, Exception? ex)
 		{
 			this.Error(messageData, ex, null);
 		}
@@ -695,7 +695,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Error(object messageData, IDictionary<string, object> contextProperties)
+		public void Error(object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Error(messageData, null, contextProperties);
 		}
@@ -709,7 +709,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Error(object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Error(object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(LogLevel.Error, messageData, ex, contextProperties);
 		}
@@ -723,7 +723,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Fatal(object messageData)
+		public void Fatal(object? messageData)
 		{
 			this.Fatal(messageData, null, null);
 		}
@@ -734,7 +734,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Fatal(object messageData, Exception ex)
+		public void Fatal(object? messageData, Exception? ex)
 		{
 			this.Fatal(messageData, ex, null);
 		}
@@ -747,7 +747,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Fatal(object messageData, IDictionary<string, object> contextProperties)
+		public void Fatal(object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Fatal(messageData, null, contextProperties);
 		}
@@ -761,7 +761,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Fatal(object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Fatal(object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(LogLevel.Fatal, messageData, ex, contextProperties);
 		}
@@ -776,7 +776,7 @@ namespace Menees
 		/// <param name="level">The severity level of the message.</param>
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
-		public void Write(LogLevel level, object messageData)
+		public void Write(LogLevel level, object? messageData)
 		{
 			this.Write(level, messageData, null, null);
 		}
@@ -788,7 +788,7 @@ namespace Menees
 		/// <param name="messageData">The message data.  This can be null.  If specified, this will be
 		/// rendered as text if necessary.</param>
 		/// <param name="ex">The exception associated with the message.  This can be null.</param>
-		public void Write(LogLevel level, object messageData, Exception ex)
+		public void Write(LogLevel level, object? messageData, Exception? ex)
 		{
 			this.Write(level, messageData, ex, null);
 		}
@@ -802,7 +802,7 @@ namespace Menees
 		/// <param name="contextProperties">Message-specific context properties that will be
 		/// logged and merged with the <see cref="GlobalContext"/> and <see cref="ThreadContext"/>
 		/// properties.  This can be null.</param>
-		public void Write(LogLevel level, object messageData, IDictionary<string, object> contextProperties)
+		public void Write(LogLevel level, object? messageData, IDictionary<string, object>? contextProperties)
 		{
 			this.Write(level, messageData, null, contextProperties);
 		}
@@ -821,7 +821,7 @@ namespace Menees
 			"Microsoft.Design",
 			"CA1031:DoNotCatchGeneralExceptionTypes",
 			Justification = "This is a core logging method, which most catch blocks call back in to.")]
-		public void Write(LogLevel level, object messageData, Exception ex, IDictionary<string, object> contextProperties)
+		public void Write(LogLevel level, object? messageData, Exception? ex, IDictionary<string, object>? contextProperties)
 		{
 			try
 			{
@@ -906,7 +906,7 @@ namespace Menees
 			}
 		}
 
-		private static Dictionary<string, object> GetEventProperties(IDictionary<string, object> contextProperties)
+		private static Dictionary<string, object> GetEventProperties(IDictionary<string, object>? contextProperties)
 		{
 			Dictionary<string, object> entryProperties;
 			if (contextProperties != null)
@@ -929,27 +929,18 @@ namespace Menees
 		{
 			int result = 0;
 
-			if (eventProperties.TryGetValue(EventIdPropertyName, out object eventIdValue))
+			if (eventProperties.TryGetValue(EventIdPropertyName, out object? eventIdValue) && eventIdValue is int eventId)
 			{
-				try
-				{
-					result = (int)eventIdValue;
-					eventProperties.Remove(EventIdPropertyName);
-				}
-#pragma warning disable CC0004 // Catch block cannot be empty
-				catch (InvalidCastException)
-				{
-					// If it's not an int, then it's a valid event ID.
-				}
-#pragma warning restore CC0004 // Catch block cannot be empty
+				result = eventId;
+				eventProperties.Remove(EventIdPropertyName);
 			}
 
 			return result;
 		}
 
-		private static object[] GetEventData(object messageData, Exception ex, IDictionary<string, object> eventProperties)
+		private static object[] GetEventData(object? messageData, Exception? ex, IDictionary<string, object> eventProperties)
 		{
-			List<object> result = new List<object>();
+			List<object> result = new();
 
 			if (messageData != null)
 			{
@@ -964,7 +955,7 @@ namespace Menees
 			if (eventProperties != null)
 			{
 				const string Prefix = "{";
-				StringBuilder sb = new StringBuilder(Prefix);
+				StringBuilder sb = new(Prefix);
 				foreach (var pair in eventProperties)
 				{
 					if (sb.Length > Prefix.Length)

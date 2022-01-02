@@ -12,7 +12,7 @@ namespace Menees.Diffs.Windows.Forms
 	{
 		#region Public Fields
 
-		public static readonly DiffViewPosition Empty = new DiffViewPosition(-100000, -100000);
+		public static readonly DiffViewPosition Empty = new(-100000, -100000);
 
 		#endregion
 
@@ -89,7 +89,7 @@ namespace Menees.Diffs.Windows.Forms
 			return result;
 		}
 
-		public override bool Equals(object value)
+		public override bool Equals(object? value)
 		{
 			bool result = false;
 

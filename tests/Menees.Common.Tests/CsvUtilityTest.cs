@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -25,15 +25,15 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ReadLineReaderTest()
 		{
-			using (StringReader reader = new StringReader("A, B, C\r\nD, E, F\r\nG, \"H\r\nh\", \"I\ni\""))
+			using (StringReader reader = new("A, B, C\r\nD, E, F\r\nG, \"H\r\nh\", \"I\ni\""))
 			{
-				var values = CsvUtility.ReadLine(reader).ToArray();
+				var values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "A", "B", "C" }, values);
 
-				values = CsvUtility.ReadLine(reader).ToArray();
+				values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "D", "E", "F" }, values);
 
-				values = CsvUtility.ReadLine(reader).ToArray();
+				values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "G", "H\r\nh", "I\r\ni" }, values);
 
 				var nullValue = CsvUtility.ReadLine(reader);
@@ -44,21 +44,21 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void WriteValueTest()
 		{
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteValue(writer, "A");
-				buffer.ToString().ShouldEqual("A");
+				buffer.ToString().ShouldBe("A");
 				buffer.Clear();
 
 				// This should be quoted because it contains a comma.
 				CsvUtility.WriteValue(writer, "A, B");
-				buffer.ToString().ShouldEqual("\"A, B\"");
+				buffer.ToString().ShouldBe("\"A, B\"");
 				buffer.Clear();
 
 				// This contains a comma and double quotes.
 				CsvUtility.WriteValue(writer, "He said, \"What?\"");
-				buffer.ToString().ShouldEqual("\"He said, \"\"What?\"\"\"");
+				buffer.ToString().ShouldBe("\"He said, \"\"What?\"\"\"");
 				buffer.Clear();
 			}
 		}
@@ -72,7 +72,7 @@ namespace Menees.Common.Tests
 			{
 				DataTable table = CreateTestTable();
 				CsvUtility.WriteTable(tableFileName, table);
-				using (DataTableReader reader = new DataTableReader(table))
+				using (DataTableReader reader = new(table))
 				{
 					CsvUtility.WriteTable(readerFileName, reader);
 				}
@@ -91,9 +91,9 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableContents);
 
-			StringBuilder readerContents = new StringBuilder();
-			using (StringWriter writer = new StringWriter(readerContents))
-			using (DataTableReader reader = new DataTableReader(table))
+			StringBuilder readerContents = new();
+			using (StringWriter writer = new(readerContents))
+			using (DataTableReader reader = new(table))
 			{
 				CsvUtility.WriteTable(writer, reader);
 			}
@@ -101,7 +101,7 @@ namespace Menees.Common.Tests
 			TestWrites(tableContents, readerContents.ToString());
 		}
 
-		private static readonly object[,] TestData = 
+		private static readonly object[,] TestData =
 		{
 			{ "Id", "Name", "Cost" },
 			{ 1, "Silly Putty", 4.99m },
@@ -110,9 +110,9 @@ namespace Menees.Common.Tests
 			{ 4, "Soccer ball\r\n(Futbol)", 14.99m }
 		};
 
-		private DataTable CreateTestTable()
+		private static DataTable CreateTestTable()
 		{
-			DataTable result = new DataTable();
+			DataTable result = new();
 			var columns = result.Columns;
 			int numColumns = TestData.GetLength(1);
 			for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
@@ -137,12 +137,12 @@ namespace Menees.Common.Tests
 			return result;
 		}
 
-		private DataTable CreateTestTableAndText(out string tableText)
+		private static DataTable CreateTestTableAndText(out string tableText)
 		{
 			DataTable result = CreateTestTable();
 
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteTable(writer, result);
 			}
@@ -151,44 +151,44 @@ namespace Menees.Common.Tests
 			return result;
 		}
 
-		private void TestWrites(string tableContents, string readerContents)
+		private static void TestWrites(string tableContents, string readerContents)
 		{
-			tableContents.ShouldEqual(readerContents);
+			tableContents.ShouldBe(readerContents);
 
-			using (StringReader reader = new StringReader(readerContents))
+			using (StringReader reader = new(readerContents))
 			{
-				IList<string> values;
+				IList<string>? values;
 				int rowIndex = 0;
 				int numColumns = TestData.GetLength(1);
 				while ((values = CsvUtility.ReadLine(reader)) != null)
 				{
-					values.Count.ShouldEqual(numColumns);
+					values.Count.ShouldBe(numColumns);
 					for (int columnIndex = 0; columnIndex < numColumns; columnIndex++)
 					{
 						string value = values[columnIndex];
-						string testValue = TestData[rowIndex, columnIndex].ToString();
-						value.ShouldEqual(testValue);
+						string? testValue = TestData[rowIndex, columnIndex].ToString();
+						value.ShouldBe(testValue);
 					}
 
 					rowIndex++;
 				}
 
-				rowIndex.ShouldEqual(TestData.GetLength(0));
+				rowIndex.ShouldBe(TestData.GetLength(0));
 			}
 		}
 
 		[TestMethod]
 		public void WriteLineValuesTest()
 		{
-			StringBuilder buffer = new StringBuilder();
-			using (StringWriter writer = new StringWriter(buffer))
+			StringBuilder buffer = new();
+			using (StringWriter writer = new(buffer))
 			{
 				CsvUtility.WriteLine(writer, new object[] { 1, "A", "B", "C", 4.2m });
-				buffer.ToString().ShouldEqual("1,A,B,C,4.2\r\n");
+				buffer.ToString().ShouldBe("1,A,B,C,4.2\r\n");
 				buffer.Clear();
 
 				CsvUtility.WriteLine(writer, new object[] { 1, "A, \"B A\", C", 4.2m });
-				buffer.ToString().ShouldEqual("1,\"A, \"\"B A\"\", C\",4.2\r\n");
+				buffer.ToString().ShouldBe("1,\"A, \"\"B A\"\", C\",4.2\r\n");
 				buffer.Clear();
 			}
 		}
@@ -201,7 +201,7 @@ namespace Menees.Common.Tests
 			{
 				DataTable table = CreateTestTable();
 				CsvUtility.WriteTable(tableFileName, table);
-				DataTable newTable = CsvUtility.ReadTable(tableFileName);
+				DataTable? newTable = CsvUtility.ReadTable(tableFileName);
 				TestReadTable(table, newTable);
 			}
 			finally
@@ -210,13 +210,14 @@ namespace Menees.Common.Tests
 			}
 		}
 
-		private static void TestReadTable(DataTable oldTable, DataTable newTable, bool treatAsStrings = true)
+		private static void TestReadTable(DataTable oldTable, DataTable? newTable, bool treatAsStrings = true)
 		{
 			int columnCount = oldTable.Columns.Count;
-			columnCount.ShouldEqual(newTable.Columns.Count);
+			newTable.ShouldNotBeNull();
+			columnCount.ShouldBe(newTable.Columns.Count);
 
 			int rowCount = oldTable.Rows.Count;
-			rowCount.ShouldEqual(newTable.Rows.Count);
+			rowCount.ShouldBe(newTable.Rows.Count);
 
 			for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
 			{
@@ -224,8 +225,8 @@ namespace Menees.Common.Tests
 				DataRow newRow = newTable.Rows[rowIndex];
 				for (int columnIndex = 0; columnIndex < columnCount; columnIndex++)
 				{
-					object originalValue = originalRow[columnIndex];
-					object newValue = newRow[columnIndex];
+					object? originalValue = originalRow[columnIndex];
+					object? newValue = newRow[columnIndex];
 
 					if (treatAsStrings)
 					{
@@ -233,7 +234,7 @@ namespace Menees.Common.Tests
 						newValue = newValue.ToString();
 					}
 
-					originalValue.ShouldEqual(newValue);
+					originalValue.ShouldBe(newValue);
 				}
 			}
 		}
@@ -243,9 +244,9 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableText);
 
-			using (StringReader reader = new StringReader(tableText))
+			using (StringReader reader = new(tableText))
 			{
-				DataTable newTable = CsvUtility.ReadTable(reader);
+				DataTable? newTable = CsvUtility.ReadTable(reader);
 				TestReadTable(table, newTable);
 			}
 		}
@@ -255,9 +256,9 @@ namespace Menees.Common.Tests
 		{
 			DataTable table = CreateTestTableAndText(out string tableText);
 
-			using (StringReader reader = new StringReader(tableText))
+			using (StringReader reader = new(tableText))
 			{
-				DataTable newTable = CsvUtility.ReadTable(reader, preLoadTable =>
+				DataTable? newTable = CsvUtility.ReadTable(reader, preLoadTable =>
 					{
 						int columnCount = preLoadTable.Columns.Count;
 						for (int i = 0; i < columnCount; i++)

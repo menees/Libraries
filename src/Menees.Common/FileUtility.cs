@@ -6,6 +6,7 @@ namespace Menees
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Globalization;
 	using System.IO;
 	using System.Linq;
@@ -22,10 +23,10 @@ namespace Menees
 		#region Private Data Members
 
 		// The GetInvalidPathChars set should be a subset of the GetInvalidFileNameChars set, but this combines them for safety.
-		private static readonly HashSet<char> InvalidNameCharacters = new HashSet<char>(
+		private static readonly HashSet<char> InvalidNameCharacters = new(
 			Path.GetInvalidFileNameChars().Union(Path.GetInvalidPathChars()));
 
-		private static readonly HashSet<string> ReservedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		private static readonly HashSet<string> ReservedNames = new(StringComparer.OrdinalIgnoreCase)
 			{
 				"AUX", "CLOCK$", "CON", "NUL", "PRN",
 				"COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
@@ -134,7 +135,7 @@ namespace Menees
 			// Path.GetFullPath's logic of appending the current directory, which
 			// isn't predictable in a multi-threaded process (since there's only one
 			// current directory per process and any thread can change it).
-			string directory = Path.GetDirectoryName(result);
+			string? directory = Path.GetDirectoryName(result);
 			if (string.IsNullOrEmpty(directory))
 			{
 				result = Path.Combine(ApplicationInfo.BaseDirectory, result);
@@ -214,9 +215,9 @@ namespace Menees
 		/// This supports drive-lettered paths and UNC paths, but a UNC root
 		/// will be returned in title case (e.g., \\Server\Share).
 		/// </remarks>
-		public static bool TryGetExactPath(string path, out string exactPath)
+		public static bool TryGetExactPath(string path, [MaybeNullWhen(false)] out string exactPath)
 		{
-			Conditions.RequireString(path, () => path);
+			Conditions.RequireString(path, nameof(path));
 
 			bool result = false;
 			exactPath = null;
@@ -224,12 +225,12 @@ namespace Menees
 			// http://stackoverflow.com/questions/325931/getting-actual-file-name-with-proper-casing-on-windows-with-net
 			// DirectoryInfo accepts either a file path or a directory path, and most of its properties work for either.
 			// However, its Exists property only works for a directory path.
-			DirectoryInfo directory = new DirectoryInfo(path);
+			DirectoryInfo directory = new(path);
 			if (File.Exists(path) || directory.Exists)
 			{
-				List<string> parts = new List<string>();
+				List<string> parts = new();
 
-				DirectoryInfo parentDirectory = directory.Parent;
+				DirectoryInfo? parentDirectory = directory.Parent;
 				while (parentDirectory != null)
 				{
 					FileSystemInfo entry = parentDirectory.EnumerateFileSystemInfos(directory.Name).First();
@@ -243,9 +244,7 @@ namespace Menees
 				string root = directory.FullName;
 				if (root.Contains(Path.VolumeSeparatorChar))
 				{
-#pragma warning disable CA1304 // Specify CultureInfo ! Drive letters should always be upper case.
 					root = root.ToUpper();
-#pragma warning restore CA1304 // Specify CultureInfo
 				}
 				else
 				{
@@ -333,7 +332,7 @@ namespace Menees
 				if (path.Length <= maxPath && remainingPath.Length > 0
 					&& (options.HasFlag(ValidPathOptions.AllowTrailingSeparator) || !separators.Contains(path[path.Length - 1])))
 				{
-					if (HasValidRoot(remainingPath, separators, allowDevicePaths, allowRelative, out string root))
+					if (HasValidRoot(remainingPath, separators, allowDevicePaths, allowRelative, out string? root))
 					{
 						if (root.Length == remainingPath.Length)
 						{
@@ -359,7 +358,7 @@ namespace Menees
 
 		#region Private Methods
 
-		private static bool HasValidRoot(string path, char[] separators, bool allowDeviceNameOnly, bool allowRelative, out string root)
+		private static bool HasValidRoot(string path, char[] separators, bool allowDeviceNameOnly, bool allowRelative, [MaybeNullWhen(false)] out string root)
 		{
 			root = null;
 

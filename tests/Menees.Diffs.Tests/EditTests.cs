@@ -3,7 +3,7 @@ using Menees.Diffs;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -20,12 +20,12 @@ namespace Menees.Diffs.Tests
 			TextDiffTests.Check(edit, 1, 0, 0);
 
 			edit.Offset(10, 20);
-			edit.StartA.ShouldEqual(10);
-			edit.StartB.ShouldEqual(20);
+			edit.StartA.ShouldBe(10);
+			edit.StartB.ShouldBe(20);
 
 			edit.Offset(20, 10);
-			edit.StartA.ShouldEqual(30);
-			edit.StartB.ShouldEqual(30);
+			edit.StartA.ShouldBe(30);
+			edit.StartB.ShouldBe(30);
 		}
 	}
 }

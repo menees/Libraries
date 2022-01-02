@@ -63,7 +63,7 @@ namespace Menees.Windows
 				// We could execute Visual Studio by command-line and
 				// run the GotoLn command (like MegaBuild does), but that
 				// requires starting a new instance of VS for each file opened.
-				dynamic dte = GetVisualStudioInstance();
+				dynamic? dte = GetVisualStudioInstance();
 				if (dte != null)
 				{
 					OpenInVisualStudio(dte, fileName, fileLineNumber);
@@ -92,14 +92,14 @@ namespace Menees.Windows
 		/// <param name="maxMajorVersion">The maximum major version to look for. This defaults to <see cref="int.MaxValue"/>.</param>
 		/// <param name="resolvedPathMustExist">Whether the resolved version-specific path must exist. This defaults to false.</param>
 		/// <returns>The resolved path for the highest matched version or null if no version was matched.</returns>
-		public static string ResolvePath(
+		public static string? ResolvePath(
 			Func<Version, string> buildVersionPath,
 			int minMajorVersion = VS2017MajorVersion,
 			int maxMajorVersion = int.MaxValue,
 			bool resolvedPathMustExist = false)
 		{
-			string result = null;
-			Version resultVersion = null;
+			string? result = null;
+			Version? resultVersion = null;
 
 			// VS 2017 and up allow multiple side-by-side editions to be installed, and we have to use a COM API to enumerate the installed instances.
 			// https://github.com/mluparu/vs-setup-samples - COM API samples
@@ -111,7 +111,7 @@ namespace Menees.Windows
 			try
 			{
 				// From MS example: https://github.com/Microsoft/vs-setup-samples/blob/master/Setup.Configuration.CS/Program.cs
-				SetupConfiguration configuration = new SetupConfiguration();
+				SetupConfiguration configuration = new();
 
 				IEnumSetupInstances instanceEnumerator = configuration.EnumAllInstances();
 				int fetched;
@@ -123,14 +123,14 @@ namespace Menees.Windows
 					{
 						ISetupInstance instance = instances[0];
 						if (instance != null
-							&& Version.TryParse(instance.GetInstallationVersion(), out Version version)
+							&& Version.TryParse(instance.GetInstallationVersion(), out Version? version)
 							&& version.Major >= minMajorVersion
 							&& version.Major <= maxMajorVersion)
 						{
 							InstanceState state = ((ISetupInstance2)instance).GetState();
 							if (state == InstanceState.Complete)
 							{
-								string versionPath = buildVersionPath?.Invoke(version);
+								string? versionPath = buildVersionPath?.Invoke(version);
 								if (!string.IsNullOrEmpty(versionPath))
 								{
 									string resolvedPath = instance.ResolvePath(versionPath);
@@ -158,9 +158,7 @@ namespace Menees.Windows
 			{
 				// The SetupConfiguration API is not registered, so assume no instances are installed.
 			}
-#pragma warning disable CA1031 // Do not catch general exception types. Comment explains it.
 			catch (Exception)
-#pragma warning restore CA1031 // Do not catch general exception types
 			{
 				// Heath Stewart (MSFT), the author of the SetupConfiguration API, says to treat any exception as "no instances installed."
 				// https://code.msdn.microsoft.com/windowsdesktop/Visual-Studio-Setup-0cedd331/view/Discussions#content
@@ -174,9 +172,9 @@ namespace Menees.Windows
 
 		#region Private Methods
 
-		private static object GetVisualStudioInstance()
+		private static object? GetVisualStudioInstance()
 		{
-			object result = null;
+			object? result = null;
 
 			const string VisualStudioProgId = "VisualStudio.DTE";
 			try
@@ -187,7 +185,7 @@ namespace Menees.Windows
 			catch (COMException)
 			{
 				// See if VS is registered.
-				Type dteType = Type.GetTypeFromProgID(VisualStudioProgId, false);
+				Type? dteType = Type.GetTypeFromProgID(VisualStudioProgId, false);
 				if (dteType != null)
 				{
 					// VS is registered, so we need to start a new instance.

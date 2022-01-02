@@ -16,13 +16,13 @@ namespace Menees.Windows.Forms
 		#region Private Data Members
 
 		private readonly string item;
-		private readonly IEnumerable<string> values;
+		private readonly IEnumerable<string>? values;
 
 		#endregion
 
 		#region Constructors
 
-		internal RecentItemClickEventArgs(string item, IEnumerable<string> values)
+		internal RecentItemClickEventArgs(string item, IEnumerable<string>? values)
 		{
 			this.item = item;
 			this.values = values;
@@ -40,7 +40,7 @@ namespace Menees.Windows.Forms
 		/// <summary>
 		/// Gets the values associated with the clicked item.
 		/// </summary>
-		public IEnumerable<string> Values => this.values;
+		public IEnumerable<string>? Values => this.values;
 
 		#endregion
 	}

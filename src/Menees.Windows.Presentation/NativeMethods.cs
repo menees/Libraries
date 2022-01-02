@@ -25,7 +25,7 @@ namespace Menees.Windows.Presentation
 		private const int SWP_NOSIZE = 0x0001;
 		private const int SWP_NOMOVE = 0x0002;
 
-		private static readonly IntPtr HWND_BOTTOM = new IntPtr(1);
+		private static readonly IntPtr HWND_BOTTOM = new(1);
 
 		#endregion
 

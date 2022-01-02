@@ -8,7 +8,7 @@ namespace Menees.Common.Tests
 	[TestClass()]
 	public class ReadOnlySetTest
 	{
-		private ISet<string> CreateInstance()
+		private static ISet<string> CreateInstance()
 		{
 			ISet<string> value = new HashSet<string>() { "A", "B", "C" };
 			return value.AsReadOnly();

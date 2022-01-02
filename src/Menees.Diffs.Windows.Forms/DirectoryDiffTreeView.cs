@@ -24,7 +24,7 @@ namespace Menees.Diffs.Windows.Forms
 		private const int FolderOpenIndex = 1;
 
 		private bool useA;
-		private DirectoryDiffResults results;
+		private DirectoryDiffResults? results;
 
 		#endregion
 
@@ -43,9 +43,9 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Internal Events
 
-		internal event EventHandler MouseWheelMsg;
+		internal event EventHandler? MouseWheelMsg;
 
-		internal event EventHandler VScroll;
+		internal event EventHandler? VScroll;
 
 		#endregion
 
@@ -60,7 +60,7 @@ namespace Menees.Diffs.Windows.Forms
 				TreeNode node = this.SelectedNode;
 				if (node != null)
 				{
-					DirectoryDiffEntry entry = GetEntryForNode(node);
+					DirectoryDiffEntry? entry = GetEntryForNode(node);
 					if (entry != null)
 					{
 						result = (this.useA && entry.InA) || (!this.useA && entry.InB);
@@ -75,18 +75,23 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Methods
 
-		public static DirectoryDiffEntry GetEntryForNode(TreeNode node) => node?.Tag as DirectoryDiffEntry;
+		public static DirectoryDiffEntry? GetEntryForNode(TreeNode? node) => node?.Tag as DirectoryDiffEntry;
 
 		public string GetFullNameForNode(TreeNode node)
 		{
-			string nodePath = node.FullPath;
-			string basePath = this.useA ? this.results.DirectoryA.FullName : this.results.DirectoryB.FullName;
-			if (!basePath.EndsWith("\\"))
+			string result = node.FullPath;
+			if (this.results != null)
 			{
-				basePath += "\\";
+				string basePath = this.useA ? this.results.DirectoryA.FullName : this.results.DirectoryB.FullName;
+				if (!basePath.EndsWith("\\"))
+				{
+					basePath += "\\";
+				}
+
+				result = basePath + result;
 			}
 
-			return basePath + nodePath;
+			return result;
 		}
 
 		public void SetData(DirectoryDiffResults results, bool useA)
@@ -122,13 +127,25 @@ namespace Menees.Diffs.Windows.Forms
 
 		protected override void OnAfterCollapse(TreeViewEventArgs e)
 		{
-			this.SetNodeImage(e.Node, GetEntryForNode(e.Node));
+			TreeNode? node = e.Node;
+			DirectoryDiffEntry? entry = GetEntryForNode(node);
+			if (node != null && entry != null)
+			{
+				this.SetNodeImage(node, entry);
+			}
+
 			base.OnAfterCollapse(e);
 		}
 
 		protected override void OnAfterExpand(TreeViewEventArgs e)
 		{
-			this.SetNodeImage(e.Node, GetEntryForNode(e.Node));
+			TreeNode? node = e.Node;
+			DirectoryDiffEntry? entry = GetEntryForNode(node);
+			if (node != null && entry != null)
+			{
+				this.SetNodeImage(node, entry);
+			}
+
 			base.OnAfterExpand(e);
 		}
 
@@ -161,9 +178,9 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Private Methods
 
-		private void AddEntry(DirectoryDiffEntry entry, TreeNode parentNode)
+		private void AddEntry(DirectoryDiffEntry entry, TreeNode? parentNode)
 		{
-			TreeNode node = new TreeNode
+			TreeNode node = new()
 			{
 				Tag = entry,
 			};
@@ -194,14 +211,14 @@ namespace Menees.Diffs.Windows.Forms
 
 			if (!entry.IsFile)
 			{
-				foreach (DirectoryDiffEntry subEntry in entry.Subentries)
+				foreach (DirectoryDiffEntry subEntry in entry.Subentries!)
 				{
 					this.AddEntry(subEntry, node);
 				}
 			}
 		}
 
-		private void DiffOptionsChanged(object sender, EventArgs e)
+		private void DiffOptionsChanged(object? sender, EventArgs e)
 		{
 			this.SetNodesColors(this.Nodes);
 		}
@@ -213,9 +230,12 @@ namespace Menees.Diffs.Windows.Forms
 			{
 				this.Nodes.Clear();
 
-				foreach (DirectoryDiffEntry entry in this.results.Entries)
+				if (this.results != null)
 				{
-					this.AddEntry(entry, null);
+					foreach (DirectoryDiffEntry entry in this.results.Entries)
+					{
+						this.AddEntry(entry, null);
+					}
 				}
 
 				this.ExpandAll();
@@ -280,7 +300,7 @@ namespace Menees.Diffs.Windows.Forms
 				//
 				// Also, we should only show a folder open if we're
 				// showing recursive differences.
-				if (this.results.Recursive && node.IsExpanded && entry.InA && entry.InB)
+				if (this.results != null && this.results.Recursive && node.IsExpanded && entry.InA && entry.InB)
 				{
 					index = FolderOpenIndex;
 				}
@@ -302,7 +322,12 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			foreach (TreeNode node in nodes)
 			{
-				this.SetNodeColor(node, GetEntryForNode(node));
+				DirectoryDiffEntry? entry = GetEntryForNode(node);
+				if (entry != null)
+				{
+					this.SetNodeColor(node, entry);
+				}
+
 				this.SetNodesColors(node.Nodes);
 			}
 		}

@@ -19,7 +19,7 @@ namespace Menees.Shell
 	{
 		#region Private Data Members
 
-		private readonly List<string> lines = new List<string>();
+		private readonly List<string> lines = new();
 		private readonly bool includeErrorStream;
 		private readonly int processExitCode;
 		private readonly bool hasProcessExited;
@@ -74,7 +74,7 @@ namespace Menees.Shell
 			startInfo.RedirectStandardError = true;
 
 			// Create a new process instance.
-			using (Process proc = new Process())
+			using (Process proc = new())
 			{
 				proc.StartInfo = startInfo;
 

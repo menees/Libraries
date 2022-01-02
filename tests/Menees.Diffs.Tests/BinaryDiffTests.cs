@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -36,7 +36,7 @@ namespace Menees.Diffs.Tests
 			int tableSize = 97,
 			bool favorLastMatch = false)
 		{
-			BinaryDiff diff = new BinaryDiff();
+			BinaryDiff diff = new();
 			diff.FavorLastMatch = favorLastMatch;
 			diff.FootprintLength = footprintLength;
 			diff.TableSize = tableSize;
@@ -45,18 +45,18 @@ namespace Menees.Diffs.Tests
 			using Stream bStream = new MemoryStream(Encoding.UTF8.GetBytes(bContent));
 			AddCopyCollection result = diff.Execute(aStream, bStream);
 
-			result.TotalByteLength.ShouldEqual((int)bStream.Length);
+			result.TotalByteLength.ShouldBe((int)bStream.Length);
 			return result;
 		}
 
 		internal static void Check(AddCopyCollection ac, params bool[] adds)
 		{
-			ac.Count.ShouldEqual(adds.Length);
+			ac.Count.ShouldBe(adds.Length);
 			for (int i = 0; i < adds.Length; i++)
 			{
 				IAddCopy addCopy = ac[i];
 				bool isAdd = addCopy.IsAdd;
-				isAdd.ShouldEqual(adds[i]);
+				isAdd.ShouldBe(adds[i]);
 				if (addCopy is Addition add)
 				{
 					add.IsAdd.ShouldBeTrue();
@@ -69,7 +69,7 @@ namespace Menees.Diffs.Tests
 					copy.Length.ShouldBeGreaterThan(0);
 					if (i == 0)
 					{
-						copy.BaseOffset.ShouldEqual(0);
+						copy.BaseOffset.ShouldBe(0);
 					}
 					else
 					{

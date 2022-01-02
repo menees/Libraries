@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using Menees.Shell;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Diagnostics;
 
 namespace Menees.Common.Tests
@@ -15,7 +15,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void ConstructorTest()
 		{
-			CommandLine target = new CommandLine();
+			CommandLine target = new();
 			Assert.AreEqual(Environment.UserInteractive, target.UseConsole);
 
 			target = new CommandLine(false);
@@ -29,7 +29,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void AddHeaderTest()
 		{
-			CommandLine target = new CommandLine(false);
+			CommandLine target = new(false);
 			string[] lines = new[] { "First line", "Second line" };
 
 			CommandLine actual = target.AddHeader(lines);
@@ -83,7 +83,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void CreateMessageTest()
 		{
-			CommandLine target = new CommandLine(false);
+			CommandLine target = new(false);
 			target.AddHeader("Header line");
 
 			string expected = GetMessage(target, CommandLineWriteOptions.Header);
@@ -93,7 +93,7 @@ namespace Menees.Common.Tests
 
 		private static string GetMessage(CommandLine target, CommandLineWriteOptions? options = null)
 		{
-			using (StringWriter writer = new StringWriter())
+			using (StringWriter writer = new())
 			{
 				if (options == null)
 				{
@@ -113,13 +113,13 @@ namespace Menees.Common.Tests
 			public bool isBinary;
 			public bool prompt;
 			public bool verify;
-			public string source;
-			public List<string> targets = new List<string>();
+			public string? source;
+			public List<string> targets = new();
 		}
 
-		private CommandLine CreateTester(TestData data)
+		private static CommandLine CreateTester(TestData data)
 		{
-			CommandLine result = new CommandLine(false);
+			CommandLine result = new(false);
 
 			result.AddHeader("Copies a source file to one or more target locations.");
 			result.AddHeader(string.Format("Usage: {0} [/B] [/P] [/V] source /T:target [/T:...]", CommandLine.ExecutableFileName));
@@ -165,7 +165,7 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void ParseInvalidTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/Binary" });
 			Assert.AreEqual(CommandLineParseResult.Invalid, result);
@@ -178,7 +178,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseValidTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/Prompt", "/V", "/bin", @"C:\Input.txt", 
 				@"/t:D:\ColonSeparated.txt", @"/Target", @"E:\SpaceSeparated.txt", @"/Targ=F:\EqualSeparated.txt" });
@@ -195,7 +195,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseHelpTest()
 		{
-			TestData data = new TestData();
+			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(new[] { "/?" });
 			Assert.AreEqual(CommandLineParseResult.HelpRequested, result);
@@ -208,13 +208,13 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseStaticTest()
 		{
-			List<string> values = new List<string>();
-			Dictionary<string, string> switches = new Dictionary<string, string>();
+			List<string> values = new();
+			Dictionary<string, string> switches = new();
 			CommandLine.Parse(new[] { "a", "/b=c d" }, values, switches);
-			values.Count.ShouldEqual(1);
-			values[0].ShouldEqual("a");
-			switches.Count.ShouldEqual(1);
-			switches["b"].ShouldEqual("c d");
+			values.Count.ShouldBe(1);
+			values[0].ShouldBe("a");
+			switches.Count.ShouldBe(1);
+			switches["b"].ShouldBe("c d");
 		}
 
 		[TestMethod]
@@ -224,7 +224,7 @@ namespace Menees.Common.Tests
 
 			var hasProgramName = CommandLine.Split(commandLine, true);
 			var missingProgramName = CommandLine.Split(commandLine, false);
-			hasProgramName.Count().ShouldEqual(missingProgramName.Count() + 1);
+			hasProgramName.Count().ShouldBe(missingProgramName.Count() + 1);
 			CollectionAssert.AreEqual(missingProgramName.ToArray(), hasProgramName.Skip(1).ToArray());
 
 			commandLine = "Testing.exe /name:\"Application Testing\" /category:Test /win \"Extra Arg\"";
@@ -233,12 +233,12 @@ namespace Menees.Common.Tests
 			missingProgramName = CommandLine.Split(commandLine, false);
 			CollectionAssert.AreEqual(missingProgramName.ToArray(), hasProgramName.Skip(1).ToArray());
 			string[] args = hasProgramName.ToArray();
-			args.Length.ShouldEqual(5);
-			args[0].ShouldEqual("Testing.exe");
-			args[1].ShouldEqual("/name:Application Testing");
-			args[2].ShouldEqual("/category:Test");
-			args[3].ShouldEqual("/win");
-			args[4].ShouldEqual("Extra Arg");
+			args.Length.ShouldBe(5);
+			args[0].ShouldBe("Testing.exe");
+			args[1].ShouldBe("/name:Application Testing");
+			args[2].ShouldBe("/category:Test");
+			args[3].ShouldBe("/win");
+			args[4].ShouldBe("Extra Arg");
 
 			// These cases came from "Parsing C++ Command-Line Arguments"
 			// http://msdn.microsoft.com/en-us/library/17w5ykft.aspx
@@ -250,67 +250,67 @@ namespace Menees.Common.Tests
 			VerifySplit(@"test.exe a\\\\""b c"" d e", new[] { @"a\\b c", "d", "e" });
 		}
 
-		private void VerifySplit(string commandLine, string[] expected)
+		private static void VerifySplit(string commandLine, string[] expected)
 		{
 			string[] actual = CommandLine.Split(commandLine, false).ToArray();
-			actual.Length.ShouldEqual(expected.Length);
+			actual.Length.ShouldBe(expected.Length);
 			for (int i = 0; i < actual.Length; i++)
 			{
-				actual[i].ShouldEqual(expected[i], commandLine);
+				actual[i].ShouldBe(expected[i], commandLine);
 			}
 		}
 
 		[TestMethod]
 		public void EncodeValueTest()
 		{
-			CommandLine.EncodeValue(null).ShouldEqual(null);
-			CommandLine.EncodeValue(string.Empty).ShouldEqual(string.Empty);
-			CommandLine.EncodeValue(" ").ShouldEqual("\" \"");
-			CommandLine.EncodeValue("test").ShouldEqual("test");
-			CommandLine.EncodeValue("a b").ShouldEqual("\"a b\"");
-			CommandLine.EncodeValue("a\b").ShouldEqual("a\b");
+			CommandLine.EncodeValue(null).ShouldBe(null);
+			CommandLine.EncodeValue(string.Empty).ShouldBe(string.Empty);
+			CommandLine.EncodeValue(" ").ShouldBe("\" \"");
+			CommandLine.EncodeValue("test").ShouldBe("test");
+			CommandLine.EncodeValue("a b").ShouldBe("\"a b\"");
+			CommandLine.EncodeValue("a\b").ShouldBe("a\b");
 
 			string actual = CommandLine.EncodeValue("she said, \"you had me at hello\"");
-			actual.ShouldEqual(@"""she said, \""you had me at hello\""""");
+			actual.ShouldBe(@"""she said, \""you had me at hello\""""");
 
 			actual = CommandLine.EncodeValue(@"\some\directory with\spaces\");
-			actual.ShouldEqual(@"""\some\directory with\spaces\\""");
+			actual.ShouldBe(@"""\some\directory with\spaces\\""");
 		}
 
 		[TestMethod]
 		public void EncodeSwitchTest()
 		{
-			CommandLine.EncodeSwitch("a", null).ShouldEqual("/a");
-			CommandLine.EncodeSwitch("a b", 123).ShouldEqual("/\"a b\"=123");
-			CommandLine.EncodeSwitch("name", "has spaces").ShouldEqual("/name=\"has spaces\"");
-			CommandLine.EncodeSwitch("-x", @"c:\temp").ShouldEqual(@"-x=c:\temp");
+			CommandLine.EncodeSwitch("a", null).ShouldBe("/a");
+			CommandLine.EncodeSwitch("a b", 123).ShouldBe("/\"a b\"=123");
+			CommandLine.EncodeSwitch("name", "has spaces").ShouldBe("/name=\"has spaces\"");
+			CommandLine.EncodeSwitch("-x", @"c:\temp").ShouldBe(@"-x=c:\temp");
 		}
 
 		[TestMethod]
 		public void BuildTest()
 		{
-			CommandLine.Build("abc", "d", "e").ShouldEqual("abc d e");
-			CommandLine.Build(@"a\\b", "de fg").ShouldEqual(@"a\\b ""de fg""");
-			CommandLine.Build(@"a\""b", "c", "d").ShouldEqual(@"""a\\\""b"" c d");
-			CommandLine.Build(@"a\\b c", "d", "e").ShouldEqual(@"""a\\b c"" d e");
+			CommandLine.Build("abc", "d", "e").ShouldBe("abc d e");
+			CommandLine.Build(@"a\\b", "de fg").ShouldBe(@"a\\b ""de fg""");
+			CommandLine.Build(@"a\""b", "c", "d").ShouldBe(@"""a\\\""b"" c d");
+			CommandLine.Build(@"a\\b c", "d", "e").ShouldBe(@"""a\\b c"" d e");
 
 			string actual = CommandLine.Build("child.exe", "arg1", "arg 2", @"\some\path with\spaces");
-			actual.ShouldEqual("child.exe arg1 \"arg 2\" \"\\some\\path with\\spaces\"");
+			actual.ShouldBe("child.exe arg1 \"arg 2\" \"\\some\\path with\\spaces\"");
 
 			actual = CommandLine.Build("child.exe", "arg1", "she said, \"you had me at hello\"", @"\some\path with\spaces");
-			actual.ShouldEqual("child.exe arg1 \"she said, \\\"you had me at hello\\\"\" \"\\some\\path with\\spaces\"");
+			actual.ShouldBe("child.exe arg1 \"she said, \\\"you had me at hello\\\"\" \"\\some\\path with\\spaces\"");
 
 			actual = CommandLine.Build("child.exe", @"\some\directory with\spaces\", "arg2");
-			actual.ShouldEqual("child.exe \"\\some\\directory with\\spaces\\\\\" arg2");
+			actual.ShouldBe("child.exe \"\\some\\directory with\\spaces\\\\\" arg2");
 
 			actual = CommandLine.Build("child.exe", "arg1", "arg\"2", "arg3");
-			actual.ShouldEqual("child.exe arg1 \"arg\\\"2\" arg3");
+			actual.ShouldBe("child.exe arg1 \"arg\\\"2\" arg3");
 
 			actual = CommandLine.Build("child.exe", new KeyValuePair<string, object>("x", @"C:\Temp\Test.txt"), Tuple.Create("y", (object)123));
-			actual.ShouldEqual(@"child.exe /x=C:\Temp\Test.txt /y=123");
+			actual.ShouldBe(@"child.exe /x=C:\Temp\Test.txt /y=123");
 
 			actual = CommandLine.Build("child.exe", new KeyValuePair<string, object>("x", @"C:\A B\Test.txt"), new Tuple<string, object>("y", "C D"));
-			actual.ShouldEqual(@"child.exe /x=""C:\A B\Test.txt"" /y=""C D""");
+			actual.ShouldBe(@"child.exe /x=""C:\A B\Test.txt"" /y=""C D""");
 		}
 
 		[TestMethod]
@@ -322,12 +322,12 @@ namespace Menees.Common.Tests
 			if (Environment.OSVersion.Version >= new Version(6, 1))
 			{
 				// On Windows 7 and later, command line length must be less than 37699.
-				actual.ShouldEqual(32698);
+				actual.ShouldBe(32698);
 			}
 			else
 			{
 				// On Vista and earlier, command line length must be less than 2080.
-				actual.ShouldEqual(2079);
+				actual.ShouldBe(2079);
 			}
 		}
 	}

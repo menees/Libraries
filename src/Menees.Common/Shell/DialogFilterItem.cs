@@ -17,7 +17,7 @@ namespace Menees.Shell
 	{
 		#region Private Data Members
 
-		private static readonly DialogFilterItem AllFilesValue = new DialogFilterItem("All Files", "*");
+		private static readonly DialogFilterItem AllFilesValue = new("All Files", "*");
 
 		#endregion
 
@@ -71,11 +71,11 @@ namespace Menees.Shell
 		/// <param name="otherExtensions">Zero or more other extensions.    A "*." or "." prefix is optional on each.</param>
 		public DialogFilterItem(string itemName, string firstExtension, params string[] otherExtensions)
 		{
-			Conditions.RequireString(itemName, () => itemName);
+			Conditions.RequireString(itemName, nameof(itemName));
 
 			this.ItemName = itemName;
 
-			List<string> masks = new List<string>(1 + (otherExtensions != null ? otherExtensions.Length : 0));
+			List<string> masks = new(1 + (otherExtensions != null ? otherExtensions.Length : 0));
 			masks.Add(GetMask(firstExtension));
 			if (otherExtensions != null)
 			{
@@ -138,7 +138,7 @@ namespace Menees.Shell
 
 		private static string GetMask(string extension)
 		{
-			Conditions.RequireString(extension, () => extension);
+			Conditions.RequireString(extension, nameof(extension));
 
 			int dotIndex = extension.LastIndexOf('.');
 

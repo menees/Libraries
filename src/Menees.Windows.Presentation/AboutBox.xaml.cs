@@ -39,7 +39,7 @@
 
 		#region Constructors
 
-		public AboutBox(Assembly callingAssembly, string repository)
+		public AboutBox(Assembly callingAssembly, string? repository)
 		{
 			this.InitializeComponent();
 
@@ -58,7 +58,7 @@
 
 		#region Public Methods
 
-		public void Execute(Window owner)
+		public void Execute(Window? owner)
 		{
 			// If there's no visible owner window, then this dialog should be centered on the screen.
 			if (owner == null || owner.Visibility != Visibility.Visible)
@@ -68,11 +68,14 @@
 			}
 
 			// We can't do "this.icon.Source = owner.Icon;" because that always gets a small (e.g., 16x16) icon.
-			using (IconImage appIcon = IconImage.ExtractAssociatedIcon(ApplicationInfo.ExecutableFile))
+			using (IconImage? appIcon = IconImage.ExtractAssociatedIcon(ApplicationInfo.ExecutableFile))
 			{
-				// From comment at: http://www.infosysblogs.com/microsoft/2007/04/wpf_assigning_icon_to_image_co.html
-				BitmapSource bitmap = Imaging.CreateBitmapSourceFromHIcon(appIcon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-				this.icon.Source = bitmap;
+				if (appIcon != null)
+				{
+					// From comment at: http://www.infosysblogs.com/microsoft/2007/04/wpf_assigning_icon_to_image_co.html
+					BitmapSource bitmap = Imaging.CreateBitmapSourceFromHIcon(appIcon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+					this.icon.Source = bitmap;
+				}
 			}
 
 			this.Owner = owner;
@@ -83,10 +86,6 @@
 
 		#region Private Methods
 
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1811:AvoidUncalledPrivateCode",
-			Justification = "Invoked via XAML reflection.")]
 		private static void FinishLink(object sender, RoutedEventArgs e)
 		{
 			// Hyperlink doesn't have a Visited propertly like it did in WinForms, so we'll just set the color.
@@ -104,10 +103,7 @@
 
 		#region Private Event Handlers
 
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1811:AvoidUncalledPrivateCode",
-			Justification = "Invoked via XAML reflection.")]
+		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void EmailLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			// UriBuilder always adds a '/' after the email address, which shows up in the opened
@@ -121,10 +117,7 @@
 			e.Handled = true;
 		}
 
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1811:AvoidUncalledPrivateCode",
-			Justification = "Invoked via XAML reflection.")]
+		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void WebLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			if (WindowsUtility.ShellExecute(this, "http://www.menees.com"))
@@ -135,13 +128,14 @@
 			e.Handled = true;
 		}
 
-		private async void ExtendedDialog_Loaded(object sender, RoutedEventArgs e)
+		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
+		private async void ExtendedDialog_LoadedAsync(object sender, RoutedEventArgs e)
 		{
 			string repository = this.repository;
-			Release latest = await Task.Run(() => Release.FindGithubLatest(repository)).ConfigureAwait(true);
+			Release? latest = await Task.Run(() => Release.FindGithubLatest(repository)).ConfigureAwait(true);
 			if (latest != null && this.IsLoaded)
 			{
-				Version appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
+				Version? appVersion = ReflectionUtility.GetVersion(this.callingAssembly);
 				if (latest.Version > appVersion)
 				{
 					this.updateLink.Tag = latest;
@@ -151,6 +145,7 @@
 			}
 		}
 
+		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void UpdateLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			if (this.updateLink.Tag is Release latest && WindowsUtility.ShellExecute(this, latest.HtmlUri.ToString()))

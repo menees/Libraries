@@ -24,7 +24,7 @@ namespace Menees.Windows.Presentation
 		/// </summary>
 		public WindowSaver(Window window)
 		{
-			Conditions.RequireReference(window, () => window);
+			Conditions.RequireReference(window, nameof(window));
 
 			this.AutoLoad = true;
 			this.AutoSave = true;
@@ -41,12 +41,12 @@ namespace Menees.Windows.Presentation
 		/// <summary>
 		/// Called when settings are being loaded.
 		/// </summary>
-		public event EventHandler<SettingsEventArgs> LoadSettings;
+		public event EventHandler<SettingsEventArgs>? LoadSettings;
 
 		/// <summary>
 		/// Called when settings are being saved.
 		/// </summary>
-		public event EventHandler<SettingsEventArgs> SaveSettings;
+		public event EventHandler<SettingsEventArgs>? SaveSettings;
 
 		#endregion
 
@@ -95,7 +95,7 @@ namespace Menees.Windows.Presentation
 			{
 				using (ISettingsStore store = ApplicationInfo.CreateUserSettingsStore())
 				{
-					ISettingsNode settingsNode = this.GetSettingsNode(store, false);
+					ISettingsNode? settingsNode = this.GetSettingsNode(store, false);
 					if (settingsNode != null)
 					{
 						NativeMethods.LoadWindowPlacement(this.Window, settingsNode, this.LoadStateOverride);
@@ -122,7 +122,7 @@ namespace Menees.Windows.Presentation
 			{
 				using (ISettingsStore store = ApplicationInfo.CreateUserSettingsStore())
 				{
-					ISettingsNode settingsNode = this.GetSettingsNode(store, true);
+					ISettingsNode? settingsNode = this.GetSettingsNode(store, true);
 					if (settingsNode != null)
 					{
 						NativeMethods.SaveWindowPlacement(this.Window, settingsNode);
@@ -140,13 +140,13 @@ namespace Menees.Windows.Presentation
 
 		#region Private Methods
 
-		private ISettingsNode GetSettingsNode(ISettingsStore store, bool createIfNotFound)
+		private ISettingsNode? GetSettingsNode(ISettingsStore store, bool createIfNotFound)
 		{
-			ISettingsNode result = store.RootNode;
+			ISettingsNode? result = store.RootNode;
 
 			if (!string.IsNullOrEmpty(this.SettingsNodeName))
 			{
-				result = result.GetSubNode(this.SettingsNodeName, createIfNotFound);
+				result = createIfNotFound ? result.GetSubNode(this.SettingsNodeName) : result.TryGetSubNode(this.SettingsNodeName);
 			}
 
 			return result;
@@ -156,7 +156,7 @@ namespace Menees.Windows.Presentation
 
 		#region Private Event Handlers
 
-		private void Window_Closing(object sender, CancelEventArgs e)
+		private void Window_Closing(object? sender, CancelEventArgs e)
 		{
 			if (this.AutoSave && !e.Cancel)
 			{
@@ -164,7 +164,7 @@ namespace Menees.Windows.Presentation
 			}
 		}
 
-		private void Window_SourceInitialized(object sender, EventArgs e)
+		private void Window_SourceInitialized(object? sender, EventArgs e)
 		{
 			if (this.AutoLoad)
 			{

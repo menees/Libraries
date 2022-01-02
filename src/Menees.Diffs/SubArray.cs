@@ -58,7 +58,7 @@ namespace Menees.Diffs
 		public override string ToString()
 		{
 			const int SingleDataWidth = 3;
-			StringBuilder sb = new StringBuilder(SingleDataWidth * this.length);
+			StringBuilder sb = new(SingleDataWidth * this.length);
 			for (int i = 0; i < this.length; i++)
 			{
 				sb.AppendFormat("{0} ", this.data[this.offset + i]);

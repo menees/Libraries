@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Text;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 using System.Diagnostics;
 using System.Collections.Generic;
 
@@ -21,7 +21,7 @@ namespace Menees.Common.Tests
 			Assert.AreEqual(message, actual.Message);
 
 			actual = Exceptions.NewArgumentException(message, CreateProperties());
-			actual.Message.ShouldEqual(message);
+			actual.Message.ShouldBe(message);
 		}
 
 		[TestMethod()]
@@ -66,7 +66,7 @@ namespace Menees.Common.Tests
 			Assert.AreEqual(message, castEx.Message);
 
 			ObjectDisposedException disposedEx = Exceptions.Log(new ObjectDisposedException("Testing"));
-			disposedEx.ObjectName.ShouldEqual("Testing");
+			disposedEx.ObjectName.ShouldBe("Testing");
 
 			Exceptions.Log(ex, typeof(ExceptionsTest));
 
@@ -83,20 +83,20 @@ namespace Menees.Common.Tests
 			Assert.AreEqual(message, actual.Message);
 
 			actual = Exceptions.NewInvalidOperationException(message, CreateProperties());
-			actual.Message.ShouldEqual(message);
+			actual.Message.ShouldBe(message);
 		}
 
 		[TestMethod]
 		public void ForEachTest()
 		{
-			Exception simple = new Exception("Simple");
-			StringBuilder sb = new StringBuilder();
+			Exception simple = new("Simple");
+			StringBuilder sb = new();
 			Exceptions.ForEach(simple, (ex, depth, parent) => sb.Append(' ', depth).Append(ex.Message).AppendLine());
 			string output = sb.ToString();
-			output.ShouldEqual("Simple\r\n");
+			output.ShouldBe("Simple\r\n");
 			Trace.Write(output);
 
-			AggregateException aggregate = new AggregateException("Root",
+			AggregateException aggregate = new("Root",
 				new TaskCanceledException("FirstCancel"),
 				new TargetInvocationException("Invocation", new InvalidOperationException("Invalid")),
 				new TaskCanceledException("SecondCancel"));
@@ -110,12 +110,12 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void GetMessageTest()
 		{
-			Exception simple = new Exception("Simple");
+			Exception simple = new("Simple");
 			string output = Exceptions.GetMessage(simple);
-			output.ShouldEqual("Simple");
+			output.ShouldBe("Simple");
 			Trace.Write(output);
 
-			AggregateException aggregate = new AggregateException("Root",
+			AggregateException aggregate = new("Root",
 				new TaskCanceledException("FirstCancel"),
 				new TargetInvocationException("Invocation", new InvalidOperationException("Invalid")),
 				new TaskCanceledException("SecondCancel"));
@@ -131,9 +131,9 @@ namespace Menees.Common.Tests
 			lines[0] = "Root";
 			actualMessage = string.Join("\r\n", lines);
 
-			actualMessage.ShouldEqual(expectedMessage);
+			actualMessage.ShouldBe(expectedMessage);
 		}
 
-		private static Dictionary<string, object> CreateProperties() => new Dictionary<string, object>() { { "A", 1 }, { "B", 2 } };
+		private static Dictionary<string, object> CreateProperties() => new() { { "A", 1 }, { "B", 2 } };
 	}
 }

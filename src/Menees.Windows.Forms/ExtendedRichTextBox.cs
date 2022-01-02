@@ -235,7 +235,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		[DefaultValue(null)]
 		[Description("The caption to use for find operations.")]
-		public string FindCaption { get; set; }
+		public string? FindCaption { get; set; }
 
 		#endregion
 
@@ -342,14 +342,10 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		/// <returns>A Text Object Model interface.  The caller can cast the result to tom.ITextDocument
 		/// if they add a COM reference to msftedit.dll.</returns>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This has to make several interop calls, which can be expensive.")]
 		[Description("Gets an object that implements ITextDocument.")]
-		public object GetOleInterface()
+		public object? GetOleInterface()
 		{
-			object result = null;
+			object? result = null;
 
 			IntPtr ptrOleInterface = IntPtr.Zero;
 
@@ -359,7 +355,7 @@ namespace Menees.Windows.Forms
 			{
 				try
 				{
-					Guid textDocumentIid = new Guid("8CC497C0-A1DF-11CE-8098-00AA0047BE5D"); // IID_ITextDocument
+					Guid textDocumentIid = new("8CC497C0-A1DF-11CE-8098-00AA0047BE5D"); // IID_ITextDocument
 					int hresult = Marshal.QueryInterface(ptrOleInterface, ref textDocumentIid, out IntPtr textDocumentPtr);
 					Marshal.ThrowExceptionForHR(hresult);
 					try
@@ -388,7 +384,7 @@ namespace Menees.Windows.Forms
 		/// <returns>True if the find text was found and selected.  False otherwise.</returns>
 		public bool Find(FindData findData, FindMode findMode)
 		{
-			TextBoxFinder finder = new TextBoxFinder(this);
+			TextBoxFinder finder = new(this);
 			bool result = finder.Find(this, findData, findMode);
 			return result;
 		}

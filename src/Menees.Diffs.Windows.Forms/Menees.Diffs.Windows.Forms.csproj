@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<TargetFrameworks>netcoreapp3.1;net45</TargetFrameworks>
+		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Description>Windows Forms controls for showing diffs of text, files, and directories</Description>
@@ -27,5 +26,10 @@
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 	</ItemGroup>
+
+	<PropertyGroup Condition=" '$(TargetFramework)' == '$(MeneesTargetNetFramework)' ">
+		<!-- Disable IDE0079 (Remove unnecessary suppressions) warning because we have suppressions required by $(MeneesTargetNetCoreWindows). -->
+		<NoWarn>IDE0079</NoWarn>
+	</PropertyGroup>
 
 </Project>

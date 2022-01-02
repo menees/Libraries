@@ -5,6 +5,7 @@ namespace Menees
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.Globalization;
 	using System.IO;
 	using System.Linq;
@@ -137,18 +138,11 @@ namespace Menees
 		/// <returns>The string with the substring instances replaced.</returns>
 		/// <exception cref="ArgumentNullException">If <paramref name="text"/> or <paramref name="oldValue"/>
 		/// are null or empty.</exception>
-		public static string Replace(string text, string oldValue, string newValue, StringComparison comparisonType)
+		public static string Replace(string text, string oldValue, string? newValue, StringComparison comparisonType)
 		{
 			// Note: It's ok if newValue is null or empty.
-			if (string.IsNullOrEmpty(text))
-			{
-				throw Exceptions.NewArgumentNullException(nameof(text));
-			}
-
-			if (string.IsNullOrEmpty(oldValue))
-			{
-				throw Exceptions.NewArgumentNullException(nameof(oldValue));
-			}
+			Conditions.RequireString(text, nameof(text));
+			Conditions.RequireString(oldValue, nameof(oldValue));
 
 			string result = text;
 			int currentIndex = text.IndexOf(oldValue, comparisonType);
@@ -157,7 +151,7 @@ namespace Menees
 				int textLength = text.Length;
 				int oldValueLength = oldValue.Length;
 				int previousIndex = 0;
-				StringBuilder sb = new StringBuilder(text.Length);
+				StringBuilder sb = new(text.Length);
 				while (currentIndex >= 0)
 				{
 					if (currentIndex > previousIndex)
@@ -196,13 +190,14 @@ namespace Menees
 		/// <param name="text">The text to update.</param>
 		/// <param name="replacement">The character to substitute for control characters.</param>
 		/// <returns>The text with the control characters replaced.</returns>
-		public static string ReplaceControlCharacters(string text, char replacement)
+		[return: NotNullIfNotNull("text")]
+		public static string? ReplaceControlCharacters(string? text, char replacement)
 		{
-			string result = text;
+			string? result = text;
 
-			if (!string.IsNullOrEmpty(text))
+			if (text.IsNotEmpty())
 			{
-				StringBuilder sb = new StringBuilder(text);
+				StringBuilder sb = new(text);
 				int length = text.Length;
 				for (int i = 0; i < length; i++)
 				{
@@ -223,13 +218,14 @@ namespace Menees
 		/// </summary>
 		/// <param name="text">The text to update.</param>
 		/// <returns>The text with the control characters replaced.</returns>
-		public static string ReplaceControlCharacters(string text)
+		[return: NotNullIfNotNull("text")]
+		public static string? ReplaceControlCharacters(string? text)
 		{
-			string result = text;
+			string? result = text;
 
-			if (!string.IsNullOrEmpty(text))
+			if (text.IsNotEmpty())
 			{
-				StringBuilder sb = new StringBuilder(text);
+				StringBuilder sb = new(text);
 				int length = text.Length;
 				for (int i = 0; i < length; i++)
 				{
@@ -277,7 +273,7 @@ namespace Menees
 		/// <returns>A list of tokens.</returns>
 		public static IList<string> SplitIntoTokens(string text, char separator, char? delimiter, bool trimTokens)
 		{
-			List<string> result = new List<string>();
+			List<string> result = new();
 			SplitIntoTokens(text, separator, delimiter, trimTokens, result);
 			return result;
 		}
@@ -596,7 +592,7 @@ namespace Menees
 			}
 			else
 			{
-				StringBuilder sb = new StringBuilder(plural);
+				StringBuilder sb = new(plural);
 				int n = Math.Min(word.Length, plural.Length);
 				for (int i = 0; i < n; i++)
 				{

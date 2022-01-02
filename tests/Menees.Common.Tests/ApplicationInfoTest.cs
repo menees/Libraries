@@ -4,7 +4,7 @@ using System.IO;
 using Menees;
 using Menees.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -21,11 +21,11 @@ namespace Menees.Common.Tests
 			applicationName = "Testing";
 			bool isActivated = true;
 			ApplicationInfo.Initialize(applicationName, isActivated: () => isActivated);
-			ApplicationInfo.ApplicationName.ShouldEqual(applicationName);
+			ApplicationInfo.ApplicationName.ShouldBe(applicationName);
 
-			ApplicationInfo.IsActivated.ShouldEqual(isActivated);
+			ApplicationInfo.IsActivated.ShouldBe(isActivated);
 			isActivated = false;
-			ApplicationInfo.IsActivated.ShouldEqual(isActivated);
+			ApplicationInfo.IsActivated.ShouldBe(isActivated);
 		}
 
 		[TestMethod()]

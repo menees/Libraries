@@ -19,7 +19,7 @@ namespace Menees.Diffs
 		private readonly DirectoryInfo directoryB;
 		private readonly bool recursive;
 		private readonly DirectoryDiffEntryCollection entries;
-		private readonly DirectoryDiffFileFilter filter;
+		private readonly DirectoryDiffFileFilter? filter;
 
 		#endregion
 
@@ -30,7 +30,7 @@ namespace Menees.Diffs
 			DirectoryInfo directoryB,
 			DirectoryDiffEntryCollection entries,
 			bool recursive,
-			DirectoryDiffFileFilter filter)
+			DirectoryDiffFileFilter? filter)
 		{
 			this.directoryA = directoryA;
 			this.directoryB = directoryB;
@@ -49,7 +49,7 @@ namespace Menees.Diffs
 
 		public DirectoryDiffEntryCollection Entries => this.entries;
 
-		public DirectoryDiffFileFilter Filter => this.filter;
+		public DirectoryDiffFileFilter? Filter => this.filter;
 
 		public bool Recursive => this.recursive;
 

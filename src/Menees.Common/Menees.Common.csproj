@@ -1,27 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net45</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;$(MeneesTargetNetCoreBase);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<RootNamespace>Menees</RootNamespace>
 		<Description>Helpers for files, text, XML, logging, exceptions, etc.</Description>
+
+		<!-- Disable IDE0079 (Remove unnecessary suppressions) warning because we have suppressions required only by Framework or Core. -->
+		<NoWarn>IDE0079</NoWarn>
 	</PropertyGroup>
 
 	<Choose>
-		<When Condition=" '$(TargetFramework)' == 'net45' ">
+		<When Condition=" '$(TargetFramework)' == '$(MeneesTargetNetFramework)' ">
 			<ItemGroup>
 				<Compile Remove="ApplicationInfo.Core.cs" />
 				<None Include="ApplicationInfo.Core.cs" />
-
-				<Compile Remove="CollectionUtility.Core.cs" />
-				<None Include="CollectionUtility.Core.cs" />
 
 				<Compile Remove="TextUtility.Core.cs" />
 				<None Include="TextUtility.Core.cs" />
 
 				<!-- This includes the Entity Framework's PluralizationService. -->
 				<Reference Include="System.Data.Entity.Design" />
+				<Reference Include="System.Net.Http" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
@@ -29,14 +29,18 @@
 				<Compile Remove="ApplicationInfo.Framework.cs" />
 				<None Include="ApplicationInfo.Framework.cs" />
 
-				<Compile Remove="CollectionUtility.Framework.cs" />
-				<None Include="CollectionUtility.Framework.cs" />
-
 				<Compile Remove="TextUtility.Framework.cs" />
 				<None Include="TextUtility.Framework.cs" />
 
-				<PackageReference Include="Microsoft.Windows.Compatibility" Version="3.1.0" />
+				<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
+
+	<ItemGroup>
+	  <PackageReference Include="Nullable" Version="1.3.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	</ItemGroup>
 </Project>

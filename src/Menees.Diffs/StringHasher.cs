@@ -58,7 +58,7 @@ namespace Menees.Diffs
 		private readonly bool ignoreOuterWhiteSpace;
 		private readonly HashType hashType;
 		private readonly int leadingCharactersToIgnore;
-		private readonly Dictionary<string, int> uniqueTable;
+		private readonly Dictionary<string, int>? uniqueTable;
 
 		#endregion
 
@@ -152,7 +152,9 @@ namespace Menees.Diffs
 
 		private int GetUnique(string line)
 		{
-			if (!this.uniqueTable.TryGetValue(line, out int result))
+			int result = 0;
+
+			if (this.uniqueTable != null && !this.uniqueTable.TryGetValue(line, out result))
 			{
 				result = this.uniqueTable.Count + 1;
 				this.uniqueTable[line] = result;

@@ -24,7 +24,7 @@ namespace Menees.Windows.Forms
 		private static readonly IList<Form> NoForms = CollectionUtility.EmptyArray<Form>();
 
 		private int updateLevel;
-		private MdiTab dragTab;
+		private MdiTab? dragTab;
 
 		#endregion
 
@@ -41,8 +41,8 @@ namespace Menees.Windows.Forms
 			this.GripStyle = ToolStripGripStyle.Hidden;
 			this.UseFormIconAsNewTabImage = true;
 
-			MdiTabStripColorTable colorTable = new MdiTabStripColorTable(this);
-			ToolStripProfessionalRenderer renderer = new ToolStripProfessionalRenderer(colorTable);
+			MdiTabStripColorTable colorTable = new(this);
+			ToolStripProfessionalRenderer renderer = new(colorTable);
 			this.Renderer = renderer;
 
 			// Call this to make it initially invisible (if it's not design time).
@@ -155,13 +155,13 @@ namespace Menees.Windows.Forms
 
 		#region Private Properties
 
-		private Form ActiveMdiChild
+		private Form? ActiveMdiChild
 		{
 			get
 			{
-				Form result = null;
+				Form? result = null;
 
-				Form ownerForm = this.FindForm();
+				Form? ownerForm = this.FindForm();
 				if (ownerForm != null)
 				{
 					result = ownerForm.ActiveMdiChild;
@@ -226,7 +226,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		public void CloseActiveTab()
 		{
-			Form child = this.ActiveMdiChild;
+			Form? child = this.ActiveMdiChild;
 			if (child != null)
 			{
 				child.Close();
@@ -238,7 +238,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		public void CloseAllButActiveTab()
 		{
-			Form child = this.ActiveMdiChild;
+			Form? child = this.ActiveMdiChild;
 			if (child != null)
 			{
 				this.BeginUpdate();
@@ -246,7 +246,7 @@ namespace Menees.Windows.Forms
 				{
 					foreach (MdiTab tab in this.GetTabs())
 					{
-						Form form = tab.AssociatedForm;
+						Form? form = tab.AssociatedForm;
 						if (form != null && form != child)
 						{
 							form.Close();
@@ -264,10 +264,10 @@ namespace Menees.Windows.Forms
 		/// Finds the tab for the active MDI child form.
 		/// </summary>
 		/// <returns>The active tab, or null if there is no active child form.</returns>
-		public MdiTab FindActiveTab()
+		public MdiTab? FindActiveTab()
 		{
-			Form child = this.ActiveMdiChild;
-			MdiTab result = this.FindTab(child);
+			Form? child = this.ActiveMdiChild;
+			MdiTab? result = this.FindTab(child);
 			return result;
 		}
 
@@ -277,9 +277,9 @@ namespace Menees.Windows.Forms
 		/// <param name="form">The form to get the tab for.</param>
 		/// <returns>The tab for the specified form, or null if no tab exists for the form
 		/// (e.g., if the form is closed).</returns>
-		public MdiTab FindTab(Form form)
+		public MdiTab? FindTab(Form? form)
 		{
-			MdiTab result = this.FindTab(form, null);
+			MdiTab? result = this.FindTab(form, null);
 			return result;
 		}
 
@@ -292,10 +292,10 @@ namespace Menees.Windows.Forms
 		/// This method is useful for preventing the opening of a context menu strip
 		/// unless the mouse cursor is currently over a tab.
 		/// </remarks>
-		public MdiTab FindTabAtScreenPoint(Point point)
+		public MdiTab? FindTabAtScreenPoint(Point point)
 		{
 			Point clientPoint = this.PointToClient(point);
-			MdiTab result = this.FindDisplayedTabAtClientPoint(clientPoint, true);
+			MdiTab? result = this.FindDisplayedTabAtClientPoint(clientPoint, true);
 			return result;
 		}
 
@@ -382,15 +382,15 @@ namespace Menees.Windows.Forms
 
 		#region Private Helper Methods
 
-		private static bool IsAvailable(Form form)
+		private static bool IsAvailable([NotNullWhen(true)] Form? form)
 		{
 			bool result = form != null && !form.Disposing && !form.IsDisposed && form.Visible && form.IsMdiChild;
 			return result;
 		}
 
-		private MdiTab FindTab(Form form, IList<MdiTab> tabs)
+		private MdiTab? FindTab(Form? form, IList<MdiTab>? tabs)
 		{
-			MdiTab result = null;
+			MdiTab? result = null;
 
 			if (form != null)
 			{
@@ -421,13 +421,13 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private void UpdateTabStrip(MdiTab sender, bool senderActivating = true)
+		private void UpdateTabStrip(MdiTab? sender, bool senderActivating = true)
 		{
 			// Don't do anything if we're in the middle of a Begin/EndUpdate batch.
 			if (this.updateLevel == 0 && this.Enabled)
 			{
 				// Remove tabs for closed forms.
-				HashSet<Form> skipForms = new HashSet<Form>();
+				HashSet<Form> skipForms = new();
 				IList<MdiTab> tabs = this.RemoveClosedTabs(sender, senderActivating, skipForms);
 
 				// Add tabs for new forms.
@@ -437,7 +437,7 @@ namespace Menees.Windows.Forms
 				// Also, if a user right-clicks directly on a tab's close button, it will close the tab's form and then
 				// we'll get the tab click event.  So we need to detect when a sender thinks it's activating even
 				// though its form has already closed.  (Update: Now I've made right-click not fire Close though.)
-				MdiTab activeTab = sender;
+				MdiTab? activeTab = sender;
 				if (!senderActivating || activeTab == null || activeTab.AssociatedForm == null)
 				{
 					activeTab = this.FindTab(this.ActiveMdiChild, tabs);
@@ -446,7 +446,7 @@ namespace Menees.Windows.Forms
 				// Update the active tab.
 				foreach (MdiTab tab in tabs)
 				{
-					Form form = tab.AssociatedForm;
+					Form? form = tab.AssociatedForm;
 					if (tab == activeTab)
 					{
 						tab.Checked = true;
@@ -460,7 +460,7 @@ namespace Menees.Windows.Forms
 						tab.Checked = false;
 					}
 
-					tab.Text = form.Text;
+					tab.Text = form?.Text;
 				}
 
 				// Make sure the active tab is visible.
@@ -477,14 +477,14 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private IList<MdiTab> RemoveClosedTabs(MdiTab sender, bool senderActivating, HashSet<Form> skipForms)
+		private IList<MdiTab> RemoveClosedTabs(MdiTab? sender, bool senderActivating, HashSet<Form> skipForms)
 		{
 			IList<MdiTab> result = this.GetTabs();
 
 			bool removedTabs = false;
 			foreach (MdiTab tab in result)
 			{
-				Form form = tab.AssociatedForm;
+				Form? form = tab.AssociatedForm;
 				if ((!senderActivating && sender == tab) || !IsAvailable(form))
 				{
 					if (form != null)
@@ -519,16 +519,14 @@ namespace Menees.Windows.Forms
 		{
 			// RemoveClosedTabs should have gotten rid of any tabs with null AssociatedForms,
 			// but filtering them out again just to be sure is safe and quick.
-			Dictionary<Form, MdiTab> formToTabMap = tabs.Where(t => t.AssociatedForm != null).ToDictionary(tab => tab.AssociatedForm);
+			Dictionary<Form, MdiTab> formToTabMap = tabs.Where(t => t.AssociatedForm != null).ToDictionary(tab => tab.AssociatedForm!);
 
 			bool addedTabs = false;
 			foreach (Form form in this.MdiChildren)
 			{
-				if (IsAvailable(form) && !skipForms.Contains(form) && !formToTabMap.TryGetValue(form, out MdiTab tab))
+				if (IsAvailable(form) && !skipForms.Contains(form) && !formToTabMap.TryGetValue(form, out MdiTab? tab))
 				{
-#pragma warning disable CA2000 // Dispose objects before losing scope. tab's lifetime is managed by this.Items below.
 					tab = new MdiTab(form);
-#pragma warning restore CA2000 // Dispose objects before losing scope
 					tab.Click += this.Tab_Click;
 					tab.CloseClicked += this.Tab_CloseClicked;
 
@@ -560,12 +558,12 @@ namespace Menees.Windows.Forms
 
 		private void HandleDrag(DragEventArgs e, bool finished)
 		{
-			if (e.Data.GetData(typeof(ToolStripItem)) is MdiTab tab)
+			if (e.Data != null && e.Data.GetData(typeof(ToolStripItem)) is MdiTab tab)
 			{
 				var displayedTabs = this.GetDisplayedTabs();
 				Point clientPoint = this.PointToClient(new Point(e.X, e.Y));
 
-				MdiTab targetTab = this.FindDisplayedTabAtClientPoint(clientPoint, false);
+				MdiTab? targetTab = this.FindDisplayedTabAtClientPoint(clientPoint, false);
 				if (targetTab != null)
 				{
 					int targetIndex = displayedTabs.IndexOf(targetTab);
@@ -605,9 +603,9 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private MdiTab FindDisplayedTabAtClientPoint(Point clientPoint, bool exact)
+		private MdiTab? FindDisplayedTabAtClientPoint(Point clientPoint, bool exact)
 		{
-			MdiTab result = null;
+			MdiTab? result = null;
 
 			foreach (MdiTab tab in this.GetDisplayedTabs())
 			{
@@ -628,17 +626,17 @@ namespace Menees.Windows.Forms
 
 		#region Private Event Handlers
 
-		private void Tab_Click(object sender, EventArgs e)
+		private void Tab_Click(object? sender, EventArgs e)
 		{
 			this.UpdateTabStrip(sender as MdiTab);
 		}
 
 		[SuppressMessage("Design", "CC0091:Use static method", Justification = "WinForms designer expects instance level.")]
-		private void Tab_CloseClicked(object sender, EventArgs e)
+		private void Tab_CloseClicked(object? sender, EventArgs e)
 		{
 			if (sender is MdiTab tab)
 			{
-				Form form = tab.AssociatedForm;
+				Form? form = tab.AssociatedForm;
 				if (form != null)
 				{
 					form.Close();
@@ -646,17 +644,17 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void ChildForm_FormClosed(object sender, FormClosedEventArgs e)
+		private void ChildForm_FormClosed(object? sender, FormClosedEventArgs e)
 		{
-			MdiTab tab = this.FindTab(sender as Form);
+			MdiTab? tab = this.FindTab(sender as Form);
 			this.UpdateTabStrip(tab, false);
 		}
 
-		private void ChildForm_TextChanged(object sender, EventArgs e)
+		private void ChildForm_TextChanged(object? sender, EventArgs e)
 		{
 			if (sender is Form form)
 			{
-				MdiTab tab = this.FindTab(form);
+				MdiTab? tab = this.FindTab(form);
 				if (tab != null)
 				{
 					tab.Text = form.Text;
@@ -668,20 +666,20 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void Form_MdiChildActivate(object sender, EventArgs e)
+		private void Form_MdiChildActivate(object? sender, EventArgs e)
 		{
 			// This method is needed to detect newly added child forms.
 			// When a new MDI child is first shown, this event fires, and
 			// our UpdateTabStrip call will add a tab for it.
-			MdiTab tab = this.FindTab(this.ActiveMdiChild);
+			MdiTab? tab = this.FindTab(this.ActiveMdiChild);
 			this.UpdateTabStrip(tab);
 		}
 
 		[SuppressMessage("Design", "CC0091:Use static method", Justification = "WinForms designer expects instance level.")]
-		private void MdiTabStrip_DragEnter(object sender, DragEventArgs e)
+		private void MdiTabStrip_DragEnter(object? sender, DragEventArgs e)
 		{
 			// Don't allow ToolStripItems from other ToolStrips to be dragged into this ToolStrip.
-			if (e.Data.GetDataPresent(typeof(ToolStripItem)) && e.Data.GetData(typeof(ToolStripItem)) is MdiTab)
+			if (e.Data != null && e.Data.GetDataPresent(typeof(ToolStripItem)) && e.Data.GetData(typeof(ToolStripItem)) is MdiTab)
 			{
 				e.Effect = DragDropEffects.Move;
 			}
@@ -691,17 +689,17 @@ namespace Menees.Windows.Forms
 			}
 		}
 
-		private void MdiTabStrip_DragOver(object sender, DragEventArgs e)
+		private void MdiTabStrip_DragOver(object? sender, DragEventArgs e)
 		{
 			this.HandleDrag(e, false);
 		}
 
-		private void MdiTabStrip_DragDrop(object sender, DragEventArgs e)
+		private void MdiTabStrip_DragDrop(object? sender, DragEventArgs e)
 		{
 			this.HandleDrag(e, true);
 		}
 
-		private void DragTimer_Tick(object sender, EventArgs e)
+		private void DragTimer_Tick(object? sender, EventArgs e)
 		{
 			this.EndDragTimer(true);
 		}

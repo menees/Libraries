@@ -34,7 +34,7 @@
 
 		public string FileName { get; }
 
-		public FileInfo Info => new FileInfo(this.FileName);
+		public FileInfo Info => new(this.FileName);
 
 		#endregion
 

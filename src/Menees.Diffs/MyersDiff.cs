@@ -59,10 +59,10 @@ namespace Menees.Diffs
 		/// </summary>
 		public EditScript Execute()
 		{
-			List<Point> matchPoints = new List<Point>();
+			List<Point> matchPoints = new();
 
-			SubArray<T> subArrayA = new SubArray<T>(this.listA);
-			SubArray<T> subArrayB = new SubArray<T>(this.listB);
+			SubArray<T> subArrayA = new(this.listA);
+			SubArray<T> subArrayB = new(this.listB);
 
 			this.GetMatchPoints(subArrayA, subArrayB, matchPoints);
 			Debug.Assert(matchPoints.Count == this.GetLongestCommonSubsequenceLength(), "The number of match points must equal the LCS length.");
@@ -82,7 +82,7 @@ namespace Menees.Diffs
 			Justification = "This performs a long, complex calculation.")]
 		public IList<T> GetLongestCommonSubsequence()
 		{
-			List<T> result = new List<T>();
+			List<T> result = new();
 
 			this.GetLcs(new SubArray<T>(this.listA), new SubArray<T>(this.listB), result);
 
@@ -113,8 +113,8 @@ namespace Menees.Diffs
 		[SuppressMessage(nameof(Menees), "MEN007:UseSingleReturn", Justification = "Coded like Myers algorithm.")]
 		public int GetReverseShortestEditScriptLength()
 		{
-			SubArray<T> subArrayA = new SubArray<T>(this.listA);
-			SubArray<T> subArrayB = new SubArray<T>(this.listB);
+			SubArray<T> subArrayA = new(this.listA);
+			SubArray<T> subArrayB = new(this.listB);
 
 			if (this.SetupFictitiousPoints(subArrayA, subArrayB))
 			{
@@ -165,8 +165,8 @@ namespace Menees.Diffs
 		[SuppressMessage(nameof(Menees), "MEN007:UseSingleReturn", Justification = "Coded like Myers algorithm.")]
 		public int GetShortestEditScriptLength()
 		{
-			SubArray<T> subArrayA = new SubArray<T>(this.listA);
-			SubArray<T> subArrayB = new SubArray<T>(this.listB);
+			SubArray<T> subArrayA = new(this.listA);
+			SubArray<T> subArrayB = new(this.listB);
 
 			if (this.SetupFictitiousPoints(subArrayA, subArrayB))
 			{
@@ -230,7 +230,7 @@ namespace Menees.Diffs
 			// equals the LCS length, so we can use it to calculate similarity, but we must do
 			// it before we add a fictitious match point below.
 			double similarity = GetSimilarity(n, m, matchPoints.Count);
-			EditScript script = new EditScript(similarity);
+			EditScript script = new(similarity);
 
 			int currentX = 1;
 			int currentY = 1;

@@ -36,7 +36,7 @@ namespace Menees
 		#region Private Data Members
 
 		private static readonly char[] SpecialCharacters = new[] { FieldSeparator, FieldDelimiter, '\r', '\n' };
-		private static readonly string FieldDelimiterString = new string(FieldDelimiter, 1);
+		private static readonly string FieldDelimiterString = new(FieldDelimiter, 1);
 
 		#endregion
 
@@ -53,13 +53,13 @@ namespace Menees
 		/// then this will keep reading lines until the record is complete.
 		/// </remarks>
 		[SuppressMessage("", "CC0039", Justification = "Concatenation inside the loop should be extremely rare.")]
-		public static IList<string> ReadLine(TextReader reader)
+		public static IList<string>? ReadLine(TextReader reader)
 		{
 			Conditions.RequireReference(reader, nameof(reader));
 
-			IList<string> result = null;
+			IList<string>? result = null;
 
-			string line = reader.ReadLine();
+			string? line = reader.ReadLine();
 			if (line != null)
 			{
 				string text = line;
@@ -119,13 +119,13 @@ namespace Menees
 		/// If the file is non-empty, then this returns a new data table with the file's data loaded.
 		/// If the file is empty, then this returns null.
 		/// </returns>
-		public static DataTable ReadTable(string fileName)
+		public static DataTable? ReadTable(string fileName)
 		{
 			Conditions.RequireString(fileName, nameof(fileName));
 
-			using (StreamReader reader = new StreamReader(fileName))
+			using (StreamReader reader = new(fileName))
 			{
-				DataTable result = ReadTable(reader, null);
+				DataTable? result = ReadTable(reader, null);
 				return result;
 			}
 		}
@@ -141,7 +141,7 @@ namespace Menees
 		/// If data is found, then this returns a new data table with the reader's data loaded.
 		/// If no data is found, then this returns null.
 		/// </returns>
-		public static DataTable ReadTable(TextReader reader) => ReadTable(reader, null);
+		public static DataTable? ReadTable(TextReader reader) => ReadTable(reader, null);
 
 		/// <summary>
 		/// Loads a data table from the specified reader and optionally allows
@@ -159,14 +159,14 @@ namespace Menees
 		/// If data is found, then this returns a new data table with the reader's data loaded.
 		/// If no data is found, then this returns null.
 		/// </returns>
-		public static DataTable ReadTable(TextReader reader, Action<DataTable> prepareToLoad)
+		public static DataTable? ReadTable(TextReader reader, Action<DataTable>? prepareToLoad)
 		{
 			Conditions.RequireReference(reader, nameof(reader));
 
-			DataTable result = null;
-			DataRowCollection rows = null;
+			DataTable? result = null;
+			DataRowCollection? rows = null;
 			int columnCount = 0;
-			IList<string> values;
+			IList<string>? values;
 			while ((values = ReadLine(reader)) != null)
 			{
 				// The first line should be a header row.
@@ -189,11 +189,11 @@ namespace Menees
 				{
 					if (values.Count > columnCount)
 					{
-						using (StringWriter writer = new StringWriter())
+						using (StringWriter writer = new())
 						{
 							WriteLine(writer, values);
 							throw Exceptions.NewArgumentException(
-								$"The value count ({values.Count}) should not exceed the column count ({columnCount}).  Invalid line: {writer.ToString()}");
+								$"The value count ({values.Count}) should not exceed the column count ({columnCount}).  Invalid line: {writer}");
 						}
 					}
 
@@ -208,7 +208,7 @@ namespace Menees
 						row[columnIndex++] = string.IsNullOrEmpty(value) ? (object)DBNull.Value : value;
 					}
 
-					rows.Add(row);
+					rows?.Add(row);
 				}
 			}
 
@@ -231,13 +231,13 @@ namespace Menees
 		/// </summary>
 		/// <param name="writer">The writer to write to.</param>
 		/// <param name="values">The values to write.</param>
-		public static void WriteLine(TextWriter writer, IEnumerable<object> values)
+		public static void WriteLine(TextWriter writer, IEnumerable<object?> values)
 		{
 			Conditions.RequireReference(writer, nameof(writer));
 			Conditions.RequireReference(values, nameof(values));
 
 			bool firstValue = true;
-			foreach (object value in values)
+			foreach (object? value in values)
 			{
 				WriteValue(writer, value, firstValue);
 				if (firstValue)
@@ -323,7 +323,7 @@ namespace Menees
 
 			writer.WriteLine();
 
-			foreach (DataRow row in table.Rows)
+			foreach (DataRow row in table.Rows.Cast<DataRow>())
 			{
 				WriteLine(writer, row, columnCount);
 			}
@@ -342,7 +342,7 @@ namespace Menees
 			Conditions.RequireString(fileName, nameof(fileName));
 
 			// We have to use the default encoding here.  See comments in Write(string, DataTable).
-			using (StreamWriter writer = new StreamWriter(fileName, false))
+			using (StreamWriter writer = new(fileName, false))
 			{
 				WriteTable(writer, reader);
 			}
@@ -363,7 +363,7 @@ namespace Menees
 			// We have to use the default encoding here because Excel doesn't like byte order marks
 			// in CSV files.  For example, using the UTF8 encoding here causes Excel to prompt with
 			// its text import wizard when opening the file.
-			using (StreamWriter writer = new StreamWriter(fileName, false))
+			using (StreamWriter writer = new(fileName, false))
 			{
 				WriteTable(writer, table);
 			}
@@ -373,7 +373,7 @@ namespace Menees
 
 		#region Private Methods
 
-		private static void WriteValue(TextWriter writer, object value, bool firstValueInLine)
+		private static void WriteValue(TextWriter writer, object? value, bool firstValueInLine)
 		{
 			if (!firstValueInLine)
 			{

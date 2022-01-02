@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Common.Tests
 {
@@ -93,6 +93,9 @@ namespace Menees.Common.Tests
 			actual = TextUtility.SplitIntoTokens(" A , B , C ").ToArray();
 			CollectionAssert.AreEqual(new[] { "A", "B", "C" }, actual);
 
+			actual = TextUtility.SplitIntoTokens(",, ,").ToArray();
+			CollectionAssert.AreEqual(new[] { "", "", "", "" }, actual);
+
 			actual = TextUtility.SplitIntoTokens("a=A; b=B;' c=C;See '; d=D", ';', '\'', true).ToArray();
 			CollectionAssert.AreEqual(new[] { "a=A", "b=B", "c=C;See", "d=D" }, actual);
 
@@ -124,7 +127,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void SplitIntoTokensCollectionTest()
 		{
-			List<string> tokens = new List<string>();
+			List<string> tokens = new();
 			bool result = TextUtility.SplitIntoTokens("A,B,\"C,D\",E", ',', '"', false, tokens);
 			Assert.AreEqual(true, result);
 			CollectionAssert.AreEqual(new[] { "A", "B", "C,D", "E" }, tokens.ToArray());
@@ -218,13 +221,13 @@ namespace Menees.Common.Tests
 		public void MakePluralTest(string mixedWord, string mixedExpected)
 		{
 			string mixedActual = TextUtility.MakePlural(mixedWord);
-			mixedActual.ShouldEqual(mixedExpected);
+			mixedActual.ShouldBe(mixedExpected);
 
 			string lowerActual = TextUtility.MakePlural(mixedWord.ToLower());
-			lowerActual.ShouldEqual(mixedExpected.ToLower());
+			lowerActual.ShouldBe(mixedExpected.ToLower());
 
 			string upperActual = TextUtility.MakePlural(mixedWord.ToUpper());
-			upperActual.ShouldEqual(mixedExpected.ToUpper());
+			upperActual.ShouldBe(mixedExpected.ToUpper());
 		}
 	}
 }

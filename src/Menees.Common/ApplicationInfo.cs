@@ -28,7 +28,7 @@ namespace Menees
 	{
 		#region Private Data Members
 
-		private static readonly Lazy<int> LazyProcessId = new Lazy<int>(() =>
+		private static readonly Lazy<int> LazyProcessId = new(() =>
 			{
 				using (Process current = Process.GetCurrentProcess())
 				{
@@ -36,10 +36,10 @@ namespace Menees
 				}
 			});
 
-		private static string applicationName;
+		private static string? applicationName;
 		private static int showingUnhandledExceptionErrorMessage;
 		private static bool? isDebugBuild;
-		private static Func<bool> isActivated;
+		private static Func<bool>? isActivated;
 
 		#endregion
 
@@ -52,14 +52,14 @@ namespace Menees
 		{
 			get
 			{
-				string result = applicationName;
+				string? result = applicationName;
 
 				if (string.IsNullOrEmpty(result))
 				{
 					result = GlobalLogContext.GetDefaultApplicationName();
 				}
 
-				return result;
+				return result!;
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace Menees
 		{
 			get
 			{
-				string result = AppDomain.CurrentDomain.BaseDirectory;
+				string result = AppDomain.CurrentDomain.BaseDirectory ?? string.Empty;
 				return result;
 			}
 		}
@@ -119,7 +119,7 @@ namespace Menees
 		/// This depends on the applicationAssembly parameter passed to <see cref="Initialize"/>.
 		/// If <see cref="Initialize"/>, hasn't been called, then this depends on the current assembly.
 		/// </remarks>
-		public static bool IsDebugBuild => isDebugBuild ?? IsDebugAssembly(typeof(ApplicationInfo).Assembly);
+		public static bool IsDebugBuild => isDebugBuild ?? ReflectionUtility.IsDebugBuild(typeof(ApplicationInfo).Assembly);
 
 		#endregion
 
@@ -129,12 +129,16 @@ namespace Menees
 		{
 			get
 			{
+				Conditions.RequireState(IsWindows, "This can only be called safely on Windows.");
+
+#pragma warning disable CA1416 // Validate platform compatibility. The callers in .Core.cs and .Framework.cs ensure Windows.
 				using (WindowsIdentity currentIdentity = WindowsIdentity.GetCurrent())
 				{
-					WindowsPrincipal currentPrincipal = new WindowsPrincipal(currentIdentity);
+					WindowsPrincipal currentPrincipal = new(currentIdentity);
 					bool result = currentPrincipal.IsInRole(WindowsBuiltInRole.Administrator);
 					return result;
 				}
+#pragma warning restore CA1416 // Validate platform compatibility
 			}
 		}
 
@@ -149,7 +153,7 @@ namespace Menees
 		/// <param name="applicationAssembly">The assembly that's initializing the application, typically the main executable.</param>
 		/// <param name="isActivated">A function to determine if <see cref="IsActivated"/> should consider the application activated.</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void Initialize(string applicationName, Assembly applicationAssembly = null, Func<bool> isActivated = null)
+		public static void Initialize(string applicationName, Assembly? applicationAssembly = null, Func<bool>? isActivated = null)
 		{
 			// Try to log when unhandled or unobserved exceptions occur.  This info can be very useful if the process crashes.
 			// Note: Windows Forms unhandled exceptions are logged via Menees.Windows.Forms.WindowsUtility.InitializeApplication.
@@ -177,7 +181,7 @@ namespace Menees
 			// Since apps refer to this library via NuGet references, they'll always use the release build of this library.
 			// So we'll check the main assembly's build configuration via reflection instead of using a compile-time constant.
 			Assembly assembly = applicationAssembly ?? Assembly.GetEntryAssembly() ?? typeof(ApplicationInfo).Assembly;
-			isDebugBuild = IsDebugAssembly(assembly);
+			isDebugBuild = ReflectionUtility.IsDebugBuild(assembly);
 
 			// Call SetErrorMode to disable the display of Windows Shell modal error dialogs for
 			// file not found, Windows Error Reporting, and other errors.  From SetErrorMode docs
@@ -205,8 +209,8 @@ namespace Menees
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ShowUnhandledException(
 			Exception ex,
-			Action<string> showExceptionMessage,
-			Action<Exception> showExceptionCustom = null)
+			Action<string>? showExceptionMessage,
+			Action<Exception>? showExceptionCustom = null)
 		{
 			// Only let the first thread in show a message box.
 			int showing = Interlocked.Increment(ref showingUnhandledExceptionErrorMessage);
@@ -220,7 +224,7 @@ namespace Menees
 					}
 					else if (showExceptionMessage != null)
 					{
-						StringBuilder sb = new StringBuilder();
+						StringBuilder sb = new();
 						sb.AppendLine(Exceptions.GetMessage(ex));
 						if (IsDebugBuild)
 						{
@@ -244,19 +248,6 @@ namespace Menees
 		#region Private Methods
 
 		static partial void InitializeTargetFramework();
-
-		private static bool IsDebugAssembly(Assembly assembly)
-		{
-			bool result = false;
-
-			if (assembly != null)
-			{
-				var configuration = (AssemblyConfigurationAttribute)assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute));
-				result = configuration?.Configuration?.Contains("Debug") ?? false;
-			}
-
-			return result;
-		}
 
 		#endregion
 	}

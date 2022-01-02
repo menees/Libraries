@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using SoftwareApproach.TestingExtensions;
+using Shouldly;
 
 namespace Menees.Diffs.Tests
 {
@@ -16,10 +16,10 @@ namespace Menees.Diffs.Tests
 		{
 			AddCopyCollection ac = BinaryDiffTests.Diff("Creative", "Creating", footprintLength: 2);
 			BinaryDiffTests.Check(ac, false, true);
-			using MemoryStream memory = new MemoryStream();
+			using MemoryStream memory = new();
 			ac.GDiff(memory);
 			byte[] gdiff = memory.ToArray();
-			gdiff.Length.ShouldEqual(13);
+			gdiff.Length.ShouldBe(13);
 
 			// It always starts with "d1ff d1ff 4" (magic numbers and version).
 			Check(gdiff, 0, 0xd1, 0xff, 0xd1, 0xff, 0x04);
@@ -36,7 +36,7 @@ namespace Menees.Diffs.Tests
 			diff.Length.ShouldBeGreaterThanOrEqualTo(startIndex + expected.Length);
 			for (int i = 0; i < expected.Length; i++)
 			{
-				((int)diff[i + startIndex]).ShouldEqual(expected[i]);
+				((int)diff[i + startIndex]).ShouldBe(expected[i]);
 			}
 		}
 	}

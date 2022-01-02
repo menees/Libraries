@@ -49,11 +49,11 @@ namespace Menees.Windows.Diagnostics
 		/// </summary>
 		/// <param name="propertyName">The name of a property.</param>
 		/// <returns>The value of the specified property.</returns>
-		public object this[string propertyName]
+		public object? this[string propertyName]
 		{
 			get
 			{
-				object result = this.GetValue(propertyName);
+				object? result = this.GetValue(propertyName);
 				return result;
 			}
 		}
@@ -77,7 +77,7 @@ namespace Menees.Windows.Diagnostics
 		/// <returns>The value of the specified property.</returns>
 		public bool GetBoolean(string propertyName)
 		{
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 
 			// ConvertUtility.ToBoolean handles more text values than the standard .NET conversion method.
 			bool result = value is string text ? ConvertUtility.ToBoolean(text) : Convert.ToBoolean(value);
@@ -93,7 +93,7 @@ namespace Menees.Windows.Diagnostics
 		{
 			bool? result = null;
 
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			if (value != null)
 			{
 				// ConvertUtility.ToBoolean handles more text values than the standard .NET conversion method.
@@ -110,7 +110,7 @@ namespace Menees.Windows.Diagnostics
 		/// <returns>The value of the specified property.</returns>
 		public DateTime GetDateTime(string propertyName)
 		{
-			string value = this.GetString(propertyName);
+			string? value = this.GetString(propertyName);
 			DateTime result = ManagementDateTimeConverter.ToDateTime(value);
 			return result;
 		}
@@ -124,7 +124,7 @@ namespace Menees.Windows.Diagnostics
 		{
 			DateTime? result = null;
 
-			string value = this.GetString(propertyName);
+			string? value = this.GetString(propertyName);
 			if (!string.IsNullOrEmpty(value))
 			{
 				result = ManagementDateTimeConverter.ToDateTime(value);
@@ -140,7 +140,7 @@ namespace Menees.Windows.Diagnostics
 		/// <returns>The value of the specified property.</returns>
 		public int GetInt32(string propertyName)
 		{
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			int result = Convert.ToInt32(value);
 			return result;
 		}
@@ -154,7 +154,7 @@ namespace Menees.Windows.Diagnostics
 		{
 			int? result = null;
 
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			if (value != null)
 			{
 				result = Convert.ToInt32(value);
@@ -170,7 +170,7 @@ namespace Menees.Windows.Diagnostics
 		/// <returns>The value of the specified property.</returns>
 		public long GetInt64(string propertyName)
 		{
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			long result = Convert.ToInt64(value);
 			return result;
 		}
@@ -184,7 +184,7 @@ namespace Menees.Windows.Diagnostics
 		{
 			long? result = null;
 
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			if (value != null)
 			{
 				result = Convert.ToInt64(value);
@@ -198,11 +198,11 @@ namespace Menees.Windows.Diagnostics
 		/// </summary>
 		/// <param name="propertyName">The name of a property.</param>
 		/// <returns>The value of the specified property.</returns>
-		public string GetString(string propertyName)
+		public string? GetString(string propertyName)
 		{
-			string result = null;
+			string? result = null;
 
-			object value = this.GetRawValue(propertyName);
+			object? value = this.GetRawValue(propertyName);
 			if (value != null)
 			{
 				result = Convert.ToString(value);
@@ -218,7 +218,7 @@ namespace Menees.Windows.Diagnostics
 		/// <returns>The value of the specified property.</returns>
 		public TimeSpan GetTimeSpan(string propertyName)
 		{
-			string value = this.GetString(propertyName);
+			string? value = this.GetString(propertyName);
 			TimeSpan result = ManagementDateTimeConverter.ToTimeSpan(value);
 			return result;
 		}
@@ -232,7 +232,7 @@ namespace Menees.Windows.Diagnostics
 		{
 			TimeSpan? result = null;
 
-			string value = this.GetString(propertyName);
+			string? value = this.GetString(propertyName);
 			if (!string.IsNullOrEmpty(value))
 			{
 				result = ManagementDateTimeConverter.ToTimeSpan(value);
@@ -251,9 +251,9 @@ namespace Menees.Windows.Diagnostics
 		/// WMI property values and convert them to their expected .NET types.
 		/// </remarks>
 		/// <returns>The value of the specified property in a .NET format.</returns>
-		public object GetValue(string propertyName)
+		public object? GetValue(string propertyName)
 		{
-			object result = this.GetRawValue(propertyName);
+			object? result = this.GetRawValue(propertyName);
 			if (result != null)
 			{
 				if (result is string text)
@@ -309,9 +309,9 @@ namespace Menees.Windows.Diagnostics
 		/// <param name="inputParameters">A dictionary of input parameter names and values.
 		/// This can be null if the method takes no parameters.</param>
 		/// <returns>A dictionary of output parameter names and values.</returns>
-		public IDictionary<string, object> InvokeMethod(string methodName, IDictionary<string, object> inputParameters)
+		public IDictionary<string, object> InvokeMethod(string methodName, IDictionary<string, object>? inputParameters)
 		{
-			ManagementBaseObject wmiInputParameters = null;
+			ManagementBaseObject? wmiInputParameters = null;
 			if (inputParameters != null)
 			{
 				wmiInputParameters = this.wmiObject.GetMethodParameters(methodName);
@@ -322,7 +322,7 @@ namespace Menees.Windows.Diagnostics
 			}
 
 			ManagementBaseObject wmiOutputParameters = this.wmiObject.InvokeMethod(methodName, wmiInputParameters, null);
-			Dictionary<string, object> result = new Dictionary<string, object>(wmiOutputParameters.Properties.Count);
+			Dictionary<string, object> result = new(wmiOutputParameters.Properties.Count);
 			foreach (var property in wmiOutputParameters.Properties)
 			{
 				result[property.Name] = property.Value;
@@ -347,9 +347,9 @@ namespace Menees.Windows.Diagnostics
 		/// .NET types.
 		/// </remarks>
 		/// <returns>The raw/native value of the specified property.</returns>
-		private object GetRawValue(string propertyName)
+		private object? GetRawValue(string propertyName)
 		{
-			object result = this.wmiObject.GetPropertyValue(propertyName);
+			object? result = this.wmiObject.GetPropertyValue(propertyName);
 			return result;
 		}
 

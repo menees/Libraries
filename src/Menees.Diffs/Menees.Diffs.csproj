@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
-		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net45</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;$(MeneesTargetNetCoreBase);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Description>Differencing algorithms for text files, binary files, and directories</Description>
 	</PropertyGroup>

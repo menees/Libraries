@@ -6,6 +6,7 @@ namespace Menees.Diagnostics
 	using System.Collections.Concurrent;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.Diagnostics.CodeAnalysis;
 	using System.IO;
 	using System.Linq;
 	using System.Text;
@@ -19,7 +20,7 @@ namespace Menees.Diagnostics
 	{
 		#region Private Data Members
 
-		private readonly ConcurrentDictionary<string, object> entries = new ConcurrentDictionary<string, object>();
+		private readonly ConcurrentDictionary<string, object> entries = new();
 
 		#endregion
 
@@ -43,12 +44,12 @@ namespace Menees.Diagnostics
 		{
 			get
 			{
-				if (!this.TryGetValue(key, out object result))
+				if (!this.TryGetValue(key, out object? result))
 				{
 					throw Exceptions.Log(new KeyNotFoundException("The specified key was not found: " + key));
 				}
 
-				return result;
+				return result!;
 			}
 
 			set
@@ -90,14 +91,14 @@ namespace Menees.Diagnostics
 		/// <summary>
 		/// Tries to get the value associated with the specified key.
 		/// </summary>
-		public bool TryGetValue<T>(string key, out T value)
+		public bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T? value)
 		{
-			bool result = this.entries.TryGetValue(key, out object propertyValue) && propertyValue != null;
+			bool result = this.entries.TryGetValue(key, out object? propertyValue) && propertyValue != null;
 			if (result)
 			{
 				// Cast the object value into type T.  If the key was associated with a value
 				// of a different type, then this will throw an InvalidCastException.
-				value = (T)propertyValue;
+				value = (T?)propertyValue;
 			}
 			else
 			{

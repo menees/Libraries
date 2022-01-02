@@ -129,7 +129,7 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Private Methods
 
-		private void ControlGotFocus(object sender, EventArgs e)
+		private void ControlGotFocus(object? sender, EventArgs e)
 		{
 			// Sometimes in the debugger, we'll get focus without ever having been sent
 			// the LostFocus event.  So I'll fire it now just to make things balance out.
@@ -146,7 +146,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
-		private void ControlLostFocus(object sender, EventArgs e)
+		private void ControlLostFocus(object? sender, EventArgs e)
 		{
 			if (this.createdCaret)
 			{

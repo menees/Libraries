@@ -16,7 +16,7 @@
 	{
 		#region Public Fields
 
-		public static readonly DiffViewLine Empty = new DiffViewLine();
+		public static readonly DiffViewLine Empty = new();
 
 		#endregion
 
@@ -25,7 +25,7 @@
 		private readonly int? number;
 		private readonly string text;
 		private readonly EditType editType;
-		private EditScript changeEditScript;
+		private EditScript? changeEditScript;
 
 		#endregion
 
@@ -48,9 +48,8 @@
 
 		#region Public Properties
 
-		public DiffViewLine Counterpart { get; internal set; }
+		public DiffViewLine? Counterpart { get; internal set; }
 
-		[SuppressMessage("", "SA1101", Justification = "The EditType reference is to the type not to this.EditType.")]
 		public bool Edited => this.editType != EditType.None;
 
 		public EditType EditType => this.editType;
@@ -65,13 +64,13 @@
 
 		#region Public Methods
 
-		public EditScript GetChangeEditScript(ChangeDiffOptions options)
+		public EditScript? GetChangeEditScript(ChangeDiffOptions options)
 		{
 			if (this.changeEditScript == null && this.editType == EditType.Change && this.Counterpart != null)
 			{
 				if (this.FromA)
 				{
-					MyersDiff<char> diff = new MyersDiff<char>(
+					MyersDiff<char> diff = new(
 						GetCharactersToDiff(this.text, options, out int trimCountA),
 						GetCharactersToDiff(this.Counterpart.text, options, out int trimCountB),
 						false); // We don't want Change edits; just Deletes and Inserts.
@@ -188,7 +187,9 @@
 				throw new NotSupportedException();
 			}
 
+#pragma warning disable CA2249 // Consider using 'string.Contains' instead of 'string.IndexOf'. net48 doesn't support Contains(string).
 			public bool Contains(char item) => this.text.IndexOf(item) >= 0;
+#pragma warning restore CA2249 // Consider using 'string.Contains' instead of 'string.IndexOf'
 
 			public void CopyTo(char[] array, int arrayIndex)
 			{
