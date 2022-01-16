@@ -49,6 +49,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		[DefaultValue("")]
 		[RefreshProperties(RefreshProperties.All)]
+		[AllowNull]
 		public override string Text
 		{
 			get
