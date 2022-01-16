@@ -203,14 +203,16 @@ namespace Menees.Windows
 			dte.ExecuteCommand("Edit.Goto", line);
 
 			dynamic mainWindow = dte.MainWindow;
-			IntPtr mainWindowHandle = (IntPtr)Convert.ToInt64(mainWindow.HWnd);
+			object hWnd = mainWindow.HWnd;
+			if (hWnd is IntPtr mainWindowHandle)
+			{
+				NativeMethods.BringWindowForward(mainWindowHandle);
+				const int MillisecondsPerSecond = 1000;
+				Thread.Sleep(MillisecondsPerSecond);
 
-			NativeMethods.BringWindowForward(mainWindowHandle);
-			const int MillisecondsPerSecond = 1000;
-			Thread.Sleep(MillisecondsPerSecond);
-
-			mainWindow.Activate();
-			mainWindow.Visible = true;
+				mainWindow.Activate();
+				mainWindow.Visible = true;
+			}
 		}
 
 		#endregion
