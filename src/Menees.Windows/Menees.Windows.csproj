@@ -34,7 +34,7 @@
 				<Compile Remove="ComUtility.Framework.cs" />
 				<None Include="ComUtility.Framework.cs" />
 
-				<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+				<PackageReference Include="System.Management" Version="6.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>

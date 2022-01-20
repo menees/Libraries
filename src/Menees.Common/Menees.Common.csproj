@@ -32,7 +32,7 @@
 				<Compile Remove="TextUtility.Framework.cs" />
 				<None Include="TextUtility.Framework.cs" />
 
-				<PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+				<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>
