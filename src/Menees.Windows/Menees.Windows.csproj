@@ -25,16 +25,12 @@
 
 				<Compile Remove="ComUtility.Core.cs" />
 				<None Include="ComUtility.Core.cs" />
-
-				<Reference Include="System.Management" />
 			</ItemGroup>
 		</When>
 		<Otherwise>
 			<ItemGroup>
 				<Compile Remove="ComUtility.Framework.cs" />
 				<None Include="ComUtility.Framework.cs" />
-
-				<PackageReference Include="System.Management" Version="6.0.0" />
 			</ItemGroup>
 		</Otherwise>
 	</Choose>

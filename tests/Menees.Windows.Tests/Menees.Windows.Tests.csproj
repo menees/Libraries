@@ -6,12 +6,4 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\src\Menees.Windows\Menees.Windows.csproj" />
 	</ItemGroup>
-
-	<Choose>
-		<When Condition=" '$(TargetFramework)' == '$(MeneesTargetNetFramework)' ">
-			<ItemGroup>
-				<Reference Include="System.Management" />
-			</ItemGroup>
-		</When>
-	</Choose>
 </Project>
