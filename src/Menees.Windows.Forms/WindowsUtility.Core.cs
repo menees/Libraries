@@ -15,7 +15,7 @@
 
 		static partial void SetHighDpiMode()
 		{
-			Application.SetHighDpiMode(HighDpiMode.SystemAware);
+			Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
 		}
 
 		#endregion

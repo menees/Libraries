@@ -966,7 +966,7 @@ namespace Menees
 					sb.AppendFormat("{0}={1}", pair.Key, pair.Value);
 				}
 
-				sb.Append("}");
+				sb.Append('}');
 				result.Add(sb.ToString());
 			}
 
