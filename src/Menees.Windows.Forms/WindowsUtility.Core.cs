@@ -15,7 +15,10 @@
 
 		static partial void SetHighDpiMode()
 		{
-			Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+			// DpiUnawareGdiScaled works best for my old WinForms apps (e.g., MegaBuild), which are designed at 96 dpi.
+			// This method returns a bool, and its result will be false if an earlier call sets the HighDpiMode to something else.
+			// That call just needs to be made from Program.cs before calling WindowsUtility.InitializeApplication.
+			Application.SetHighDpiMode(HighDpiMode.DpiUnawareGdiScaled);
 		}
 
 		#endregion

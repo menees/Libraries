@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menees.Common", "src\Menees.Common\Menees.Common.csproj", "{D71969CE-87D4-44E8-B290-F37F2DEC0911}"
 EndProject
@@ -40,6 +40,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{65188B40-7F6F-4A58-B2FC-723E44125C34}"
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
+		src\Directory.Build.targets = src\Directory.Build.targets
 		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
 	EndProjectSection
 EndProject

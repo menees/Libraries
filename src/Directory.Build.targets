@@ -1,0 +1,13 @@
+<Project>
+	<!--
+		This is a workaround for "Issue building with Windows Desktop 6.0.2". https://github.com/dotnet/core/issues/7176.
+		"Adding this will explicitly override the WindowsDesktop targeting pack used by the .NET 6.0.102 SDK, with the
+		6.0.0 WindowsDesktop targeting pack. This way you can use the .NET 6.0.102 SDK without using the broken .NET
+		6.0.2 WindowsDesktop targeting pack."
+	-->
+	<ItemGroup Condition="'$(UseWindowsForms)' == 'true'">
+		<FrameworkReference
+		Update="Microsoft.WindowsDesktop.App;Microsoft.WindowsDesktop.App.WPF;Microsoft.WindowsDesktop.App.WindowsForms"
+		TargetingPackVersion="6.0.0" />
+	</ItemGroup>
+</Project>

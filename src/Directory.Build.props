@@ -26,7 +26,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 
 		<!-- Make the assembly, file, and NuGet package versions the same. -->
-		<Version>5.0.4</Version>
+		<Version>5.0.5</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
