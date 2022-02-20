@@ -41,6 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{65188B40-7F6
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
 		src\Directory.Build.targets = src\Directory.Build.targets
+		global.json = global.json
 		src\Menees.Libraries.ruleset = src\Menees.Libraries.ruleset
 	EndProjectSection
 EndProject
