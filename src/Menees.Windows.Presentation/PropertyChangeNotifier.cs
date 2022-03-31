@@ -55,7 +55,7 @@
 		/// for this parameter. If omitted, the C# compiler will inject the caller's property name automatically
 		/// using the <see cref="CallerMemberNameAttribute"/>.</param>
 		/// <returns>True if the member was updated. False if the member wasn't updated.</returns>
-		protected bool Update<T>(ref T member, T value, [CallerMemberName] string? callerMemberName = null)
+		protected virtual bool Update<T>(ref T member, T value, [CallerMemberName] string? callerMemberName = null)
 		{
 			bool result = false;
 
@@ -77,7 +77,7 @@
 		/// This method is useful when setting one property via <see cref="Update"/>
 		/// also causes a dependent "read-only" property to be updated.
 		/// </remarks>
-		protected void OnPropertyChanged(string propertyName)
+		protected virtual void OnPropertyChanged(string propertyName)
 		{
 			PropertyChangedEventHandler? handler = this.PropertyChanged;
 			if (handler != null)
