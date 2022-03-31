@@ -44,12 +44,10 @@ namespace Menees.Windows.Presentation
 		}
 
 		/// <summary>
-		/// Not supported.
+		/// Calls <see cref="Convert(object, Type, object, CultureInfo)"/>.
 		/// </summary>
 		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-		{
-			throw new NotSupportedException();
-		}
+			=> this.Convert(value, targetType, parameter, culture);
 
 		#endregion
 	}
