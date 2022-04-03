@@ -176,14 +176,12 @@ namespace Menees.Windows.Presentation
 		[StructLayout(LayoutKind.Sequential)]
 		private struct WINDOWPLACEMENT
 		{
-#pragma warning disable CC0074 // Make field readonly
 			public int length;
 			public int flags;
 			public int showCmd;
 			public IntPoint minPosition;
 			public IntPoint maxPosition;
 			public RECT normalPosition;
-#pragma warning restore CC0074 // Make field readonly
 
 			#region Public Methods
 

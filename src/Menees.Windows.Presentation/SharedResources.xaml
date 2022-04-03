@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/Menees.Windows.Presentation;component/PlaceholderTextResources.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
+	<!--
+		Don't add these default styles because then every text/password box's default styles would be affected.
+		It's safer to make a control opt-in by having to explicitly reference the correct static resource if they want
+		to use the PlaceholderText property.
+	<Style BasedOn="{StaticResource Menees.Windows.Presentation.PlaceholderTextBox}" TargetType="TextBox" />
+	<Style BasedOn="{StaticResource Menees.Windows.Presentation.PlaceholderTextBox}" TargetType="RichTextBox" />
+	<Style BasedOn="{StaticResource Menees.Windows.Presentation.PlaceholderPasswordBox}" TargetType="PasswordBox" />
+	-->
+</ResourceDictionary>
