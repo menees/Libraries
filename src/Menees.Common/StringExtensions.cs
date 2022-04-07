@@ -4,6 +4,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using System.Diagnostics.CodeAnalysis;
 	using System.Text;
 
@@ -22,12 +23,18 @@
 		/// <summary>
 		/// Shortcut for <see cref="string.IsNullOrWhiteSpace"/>. Blank means "null, empty, or whitespace".
 		/// </summary>
-		public static bool IsBlank([NotNullWhen(false)] this string? text) => string.IsNullOrWhiteSpace(text);
+		[Obsolete("Use IsWhiteSpace() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Browsable(false)]
+		public static bool IsBlank([NotNullWhen(false)] this string? text) => text.IsWhiteSpace();
 
 		/// <summary>
 		/// Shortcut for NOT <see cref="string.IsNullOrWhiteSpace"/>. Blank means "null, empty, or whitespace".
 		/// </summary>
-		public static bool IsNotBlank([NotNullWhen(true)] this string? text) => !string.IsNullOrWhiteSpace(text);
+		[Obsolete("Use IsNotWhiteSpace() instead.")]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[Browsable(false)]
+		public static bool IsNotBlank([NotNullWhen(true)] this string? text) => text.IsNotWhiteSpace();
 
 		/// <summary>
 		/// Shortcut for <see cref="string.IsNullOrEmpty"/>.
@@ -38,6 +45,16 @@
 		/// Shortcut for NOT <see cref="string.IsNullOrEmpty"/>.
 		/// </summary>
 		public static bool IsNotEmpty([NotNullWhen(true)] this string? text) => !string.IsNullOrEmpty(text);
+
+		/// <summary>
+		/// Shortcut for <see cref="string.IsNullOrWhiteSpace"/>.
+		/// </summary>
+		public static bool IsWhiteSpace([NotNullWhen(false)] this string? text) => string.IsNullOrWhiteSpace(text);
+
+		/// <summary>
+		/// Shortcut for NOT <see cref="string.IsNullOrWhiteSpace"/>.
+		/// </summary>
+		public static bool IsNotWhiteSpace([NotNullWhen(true)] this string? text) => !string.IsNullOrWhiteSpace(text);
 
 		#endregion
 	}

@@ -16,21 +16,21 @@
 	public sealed class StringExtensionsTests
 	{
 		[TestMethod]
-		public void IsBlankTest()
+		public void IsWhiteSpaceTest()
 		{
-			((string?)null).IsBlank().ShouldBeTrue();
-			string.Empty.IsBlank().ShouldBeTrue();
-			" ".IsBlank().ShouldBeTrue();
-			"X".IsBlank().ShouldBeFalse();
+			((string?)null).IsWhiteSpace().ShouldBeTrue();
+			string.Empty.IsWhiteSpace().ShouldBeTrue();
+			" ".IsWhiteSpace().ShouldBeTrue();
+			"X".IsWhiteSpace().ShouldBeFalse();
 		}
 
 		[TestMethod]
-		public void IsNotBlankTest()
+		public void IsNotWhiteSpaceTest()
 		{
-			((string?)null).IsNotBlank().ShouldBeFalse();
-			string.Empty.IsNotBlank().ShouldBeFalse();
-			" ".IsNotBlank().ShouldBeFalse();
-			"X".IsNotBlank().ShouldBeTrue();
+			((string?)null).IsNotWhiteSpace().ShouldBeFalse();
+			string.Empty.IsNotWhiteSpace().ShouldBeFalse();
+			" ".IsNotWhiteSpace().ShouldBeFalse();
+			"X".IsNotWhiteSpace().ShouldBeTrue();
 		}
 
 		[TestMethod]

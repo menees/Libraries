@@ -119,7 +119,7 @@ namespace Menees.Shell
 			sb.Append(Environment.Is64BitProcess ? " – 64-bit" : " – 32-bit");
 
 			TargetFrameworkAttribute? frameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
-			if (frameworkAttribute != null && frameworkAttribute.FrameworkName.IsNotBlank())
+			if (frameworkAttribute != null && frameworkAttribute.FrameworkName.IsNotWhiteSpace())
 			{
 				// Examples:
 				// [assembly: TargetFramework(".NETCoreApp,Version=v3.1", FrameworkDisplayName = "")]
