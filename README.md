@@ -15,12 +15,12 @@ This repo contains the source code for several .NET libraries used in Menees uti
 ## Targets
 |Library|.NET Framework|.NET Core|.NET Standard|NuGet|
 |---|---|---|---|---|
-|[Menees.Common](src/Menees.Common)|4.5|3.1|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Common)](https://www.nuget.org/packages/Menees.Common/)|
-|[Menees.Diffs](src/Menees.Diffs)|4.5|3.1|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs)](https://www.nuget.org/packages/Menees.Diffs/)|
-|[Menees.Diffs.Windows.Forms](src/Menees.Diffs.Windows.Forms)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs.Windows.Forms)](https://www.nuget.org/packages/Menees.Diffs.Windows.Forms/)|
-|[Menees.Windows](src/Menees.Windows)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows)](https://www.nuget.org/packages/Menees.Windows/)|
-|[Menees.Windows.Forms](src/Menees.Windows.Forms)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Forms)](https://www.nuget.org/packages/Menees.Windows.Forms/)|
-|[Menees.Windows.Presentation](src/Menees.Windows.Presentation)|4.5|3.1|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Presentation)](https://www.nuget.org/packages/Menees.Windows.Presentation/)|
+|[Menees.Common](src/Menees.Common)|4.8|6.0|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Common)](https://www.nuget.org/packages/Menees.Common/)|
+|[Menees.Diffs](src/Menees.Diffs)|4.8|6.0|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs)](https://www.nuget.org/packages/Menees.Diffs/)|
+|[Menees.Diffs.Windows.Forms](src/Menees.Diffs.Windows.Forms)|4.8|6.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs.Windows.Forms)](https://www.nuget.org/packages/Menees.Diffs.Windows.Forms/)|
+|[Menees.Windows](src/Menees.Windows)|4.8|6.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows)](https://www.nuget.org/packages/Menees.Windows/)|
+|[Menees.Windows.Forms](src/Menees.Windows.Forms)|4.8|6.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Forms)](https://www.nuget.org/packages/Menees.Windows.Forms/)|
+|[Menees.Windows.Presentation](src/Menees.Windows.Presentation)|4.8|6.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Presentation)](https://www.nuget.org/packages/Menees.Windows.Presentation/)|
 
 ## Dependencies
 ![Dependencies](http://www.menees.com/Images/LibrariesDependencies.png)
