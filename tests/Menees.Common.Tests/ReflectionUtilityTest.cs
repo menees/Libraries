@@ -50,6 +50,16 @@ namespace Menees.Common.Tests
 		}
 
 		[TestMethod]
+		public void GetProductUrlTest()
+		{
+			Uri? url = ReflectionUtility.GetProductUrl(typeof(ReflectionUtility).Assembly);
+			url.ShouldBeNull();
+
+			url = ReflectionUtility.GetProductUrl(this.GetType().Assembly);
+			url.ShouldBe(new Uri("http://www.menees.com"));
+		}
+
+		[TestMethod]
 		public void IsDebugBuildTest()
 		{
 			Assembly assembly = Assembly.GetExecutingAssembly();

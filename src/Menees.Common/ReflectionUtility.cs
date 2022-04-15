@@ -85,6 +85,24 @@ namespace Menees
 		}
 
 		/// <summary>
+		/// Gets the ProductUrl from the assembly metadata.
+		/// </summary>
+		/// <param name="assembly">The assembly to get the ProductUrl metadata from.</param>
+		/// <returns>The assembly's build time as a Uri if an <see cref="AssemblyMetadataAttribute"/> is found
+		/// with Key="ProductUrl" and Value equal to a parsable absolute Uri. Returns null otherwise.</returns>
+		public static Uri? GetProductUrl(Assembly assembly)
+		{
+			Conditions.RequireReference(assembly, nameof(assembly));
+
+			Uri? result = assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
+				.Where(metadata => string.Equals(metadata.Key, "ProductUrl"))
+				.Select(metadata => Uri.TryCreate(metadata.Value, UriKind.Absolute, out Uri? value) ? value : null)
+				.FirstOrDefault(value => value != null);
+
+			return result;
+		}
+
+		/// <summary>
 		/// Gets whether the assembly was built with a debug configuration.
 		/// </summary>
 		/// <param name="assembly">The assembly to check.</param>

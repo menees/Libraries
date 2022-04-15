@@ -52,6 +52,16 @@
 			this.version.Text = ShellUtility.GetVersionInfo(callingAssembly);
 			this.copyright.Text = ShellUtility.GetCopyrightInfo(callingAssembly);
 			this.updateLink.Visibility = Visibility.Hidden;
+
+			if (callingAssembly != null)
+			{
+				Uri? productUrl = ReflectionUtility.GetProductUrl(callingAssembly);
+				if (productUrl != null)
+				{
+					this.webLink.Tag = productUrl;
+					this.webLink.Content = productUrl.GetComponents(UriComponents.Host | UriComponents.Path, UriFormat.Unescaped).TrimEnd('/');
+				}
+			}
 		}
 
 		#endregion
@@ -120,7 +130,13 @@
 		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void WebLink_Clicked(object sender, RoutedEventArgs e)
 		{
-			if (WindowsUtility.ShellExecute(this, "http://www.menees.com"))
+			Uri uri = new("http://www.menees.com");
+			if (sender is ContentControl content && content.Tag is Uri productUri)
+			{
+				uri = productUri;
+			}
+
+			if (WindowsUtility.ShellExecute(this, uri.ToString()))
 			{
 				FinishLink(sender, e);
 			}

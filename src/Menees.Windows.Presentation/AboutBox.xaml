@@ -33,7 +33,7 @@
 		<TextBlock x:Name="copyright" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
 			Copyright © 2002-2013 Bill Menees
 		</TextBlock>
-		<m:HyperlinkButton Grid.Row="4" Grid.Column="1" Margin="0,5,12,5" Padding="0,5" Content="www.menees.com" Click="WebLink_Clicked" />
+		<m:HyperlinkButton x:Name="webLink" Grid.Row="4" Grid.Column="1" Margin="0,5,12,5" Padding="0,5" Content="www.menees.com" Click="WebLink_Clicked" />
 		<m:HyperlinkButton Grid.Row="4" Grid.Column="2" Margin="0,5,12,5" Padding="0,5" Content="bill@menees.com" Click="EmailLink_Clicked" />
 		<TextBlock TextWrapping="Wrap" Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,12,0" Padding="0,5">
 				This software is CharityWare.  If you use it, please donate something to the charity of your choice.
