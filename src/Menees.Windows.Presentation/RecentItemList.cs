@@ -16,7 +16,17 @@
 	/// <summary>
 	/// Manages a list of recent items and optionally their associated menu items.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">The type of item to manage.</typeparam>
+	/// <remarks>
+	/// Add the following Style to App.xaml's Application.Resources to prevent "harmless" warnings
+	/// about binding failures in the debugger when RecentItemList removes menu items.
+	/// <code>
+	/// <Style TargetType="{x:Type MenuItem}">
+	///   <Setter Property="HorizontalContentAlignment" Value="Left" />
+	///   <Setter Property="VerticalContentAlignment" Value="Top" />
+	/// </Style>
+	/// </code>
+	/// </remarks>
 	public sealed class RecentItemList<T> : IReadOnlyList<T>, ICollection<T>, IDisposable
 		where T : notnull
 	{
