@@ -36,7 +36,6 @@
 
 		private readonly List<T> list;
 		private readonly List<ItemsControl> menus;
-		private readonly HashSet<ItemsControl> upToDateMenus;
 		private Action<T> itemClicked;
 
 		#endregion
@@ -67,16 +66,12 @@
 			this.itemClicked = itemClicked;
 			this.MaxItemCount = maxItemCount;
 
-			this.menus = new();
+			this.menus = new(2);
 			this.menus.Add(mainMenuItem);
-			mainMenuItem.SubmenuOpened += this.MenuOpening;
 			if (toolbarDropDownMenu != null)
 			{
 				this.menus.Add(toolbarDropDownMenu);
-				toolbarDropDownMenu.ContextMenuOpening += this.MenuOpening;
 			}
-
-			this.upToDateMenus = new(this.menus.Count);
 		}
 
 		#endregion
@@ -131,18 +126,15 @@
 		/// </remarks>
 		public void Add(T item)
 		{
-			bool removed = this.Remove(item);
+			bool previouslyInList = this.Remove(item);
 			this.list.Insert(0, item);
 
-			if (!removed)
+			if (!previouslyInList)
 			{
-				while (this.list.Count > this.MaxItemCount)
-				{
-					this.list.RemoveAt(this.list.Count - 1);
-				}
+				this.Crop();
 			}
 
-			this.SetOutOfDate();
+			this.UpdateMenus();
 		}
 
 		/// <summary>
@@ -151,7 +143,7 @@
 		public void Clear()
 		{
 			this.list.Clear();
-			this.SetOutOfDate();
+			this.UpdateMenus();
 		}
 
 		/// <summary>
@@ -169,20 +161,6 @@
 		/// </summary>
 		public void Dispose()
 		{
-			foreach (ItemsControl menu in this.menus)
-			{
-				switch (menu)
-				{
-					case MenuItem menuItem:
-						menuItem.SubmenuOpened -= this.MenuOpening;
-						break;
-
-					case ContextMenu contextMenu:
-						contextMenu.ContextMenuOpening -= this.MenuOpening;
-						break;
-				}
-			}
-
 			this.Clear();
 			this.menus.Clear();
 			this.itemClicked = item => { };
@@ -210,8 +188,8 @@
 			ISettingsNode? settingsNode = baseNode.TryGetSubNode(settingsNodeName);
 			if (settingsNode != null)
 			{
-				// Use a byte's range since that's the type for MaxItemCount.
-				for (int index = byte.MinValue; index <= byte.MaxValue; index++)
+				List<T> loaded = new(this.MaxItemCount);
+				for (int index = 0; index < this.MaxItemCount; index++)
 				{
 					ISettingsNode? itemNode = settingsNode.TryGetSubNode(index.ToString());
 					if (itemNode == null)
@@ -220,8 +198,13 @@
 					}
 
 					T item = loadItem(itemNode);
-					this.list.Add(item);
+					loaded.Add(item);
 				}
+
+				// Use Distinct here in case someone manually edits a settings file to introduce a duplicate.
+				// We don't need to Crop here since MaxItemCount is enforced in the loop condition.
+				this.list.AddRange(loaded.Distinct());
+				this.UpdateMenus();
 			}
 		}
 
@@ -233,7 +216,7 @@
 			bool result = this.list.Remove(item);
 			if (result)
 			{
-				this.SetOutOfDate();
+				this.UpdateMenus();
 			}
 
 			return result;
@@ -270,32 +253,17 @@
 
 		#region Private Methods
 
-		private void SetOutOfDate()
+		private void UpdateMenus()
 		{
-			this.upToDateMenus.Clear();
-
-			// Remove old items so any references are released.
 			foreach (ItemsControl menu in this.menus)
 			{
-				this.RemoveOldMenuItems(menu);
-			}
-		}
+				// Remove old items so any references are released.
+				foreach (RecentMenuItem menuItem in menu.Items.OfType<RecentMenuItem>())
+				{
+					menuItem.Click -= this.MenuItemClick;
+				}
 
-		private void RemoveOldMenuItems(ItemsControl menu)
-		{
-			foreach (RecentMenuItem menuItem in menu.Items.OfType<RecentMenuItem>())
-			{
-				menuItem.Click -= this.MenuItemClick;
-			}
-
-			menu.Items.Clear();
-		}
-
-		private void MenuOpening(object sender, RoutedEventArgs e)
-		{
-			if (sender is ItemsControl menu && !this.upToDateMenus.Contains(menu))
-			{
-				this.RemoveOldMenuItems(menu);
+				menu.Items.Clear();
 
 				if (this.Count == 0)
 				{
@@ -310,8 +278,6 @@
 						menu.Items.Add(recent);
 					}
 				}
-
-				this.upToDateMenus.Add(menu);
 			}
 		}
 
@@ -323,11 +289,37 @@
 			}
 		}
 
+		private void Crop()
+		{
+			while (this.list.Count > this.MaxItemCount)
+			{
+				this.list.RemoveAt(this.list.Count - 1);
+			}
+		}
+
 		#endregion
 
 		#region Private Types
 
-		private sealed class NoneMenuItem : MenuItem
+		private abstract class CustomMenuItem : MenuItem
+		{
+			#region Constructors
+
+			protected CustomMenuItem()
+			{
+				// TODO: Try to remove these binding errors in the debugger. [Bill, 4/24/2022]
+				// These are needed to prevent warnings logged in the debugger like:
+				// System.Windows.Data Error: 4 : Cannot find source for binding with reference 'RelativeSource FindAncestor,
+				//     AncestorType='System.Windows.Controls.ItemsControl', AncestorLevel='1''. BindingExpression:Path=HorizontalContentAlignment;
+				//     DataItem=null; target element is 'NoneMenuItem' (Name=''); target property is 'HorizontalContentAlignment' (type 'HorizontalAlignment')
+				this.HorizontalContentAlignment = HorizontalAlignment.Left;
+				this.VerticalContentAlignment = VerticalAlignment.Center;
+			}
+
+			#endregion
+		}
+
+		private sealed class NoneMenuItem : CustomMenuItem
 		{
 			#region Constructors
 
@@ -340,7 +332,7 @@
 			#endregion
 		}
 
-		private sealed class RecentMenuItem : MenuItem
+		private sealed class RecentMenuItem : CustomMenuItem
 		{
 			#region Constructors
 
