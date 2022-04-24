@@ -37,6 +37,7 @@
 		private readonly List<T> list;
 		private readonly List<ItemsControl> menus;
 		private Action<T> itemClicked;
+		private Dictionary<MenuItem, T> menuItemToItemMap;
 
 		#endregion
 
@@ -65,6 +66,7 @@
 			this.list = new(maxItemCount);
 			this.itemClicked = itemClicked;
 			this.MaxItemCount = maxItemCount;
+			this.menuItemToItemMap = new(maxItemCount);
 
 			this.menus = new(2);
 			this.menus.Add(mainMenuItem);
@@ -255,10 +257,11 @@
 
 		private void UpdateMenus()
 		{
+			this.menuItemToItemMap.Clear();
 			foreach (ItemsControl menu in this.menus)
 			{
 				// Remove old items so any references are released.
-				foreach (RecentMenuItem menuItem in menu.Items.OfType<RecentMenuItem>())
+				foreach (MenuItem menuItem in menu.Items.OfType<MenuItem>())
 				{
 					menuItem.Click -= this.MenuItemClick;
 				}
@@ -267,15 +270,18 @@
 
 				if (this.Count == 0)
 				{
-					menu.Items.Add(new NoneMenuItem());
+					menu.Items.Add(new MenuItem { Header = "<None>", IsEnabled = false });
 				}
 				else
 				{
 					foreach (T item in this.list)
 					{
-						RecentMenuItem recent = new(item);
-						recent.Click += this.MenuItemClick;
-						menu.Items.Add(recent);
+						const int MaxSingleDigitNumber = 9;
+						int index = menu.Items.Count + 1;
+						MenuItem menuItem = new() { Header = $"{(index <= MaxSingleDigitNumber ? "_" : string.Empty)}{index}: {item}" };
+						menuItem.Click += this.MenuItemClick;
+						this.menuItemToItemMap.Add(menuItem, item);
+						menu.Items.Add(menuItem);
 					}
 				}
 			}
@@ -283,9 +289,9 @@
 
 		private void MenuItemClick(object sender, RoutedEventArgs e)
 		{
-			if (sender is RecentMenuItem menuItem)
+			if (sender is MenuItem menuItem && this.menuItemToItemMap.TryGetValue(menuItem, out T? item))
 			{
-				this.itemClicked(menuItem.Item);
+				this.itemClicked(item);
 			}
 		}
 
@@ -295,60 +301,6 @@
 			{
 				this.list.RemoveAt(this.list.Count - 1);
 			}
-		}
-
-		#endregion
-
-		#region Private Types
-
-		private abstract class CustomMenuItem : MenuItem
-		{
-			#region Constructors
-
-			protected CustomMenuItem()
-			{
-				// TODO: Try to remove these binding errors in the debugger. [Bill, 4/24/2022]
-				// These are needed to prevent warnings logged in the debugger like:
-				// System.Windows.Data Error: 4 : Cannot find source for binding with reference 'RelativeSource FindAncestor,
-				//     AncestorType='System.Windows.Controls.ItemsControl', AncestorLevel='1''. BindingExpression:Path=HorizontalContentAlignment;
-				//     DataItem=null; target element is 'NoneMenuItem' (Name=''); target property is 'HorizontalContentAlignment' (type 'HorizontalAlignment')
-				this.HorizontalContentAlignment = HorizontalAlignment.Left;
-				this.VerticalContentAlignment = VerticalAlignment.Center;
-			}
-
-			#endregion
-		}
-
-		private sealed class NoneMenuItem : CustomMenuItem
-		{
-			#region Constructors
-
-			public NoneMenuItem()
-			{
-				this.Header = "<None>";
-				this.IsEnabled = false;
-			}
-
-			#endregion
-		}
-
-		private sealed class RecentMenuItem : CustomMenuItem
-		{
-			#region Constructors
-
-			public RecentMenuItem(T item)
-			{
-				this.Header = item.ToString();
-				this.Item = item;
-			}
-
-			#endregion
-
-			#region Public Properties
-
-			public T Item { get; }
-
-			#endregion
 		}
 
 		#endregion
