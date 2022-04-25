@@ -46,8 +46,8 @@
 
 		private readonly List<T> list;
 		private readonly List<ItemsControl> menus;
+		private readonly Dictionary<MenuItem, T> menuItemToItemMap;
 		private Action<T> itemClicked;
-		private Dictionary<MenuItem, T> menuItemToItemMap;
 
 		#endregion
 
