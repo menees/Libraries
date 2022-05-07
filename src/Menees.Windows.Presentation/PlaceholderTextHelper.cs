@@ -19,7 +19,27 @@
 	/// Adds "PlaceholderText" and "HasText" attached properties to <see cref="TextBoxBase"/> and <see cref="PasswordBox"/>.
 	/// </summary>
 	/// <remarks>
-	/// Based on https://prabu-guru.blogspot.com/2010/06/how-to-add-watermark-text-to-textbox.html.
+	/// NOTE: Using this requires multiple steps. First, the calling program's App.xaml has to merge in this assembly's
+	/// resources like:
+	/// <code>
+	/// <Application.Resources>
+	/// 	<ResourceDictionary>
+	/// 		<ResourceDictionary.MergedDictionaries>
+	/// 			<ResourceDictionary Source="pack://application:,,,/Menees.Windows.Presentation;component/SharedResources.xaml" />
+	/// 		</ResourceDictionary.MergedDictionaries>
+	/// 	</ResourceDictionary>
+	/// </Application.Resources>
+	/// </code>
+	/// Second, any control assigning to the "PlaceholderText attached property also needs to explicitly assign an
+	/// appropriate Style to display the placeholder. The Style doesn't default by TargetType because I didn't want to make
+	/// all TextBoxBase and PasswordBox controls suddenly have a PlaceholderText when they didn't before. This way it's opt-in.
+	/// The relevant styles are:
+	/// <list type="bullet">
+	/// <item>Style="{StaticResource Menees.Windows.Presentation.PlaceholderTextBox}"</item>
+	/// <item>Style="{StaticResource Menees.Windows.Presentation.PlaceholderPasswordBox}"</item>
+	/// </list>
+	/// <para/>
+	/// This class is based on https://prabu-guru.blogspot.com/2010/06/how-to-add-watermark-text-to-textbox.html.
 	/// For a more complex implementation that was also based on the same starter example see:
 	/// https://github.com/MahApps/MahApps.Metro/blob/develop/src/MahApps.Metro/Controls/Helper/TextBoxHelper.cs
 	/// </remarks>
@@ -67,6 +87,8 @@
 		private const FrameworkPropertyMetadataOptions AffectsDisplay = FrameworkPropertyMetadataOptions.AffectsMeasure
 			| FrameworkPropertyMetadataOptions.AffectsArrange
 			| FrameworkPropertyMetadataOptions.AffectsRender;
+
+		private static readonly List<(Type DependencyObjectType, Action<DependencyObject, bool> OnIsMonitoringChanged)> CustomChangeMonitors = new();
 
 		#endregion
 
@@ -136,7 +158,32 @@
 
 		#endregion
 
-		#region Implementation
+		#region Public Methods
+
+		/// <summary>
+		/// Makes the <see cref="IsMonitoringProperty"/> extensible for custom types that need placeholder text.
+		/// </summary>
+		/// <typeparam name="T">The type of object to invoke custom monitoring for.</typeparam>
+		/// <param name="onIsMonitoringChanged">The callback to invoke when "IsMonitoring" has changed.
+		/// The bool value represents the current "IsMonitoring" state. The callback should attach or detach
+		/// from the custom control's "TextChanged" event (or something similar), and that event handler
+		/// should call this type's <see cref="SetHasText"/> method to indicate when the control has text.
+		/// </param>
+		/// <remarks>
+		/// Any control type using this will also need to create its own Style resource similar to
+		/// "Menees.Windows.Presentation.PlaceholderTextBox", and it can use the
+		/// "Menees.Windows.Presentation.PlaceholderText.ControlTemplate" resource if the
+		/// control has a "PART_ContentHost" named part that displays the content of the element.
+		/// </remarks>
+		public static void AddCustomChangeMonitor<T>(Action<T, bool> onIsMonitoringChanged)
+			where T : DependencyObject
+		{
+			CustomChangeMonitors.Add((typeof(T), (d, value) => onIsMonitoringChanged((T)d, value)));
+		}
+
+		#endregion
+
+		#region Private Methods
 
 		private static void OnIsMonitoringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -161,6 +208,13 @@
 				{
 					passBox.PasswordChanged -= PasswordChanged;
 				}
+			}
+			else
+			{
+				CustomChangeMonitors.Where(tuple => tuple.DependencyObjectType.IsInstanceOfType(d))
+					.Select(tuple => tuple.OnIsMonitoringChanged)
+					.FirstOrDefault()
+					?.Invoke(d, (bool)e.NewValue);
 			}
 		}
 
