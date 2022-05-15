@@ -32,6 +32,7 @@ This repo contains the source code for several .NET libraries used in Menees uti
 * [Hasher](https://github.com/menees/Hasher)
 * [MegaBuild](https://github.com/menees/MegaBuild)
 * [Menees VS Tools](https://github.com/menees/VsTools)
+* [RegExponent](https://github.com/menees/RegExponent)
 * [RPN Calc 3.0](https://github.com/menees/RpnCalc)
 * [SharpScript](https://github.com/menees/SharpScript)
 * [WirePeep](https://github.com/menees/WirePeep)
