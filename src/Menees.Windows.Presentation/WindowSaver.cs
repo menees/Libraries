@@ -9,6 +9,7 @@ namespace Menees.Windows.Presentation
 	using System.Linq;
 	using System.Text;
 	using System.Windows;
+	using System.Windows.Controls;
 
 	#endregion
 
@@ -84,6 +85,62 @@ namespace Menees.Windows.Presentation
 		#region Public Methods
 
 		/// <summary>
+		/// Loads the heights for the <see cref="RowDefinition"/>s before and after a <see cref="GridSplitter"/>.
+		/// </summary>
+		/// <param name="baseNode">The base settings node to look for <see cref="settingsNodeName"/> under.</param>
+		/// <param name="splitter">The grid splitter to load settings for.</param>
+		/// <param name="settingsNodeName">The node name where the <paramref name="splitter"/>'s settings were saved.</param>
+		public static void LoadSplits(ISettingsNode baseNode, GridSplitter splitter, string settingsNodeName = nameof(GridSplitter))
+		{
+			Conditions.RequireReference(baseNode, nameof(baseNode));
+			Conditions.RequireReference(splitter, nameof(splitter));
+
+			ISettingsNode? splitterNode = baseNode.TryGetSubNode(settingsNodeName);
+			if (splitterNode != null)
+			{
+				RowDefinition[] splitterTargetRows = GetTargetRows(splitter);
+				for (int i = 0; i < splitterTargetRows.Length; i++)
+				{
+					ISettingsNode? rowNode = splitterNode.TryGetSubNode($"Row{i}");
+					if (rowNode != null)
+					{
+						double value = rowNode.GetValue(nameof(GridLength.Value), 1.0);
+						GridUnitType unitType = rowNode.GetValue(nameof(GridLength.GridUnitType), GridUnitType.Star);
+						RowDefinition row = splitterTargetRows[i];
+						row.Height = new GridLength(value, unitType);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Saves the heights for the <see cref="RowDefinition"/>s before and after a <see cref="GridSplitter"/>.
+		/// </summary>
+		/// <param name="baseNode">The base settings node to (re)create <paramref name="settingsNodeName"/> under.</param>
+		/// <param name="splitter">The grid splitter to save settings for.</param>
+		/// <param name="settingsNodeName">The node name where the <paramref name="splitter"/>'s settings should be saved.</param>
+		public static void SaveSplits(ISettingsNode baseNode, GridSplitter splitter, string settingsNodeName = nameof(GridSplitter))
+		{
+			Conditions.RequireReference(baseNode, nameof(baseNode));
+			Conditions.RequireReference(splitter, nameof(splitter));
+
+			baseNode.DeleteSubNode(settingsNodeName);
+			RowDefinition[] splitterTargetRows = GetTargetRows(splitter);
+			if (splitterTargetRows.Length > 0)
+			{
+				ISettingsNode splitterNode = baseNode.GetSubNode(settingsNodeName);
+				for (int i = 0; i < splitterTargetRows.Length; i++)
+				{
+					RowDefinition row = splitterTargetRows[i];
+					GridLength rowHeight = row.Height;
+					ISettingsNode rowNode = splitterNode.GetSubNode($"Row{i}");
+					rowNode.SetValue(nameof(rowHeight.Value), rowHeight.Value);
+					rowNode.SetValue(nameof(rowHeight.GridUnitType), rowHeight.GridUnitType);
+				}
+			}
+		}
+
+		/// <summary>
 		/// Loads the window settings manually, which is useful if <see cref="AutoLoad"/> is false.
 		/// </summary>
 		/// <returns>True if the previous settings were re-loaded; false if no previous settings existed.</returns>
@@ -139,6 +196,23 @@ namespace Menees.Windows.Presentation
 		#endregion
 
 		#region Private Methods
+
+		private static RowDefinition[] GetTargetRows(GridSplitter splitter)
+		{
+			RowDefinition[] result = Array.Empty<RowDefinition>();
+
+			if (splitter.Parent is Grid grid)
+			{
+				int splitterRow = Grid.GetRow(splitter);
+				result = new[]
+				{
+					grid.RowDefinitions[splitterRow - 1],
+					grid.RowDefinitions[splitterRow + 1],
+				};
+			}
+
+			return result;
+		}
 
 		private ISettingsNode? GetSettingsNode(ISettingsStore store, bool createIfNotFound)
 		{
