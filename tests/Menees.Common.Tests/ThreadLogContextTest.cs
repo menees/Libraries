@@ -54,7 +54,7 @@ namespace Menees.Common.Tests
 				Assert.Fail("The key (" + key + ") should have been found.");
 			}
 			target.Remove(key);
-			if (target.TryGetValue("Missing", out string _))
+			if (target.TryGetValue("Missing", out string? _))
 			{
 				Assert.Fail("The 'Missing' key should NOT be found.");
 			}
