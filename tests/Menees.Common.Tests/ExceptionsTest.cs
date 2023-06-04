@@ -7,6 +7,8 @@ using System.Text;
 using Shouldly;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
+using System.Security;
 
 namespace Menees.Common.Tests
 {
@@ -122,6 +124,19 @@ namespace Menees.Common.Tests
 			output = Exceptions.GetMessage(aggregate);
 			CheckMessage(output, "Root\r\n\tFirstCancel\r\n\tInvocation\r\n\t\tInvalid\r\n\tSecondCancel");
 			Trace.Write(output);
+		}
+
+		[TestMethod]
+		public void IsAccessExceptionTest()
+		{
+			Exceptions.IsAccessException(new IOException()).ShouldBeTrue();
+			Exceptions.IsAccessException(new SecurityException()).ShouldBeTrue();
+			Exceptions.IsAccessException(new UnauthorizedAccessException()).ShouldBeTrue();
+			Exceptions.IsAccessException(new PathTooLongException()).ShouldBeTrue();
+			Exceptions.IsAccessException(new FileNotFoundException()).ShouldBeTrue();
+
+			Exceptions.IsAccessException(new ArgumentException()).ShouldBeFalse();
+			Exceptions.IsAccessException(new InvalidOperationException()).ShouldBeFalse();
 		}
 
 		private static void CheckMessage(string actualMessage, string expectedMessage)

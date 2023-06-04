@@ -10,6 +10,7 @@ namespace Menees
 	using System.Linq;
 	using System.Security;
 	using System.Text;
+	using System.Xml;
 	using System.Xml.Linq;
 
 	#endregion
@@ -30,11 +31,30 @@ namespace Menees
 			{
 				// Make sure the file exists and isn't zero length.  If a process was killed while saving data,
 				// then the settings store file may be empty.  If so, we'll pretend it isn't there.
-				FileInfo file = new(fileName);
-				if (file.Exists && file.Length > 0)
+				FileInfo fileInfo = new(fileName);
+				if (fileInfo.Exists && fileInfo.Length > 0)
 				{
-					this.root = XElement.Load(fileName);
-					break;
+					try
+					{
+						// Only read settings from a file that we have *write* access to so if we're running from a remote read-only file share,
+						// then it will load a local saved file (e.g., from AppData) instead of loading one from the remote read-only share.
+						using (FileStream stream = new(fileName, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+						{
+							this.root = XElement.Load(stream);
+						}
+
+						break;
+					}
+					catch (XmlException ex)
+					{
+						Log.Warning(typeof(FileSettingsStore), $"Unable to load the user settings from {fileName}.", ex);
+					}
+					catch (Exception ex) when (Exceptions.IsAccessException(ex))
+					{
+						// Ignore the file if we don't have both read and write access to it. If we're running off a read-only share,
+						// we know Save() can't write back to that location, so we shouldn't read in from that location on startup.
+						Log.Debug(typeof(FileSettingsStore), $"Unable to get read/write access to {fileName}.", ex);
+					}
 				}
 			}
 
@@ -85,28 +105,15 @@ namespace Menees
 					File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
 					break;
 				}
-				catch (IOException inputOutputEx)
+				catch (Exception ex) when (Exceptions.IsAccessException(ex))
 				{
-					errorLogProperties.Add(fileName, inputOutputEx);
-				}
-				catch (SecurityException securityEx)
-				{
-					errorLogProperties.Add(fileName, securityEx);
-				}
-				catch (UnauthorizedAccessException accessEx)
-				{
-					errorLogProperties.Add(fileName, accessEx);
+					errorLogProperties.Add(fileName, ex);
 				}
 			}
 
 			if (!saved)
 			{
-				const string Message = "Unable to save the user settings to a file store.";
-
-				// Log out the exceptions first since we can't pass those additional
-				// details into the new exception we're throwing.
-				Log.Error(typeof(FileSettingsStore), Message, null, errorLogProperties);
-				throw Exceptions.NewInvalidOperationException(Message);
+				throw Exceptions.NewInvalidOperationException("Unable to save the user settings to a file store.", errorLogProperties);
 			}
 		}
 
@@ -126,7 +133,10 @@ namespace Menees
 			List<string> result = new();
 
 			// First, try the application's base directory.  That gives the best isolation for side-by-side app usage,
-			// but a non-admin user may not have permissions to write to this directory.
+			// but a non-admin user may not have permissions to write to this directory.  Side-by-side isolation is
+			// important if old and new versions of the software are run on the same machine.  (New versions will
+			// typically be able to read in old settings, but they'll only write out settings in the new format.  After
+			// that "upgrade", the old version wouldn't be able to read the settings in the new format.)
 			string path = Path.Combine(ApplicationInfo.BaseDirectory, fileName);
 			result.Add(path);
 

@@ -27,7 +27,7 @@
 		<_SkipUpgradeNetAnalyzersNuGetWarning>true</_SkipUpgradeNetAnalyzersNuGetWarning>
 
 		<!-- Make the assembly, file, and NuGet package versions the same. -->
-		<Version>5.1.1</Version>
+		<Version>5.1.2</Version>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

@@ -5,7 +5,9 @@ namespace Menees
 	using System;
 	using System.Collections.Generic;
 	using System.Diagnostics;
+	using System.IO;
 	using System.Linq;
+	using System.Security;
 	using System.Text;
 	using Menees.Diagnostics;
 
@@ -225,6 +227,17 @@ namespace Menees
 			StringBuilder sb = new();
 			ForEach(ex, (exception, depth, outer) => sb.Append('\t', depth).Append(exception.Message).AppendLine());
 			string result = sb.ToString().Trim();
+			return result;
+		}
+
+		/// <summary>
+		/// Gets whether an exception is an <see cref="IOException"/>, <see cref="SecurityException"/>,
+		/// or <see cref="UnauthorizedAccessException"/>.
+		/// </summary>
+		/// <param name="ex">The exception to check.</param>
+		public static bool IsAccessException(Exception ex)
+		{
+			bool result = ex != null && (ex is IOException || ex is UnauthorizedAccessException || ex is SecurityException);
 			return result;
 		}
 

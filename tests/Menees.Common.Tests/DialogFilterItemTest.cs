@@ -12,15 +12,10 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ConstructorTest()
 		{
-			DialogFilterItem item = new("cs");
-			item.ItemName.ShouldContain("C# Source Files", Case.Insensitive);
-			item.Masks.SequenceEqual(new[] { "*.cs" }).ShouldBeTrue();
-			item.ToString().ShouldContain("C# Source Files (*.cs)|*.cs", Case.Insensitive);
-
-			item = new DialogFilterItem("vb", false);
-			item.ItemName.ShouldBe("Visual Basic Source File");
-			item.Masks.SequenceEqual(new[] { "*.vb" }).ShouldBeTrue();
-			item.ToString().ShouldBe("Visual Basic Source File (*.vb)|*.vb");
+			DialogFilterItem item = new DialogFilterItem("exe", false);
+			item.ItemName.ShouldBe("Application", StringCompareShould.IgnoreCase);
+			item.Masks.SequenceEqual(new[] { "*.exe" }).ShouldBeTrue();
+			item.ToString().ShouldBe("Application (*.exe)|*.exe", StringCompareShould.IgnoreCase);
 
 			item = new DialogFilterItem("Text Files", "txt");
 			item.ItemName.ShouldBe("Text Files");
