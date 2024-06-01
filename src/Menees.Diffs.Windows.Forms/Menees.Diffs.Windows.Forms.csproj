@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-
 	<PropertyGroup>
 		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<UseWindowsForms>true</UseWindowsForms>
 		<Description>Windows Forms controls for showing diffs of text, files, and directories</Description>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,4 +32,7 @@
 		<NoWarn>IDE0079</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
+	</ItemGroup>
 </Project>

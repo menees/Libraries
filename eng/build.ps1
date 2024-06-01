@@ -17,24 +17,15 @@ if ($build)
 {
     foreach ($configuration in $configurations)
     {
-        # Restore NuGet packages first
-        msbuild "$repoPath\Libraries.sln" /p:Configuration=$configuration /t:Restore /v:$msBuildVerbosity
-        msbuild "$repoPath\Libraries.sln" /p:Configuration=$configuration /v:$msBuildVerbosity
+        dotnet build "$repoPath\Libraries.sln" /p:Configuration=$configuration /v:$msBuildVerbosity
     }
 }
 
 if ($test)
 {
-    # Using "dotnet test Libraries.sln" gets errors about .NET Core not supporting ResolveComReference.
-    # So we have to directly run the vstest app against the DLLs we built above.
     foreach ($configuration in $configurations)
     {
-        $testDlls = @(Get-ChildItem -r "$repoPath\tests\**\*.Tests.dll" | Where-Object {$_.Directory -like "*\bin\$configuration\*"})
-        foreach ($testDll in $testDlls)
-        {
-            write-host "`n`n***** $testDll *****"
-            vstest.console.exe $testDll /Platform:X64
-        }
+        dotnet test "$repoPath\Libraries.sln" /p:Configuration=$configuration /v:$msBuildVerbosity
     }
 }
 
