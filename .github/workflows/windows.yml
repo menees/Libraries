@@ -17,26 +17,21 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4.1.5
     
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-      
-    - name: Restore NuGet packages
-      run: msbuild Libraries.sln /p:Configuration=Release /t:Restore
-      
-    - name: Run MSBuild on solution
-      run: msbuild Libraries.sln /p:Configuration=Release
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4.0.0
+      with:
+        dotnet-version: 6.0.x
 
-    - name: Add VSTest.Console.exe to PATH
-      uses: darenm/Setup-VSTest@v1
-    
-    - name: Report release build unit tests
+    - name: Build everything
       run: |
-        dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host $_ }
-        # [TimeZoneInfo]::Local
-        # [TimeZoneInfo]::Local.IsDaylightSavingTime([DateTime]::Now)
-    
-    - name: Run release build unit tests
-      run: dir -r tests/**/*.Tests.dll | where {$_.Directory -like '*\bin\Release\*'}| %{ write-host "`n`n***** $_ *****"; vstest.console.exe $_ /Platform:X64 }
+        & .\eng\build.ps1 -build $true
+      
+    - name: Run unit tests
+      run: |
+        & .\eng\build.ps1 -build $false -test $true
+      
+    - name: Test artifact publishing
+      run: |
+        & .\eng\build.ps1 -build $false -publish $true
