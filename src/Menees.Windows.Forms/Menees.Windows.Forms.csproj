@@ -7,17 +7,6 @@
 		<Description>Windows Forms helpers and custom controls</Description>
 	</PropertyGroup>
 	<ItemGroup>
-	  <COMReference Include="tom.dll">
-	    <Guid>8cc497c9-a1df-11ce-8098-00aa0047be5d</Guid>
-	    <VersionMajor>1</VersionMajor>
-	    <VersionMinor>0</VersionMinor>
-	    <WrapperTool>tlbimp</WrapperTool>
-	    <Lcid>0</Lcid>
-	    <Isolated>false</Isolated>
-	    <EmbedInteropTypes>true</EmbedInteropTypes>
-	  </COMReference>
-	</ItemGroup>
-	<ItemGroup>
 	  <EmbeddedResource Include="Images\FormSaver.bmp" />
 	  <EmbeddedResource Include="Images\OutputWindow.bmp" />
 	  <EmbeddedResource Include="Images\RecentItemList.bmp" />
