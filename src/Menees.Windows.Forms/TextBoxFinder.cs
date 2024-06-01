@@ -47,7 +47,7 @@ namespace Menees.Windows.Forms
 
 			set
 			{
-				Conditions.RequireReference(value, "value");
+				Conditions.RequireReference(value, nameof(value));
 				this.textBox = value;
 			}
 		}

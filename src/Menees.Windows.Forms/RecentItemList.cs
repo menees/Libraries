@@ -112,7 +112,7 @@ namespace Menees.Windows.Forms
 			{
 				// The section name must be non-empty because Save needs to delete the
 				// recent items SettingsNode, and we don't want it to delete the base key instead.
-				Conditions.RequireString(value, "value");
+				Conditions.RequireString(value, nameof(value));
 				this.settingsNodeName = value.Trim();
 			}
 		}
