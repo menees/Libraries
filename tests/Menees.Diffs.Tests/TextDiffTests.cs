@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Shouldly;
+using System.Linq;
 
 namespace Menees.Diffs.Tests
 {
@@ -94,6 +95,78 @@ namespace Menees.Diffs.Tests
 			Check(edits, EditType.Delete, EditType.Insert);
 			Check(edits[0], 1, 1, 1);
 			Check(edits[1], 1, 1, 1);
+		}
+
+		[TestMethod]
+		public void InlineDiffDemo()
+		{
+			string a = """
+				One
+				Dos
+				Three
+				For
+				Five
+				Seven
+				""";
+
+			string b = """
+				One
+				Three
+				Four
+				Five
+				Six
+				Seven
+				""";
+
+			IList<string> aLines = DiffUtility.GetStringTextLines(a);
+			IList<string> bLines = DiffUtility.GetStringTextLines(b);
+
+			// Don't use the "Change" edit type when doing an inline diff.
+			TextDiff diff = new(HashType.Unique, false, false, 0, supportChangeEditType: false);
+			EditScript edits = diff.Execute(aLines, bLines);
+
+			List<(EditType Edit, string Text)> inlineDiff = [];
+			int aIndex = 0;
+			foreach (Edit edit in edits)
+			{
+				AddALinesUntil(edit.StartA);
+
+				for (int index = 0; index < edit.Length; index++)
+				{
+					if (edit.EditType == EditType.Delete)
+					{
+						inlineDiff.Add((edit.EditType, aLines[aIndex++]));
+					}
+					else if (edit.EditType == EditType.Insert)
+					{
+						inlineDiff.Add((edit.EditType, bLines[edit.StartB + index]));
+					}
+				}
+			}
+
+			AddALinesUntil(aLines.Count);
+
+			void AddALinesUntil(int endIndex)
+			{
+				while (aIndex < endIndex)
+				{
+					inlineDiff.Add((EditType.None, aLines[aIndex++]));
+				}
+			}
+
+			string[] output = [.. inlineDiff.Select(pair =>
+				$"{pair.Edit switch { EditType.Insert => '+', EditType.Delete => '-', _ => ' ' }} {pair.Text}"
+			)];
+
+			output.ShouldBe([
+				"  One",
+				"- Dos",
+				"  Three",
+				"- For",
+				"+ Four",
+				"  Five",
+				"+ Six",
+				"  Seven"]);
 		}
 
 		internal static EditScript Diff(string left, string right, bool ignoreCase, bool ignoreOuterWhiteSpace, bool supportChangeEditType = true)
