@@ -102,6 +102,7 @@ namespace Menees.Diffs.Tests
 		{
 			string a = """
 				One
+				Two
 				Dos
 				Three
 				For
@@ -111,6 +112,7 @@ namespace Menees.Diffs.Tests
 
 			string b = """
 				One
+				Two
 				Three
 				Four
 				Five
@@ -125,7 +127,7 @@ namespace Menees.Diffs.Tests
 			TextDiff diff = new(HashType.Unique, false, false, 0, supportChangeEditType: false);
 			EditScript edits = diff.Execute(aLines, bLines);
 
-			List<(EditType Edit, string Text)> inlineDiff = [];
+			List<(Edit? Edit, string Text)> inlineDiff = [];
 			int aIndex = 0;
 			foreach (Edit edit in edits)
 			{
@@ -135,11 +137,11 @@ namespace Menees.Diffs.Tests
 				{
 					if (edit.EditType == EditType.Delete)
 					{
-						inlineDiff.Add((edit.EditType, aLines[aIndex++]));
+						inlineDiff.Add((edit, aLines[aIndex++]));
 					}
 					else if (edit.EditType == EditType.Insert)
 					{
-						inlineDiff.Add((edit.EditType, bLines[edit.StartB + index]));
+						inlineDiff.Add((edit, bLines[edit.StartB + index]));
 					}
 				}
 			}
@@ -150,16 +152,17 @@ namespace Menees.Diffs.Tests
 			{
 				while (aIndex < endIndex)
 				{
-					inlineDiff.Add((EditType.None, aLines[aIndex++]));
+					inlineDiff.Add((null, aLines[aIndex++]));
 				}
 			}
 
 			string[] output = [.. inlineDiff.Select(pair =>
-				$"{pair.Edit switch { EditType.Insert => '+', EditType.Delete => '-', _ => ' ' }} {pair.Text}"
+				$"{pair.Edit?.EditType switch { EditType.Insert => '+', EditType.Delete => '-', _ => ' ' }} {pair.Text}"
 			)];
 
 			output.ShouldBe([
 				"  One",
+				"  Two",
 				"- Dos",
 				"  Three",
 				"- For",
