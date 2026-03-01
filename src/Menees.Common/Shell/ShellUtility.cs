@@ -1,4 +1,4 @@
-namespace Menees.Shell
+ï»¿namespace Menees.Shell
 {
 	#region Using Directives
 
@@ -113,10 +113,10 @@ namespace Menees.Shell
 					buildTime = buildTime.ToLocalTime();
 				}
 
-				sb.Append(" – ").AppendFormat("{0:d}", buildTime);
+				sb.Append(" â€“ ").AppendFormat("{0:d}", buildTime);
 			}
 
-			sb.Append(Environment.Is64BitProcess ? " – 64-bit" : " – 32-bit");
+			sb.Append(Environment.Is64BitProcess ? " â€“ 64-bit" : " â€“ 32-bit");
 
 			TargetFrameworkAttribute? frameworkAttribute = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
 			if (frameworkAttribute != null && frameworkAttribute.FrameworkName.IsNotWhiteSpace())
@@ -139,7 +139,7 @@ namespace Menees.Shell
 						target = target.Substring(0, target.Length - Suffix.Length);
 					}
 
-					sb.Append(" – ").Append(target);
+					sb.Append(" â€“ ").Append(target);
 				}
 			}
 
@@ -148,7 +148,7 @@ namespace Menees.Shell
 			const int WindowsVistaMajorVersion = 6;
 			if (ApplicationInfo.IsWindows && os.Version >= new Version(WindowsVistaMajorVersion, 0) && ApplicationInfo.IsUserRunningAsAdministrator)
 			{
-				sb.Append(" – Administrator");
+				sb.Append(" â€“ Administrator");
 			}
 
 			return sb.ToString();
