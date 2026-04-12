@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using Menees.Shell;
@@ -88,6 +89,27 @@ namespace Menees.Common.Tests
 				icon.Size.ShouldBe(SystemInformation.SmallIconSize);
 				icon.Dispose();
 			}
+		}
+
+		[TestMethod]
+		public void SearchPathTest()
+		{
+			if (ApplicationInfo.IsWindows)
+			{
+				string? cmdExe = ShellUtility.SearchPath("cmd.exe");
+				cmdExe.ShouldNotBeNullOrWhiteSpace();
+				cmdExe.ShouldEndWith($"{Path.DirectorySeparatorChar}cmd.exe");
+				cmdExe.ShouldStartWith(Environment.ExpandEnvironmentVariables("%SystemRoot%"), Case.Insensitive);
+			}
+			else
+			{
+				string? shExe = ShellUtility.SearchPath("sh");
+				shExe.ShouldNotBeNullOrWhiteSpace();
+				shExe.ShouldEndWith($"{Path.DirectorySeparatorChar}sh");
+				shExe.ShouldStartWith("/");
+			}
+
+			ShellUtility.SearchPath($"{Guid.NewGuid():N}.exe").ShouldBeNull();
 		}
 
 		private static Icon CloneIcon(IntPtr hIcon) => (Icon)Icon.FromHandle(hIcon).Clone();

@@ -6,6 +6,7 @@
 	using System.Collections.Generic;
 	using System.ComponentModel;
 	using System.Diagnostics;
+	using System.IO;
 	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.Versioning;
@@ -152,6 +153,45 @@
 			}
 
 			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Searches the directories in the system PATH environment variable for the specified file and returns the
+		/// fully qualified path if found.
+		/// </summary>
+		/// <remarks>The search preserves the order of directories as specified in the PATH environment variable and
+		/// ignores duplicate entries, comparing paths in an OS-appropriate manner. Only the first matching file is returned.</remarks>
+		/// <param name="fileName">The name of the file to locate within the directories specified by the PATH environment variable.
+		/// Cannot be null or empty.</param>
+		/// <returns>The fully qualified path to <paramref name="fileName"/> if it is found in one of the PATH directories;
+		/// otherwise, null.</returns>
+		public static string? SearchPath(string fileName)
+		{
+			string? result = null;
+
+			string[] pathEntries = [.. (Environment.GetEnvironmentVariable("PATH") ?? string.Empty)
+				.Split([Path.PathSeparator], StringSplitOptions.RemoveEmptyEntries)
+				.Select(entry => entry.Trim())
+				.Where(entry => !string.IsNullOrWhiteSpace(entry))];
+
+			// The check for duplicates saves time here. On my system, 12 of the 55 entries in PATH are duplicates (ignoring case).
+			// Unfortunately, we can't use LINQ's Distinct() because it returns an unordered sequence, and we have to preserve order.
+			// Note: Windows 10 supports case-sensitive folders, but the PowerShell folders shouldn't be configured that way.
+			HashSet<string> checkedPaths = new(ApplicationInfo.IsWindows ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
+			foreach (string path in pathEntries)
+			{
+				if (checkedPaths.Add(path))
+				{
+					string fullyQualifiedName = Path.Combine(path, fileName);
+					if (File.Exists(fullyQualifiedName))
+					{
+						result = fullyQualifiedName;
+						break;
+					}
+				}
+			}
+
+			return result;
 		}
 
 		/// <summary>
