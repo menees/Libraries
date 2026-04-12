@@ -19,7 +19,6 @@
 		<MeneesTargetNetCoreWindows>$(MeneesTargetNetCoreBase)-windows</MeneesTargetNetCoreWindows>
 
 		<RepoSrcFolder>$(MSBuildThisFileDirectory)</RepoSrcFolder>
-		<CodeAnalysisRuleSet>$(RepoSrcFolder)Menees.Libraries.ruleset</CodeAnalysisRuleSet>
 		<AssemblyOriginatorKeyFile>$(RepoSrcFolder)Menees.Libraries.snk</AssemblyOriginatorKeyFile>
 		<UseCustomCodeAnalyzers>true</UseCustomCodeAnalyzers>
 		<Nullable>enable</Nullable>

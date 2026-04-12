@@ -11,7 +11,12 @@
   </Folder>
   <Folder Name="/Src/">
     <File Path="src/Directory.Build.props" />
-    <File Path="src/Menees.Libraries.ruleset" />
+    <Project Path="src/Menees.Common/Menees.Common.csproj" />
+    <Project Path="src/Menees.Diffs.Windows.Forms/Menees.Diffs.Windows.Forms.csproj" />
+    <Project Path="src/Menees.Diffs/Menees.Diffs.csproj" />
+    <Project Path="src/Menees.Windows.Forms/Menees.Windows.Forms.csproj" />
+    <Project Path="src/Menees.Windows.Presentation/Menees.Windows.Presentation.csproj" />
+    <Project Path="src/Menees.Windows/Menees.Windows.csproj" />
   </Folder>
   <Folder Name="/Tests/">
     <File Path="tests/.runsettings" />
@@ -21,10 +26,4 @@
     <Project Path="tests/Menees.Diffs.Tests/Menees.Diffs.Tests.csproj" />
     <Project Path="tests/Menees.Windows.Tests/Menees.Windows.Tests.csproj" />
   </Folder>
-  <Project Path="src/Menees.Common/Menees.Common.csproj" />
-  <Project Path="src/Menees.Diffs.Windows.Forms/Menees.Diffs.Windows.Forms.csproj" />
-  <Project Path="src/Menees.Diffs/Menees.Diffs.csproj" />
-  <Project Path="src/Menees.Windows.Forms/Menees.Windows.Forms.csproj" />
-  <Project Path="src/Menees.Windows.Presentation/Menees.Windows.Presentation.csproj" />
-  <Project Path="src/Menees.Windows/Menees.Windows.csproj" />
 </Solution>

@@ -16,7 +16,6 @@
 
 		<!-- Don't run code analyzers on test code. This was a historically bad decision. -->
 		<UseCustomCodeAnalyzers>false</UseCustomCodeAnalyzers>
-		<CodeAnalysisRuleSet></CodeAnalysisRuleSet>
 
 		<!-- CA1861: It's ok to use constant array args in unit test methods. -->
 		<NoWarn>$(NoWarn);CA1861</NoWarn>
