@@ -9,6 +9,7 @@ using System.IO;
 namespace Menees.Common.Tests
 {
 	[TestClass()]
+	[DoNotParallelize]
 	public class LogTest
 	{
 		private StringWriter? writer;

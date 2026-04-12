@@ -8,6 +8,7 @@ namespace Menees.Common.Tests
 	public class GlobalLogContextTest
 	{
 		[TestMethod()]
+		[DoNotParallelize]
 		public void ClearTest()
 		{
 			GlobalLogContext target = Log.GlobalContext;
