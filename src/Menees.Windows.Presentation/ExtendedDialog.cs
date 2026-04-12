@@ -39,7 +39,7 @@ namespace Menees.Windows.Presentation
 
 					button.Click += (sender, e2) =>
 					{
-						Window.GetWindow(button).DialogResult = GetDialogResult(button);
+						GetWindow(button).DialogResult = GetDialogResult(button);
 					};
 				},
 			});
@@ -68,8 +68,8 @@ namespace Menees.Windows.Presentation
 		static ExtendedDialog()
 		{
 			// Tell WPF that we're changing some default property values from their Window settings to better values for modal dialogs.
-			Window.ResizeModeProperty.OverrideMetadata(typeof(ExtendedDialog), new FrameworkPropertyMetadata(ResizeMode.NoResize));
-			Window.ShowInTaskbarProperty.OverrideMetadata(typeof(ExtendedDialog), new FrameworkPropertyMetadata(false));
+			ResizeModeProperty.OverrideMetadata(typeof(ExtendedDialog), new FrameworkPropertyMetadata(ResizeMode.NoResize));
+			ShowInTaskbarProperty.OverrideMetadata(typeof(ExtendedDialog), new FrameworkPropertyMetadata(false));
 		}
 
 		/// <summary>

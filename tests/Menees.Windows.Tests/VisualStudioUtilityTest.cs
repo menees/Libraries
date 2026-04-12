@@ -20,7 +20,7 @@ namespace Menees.Windows.Tests
 		public void OpenFileTest()
 		{
 			// This has to call a method so the compiler can fill in the [CallerFilePath] and [CallerLineNumber] parameters.
-			VisualStudioUtilityTest.TestOpenFile();
+			TestOpenFile();
 		}
 
 		private static void TestOpenFile([CallerFilePath] string? sourceFilePath = null, [CallerLineNumber] int sourceLineNumber = 0)

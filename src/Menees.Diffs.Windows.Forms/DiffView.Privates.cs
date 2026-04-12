@@ -109,7 +109,7 @@
 			this.HScrollPos += this.horizontalAutoScrollAmount;
 
 			// Set the selection end
-			Point point = this.PointToClient(Control.MousePosition);
+			Point point = this.PointToClient(MousePosition);
 			DiffViewPosition pos = this.GetPosFromPoint(point.X, point.Y);
 			this.SetSelectionEnd(pos.Line, pos.Column);
 		}

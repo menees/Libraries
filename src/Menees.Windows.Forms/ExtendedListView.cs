@@ -806,7 +806,7 @@ namespace Menees.Windows.Forms
 				// if they clicked on one item.  If they changed items,
 				// this works around a ListView bug.
 				ListViewItem? mouseDownItem = this.GetItemAt(this.mouseDownPoint.X, this.mouseDownPoint.Y);
-				Point currentPoint = this.PointToClient(Control.MousePosition);
+				Point currentPoint = this.PointToClient(MousePosition);
 				ListViewItem? currentMouseItem = this.GetItemAt(currentPoint.X, currentPoint.Y);
 
 				// The list view also has a bug where it will do item checks

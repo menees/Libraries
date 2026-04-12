@@ -335,8 +335,8 @@ namespace Menees.Windows.Forms
 			if (allowDrag)
 			{
 				// Make sure the click is still held on the drag tab and there is more than one tab visible.
-				if (hadCapture && Control.MouseButtons == MouseButtons.Left && this.dragTab != null &&
-					this.dragTab == this.FindDisplayedTabAtClientPoint(this.PointToClient(Control.MousePosition), true) &&
+				if (hadCapture && MouseButtons == MouseButtons.Left && this.dragTab != null &&
+					this.dragTab == this.FindDisplayedTabAtClientPoint(this.PointToClient(MousePosition), true) &&
 					this.GetDisplayedTabs().Count > 1)
 				{
 					this.dragTab.DoDragDrop(this.dragTab, DragDropEffects.Move);
