@@ -63,7 +63,7 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The dialog owner.</param>
 		/// <param name="findData">The find data.</param>
 		/// <returns>True if the user pressed OK.</returns>
-		protected override bool OnDialogExecute(IFindDialog findDialog, IWin32Window owner, FindData findData)
+		protected override bool OnDialogExecute(IFindDialog findDialog, IWin32Window? owner, FindData findData)
 		{
 			// Initialize the find text from the selection.
 			string? oldFindText = null;

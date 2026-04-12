@@ -32,12 +32,7 @@ namespace Menees.Windows.Forms
 			// Try to find the highest-level control (i.e., Form) that we can.
 			if (this.control != null)
 			{
-				Form frm = this.control.FindForm();
-				if (frm == null)
-				{
-					frm = Form.ActiveForm;
-				}
-
+				Form? frm = this.control.FindForm() ?? Form.ActiveForm;
 				if (frm != null)
 				{
 					this.control = frm;

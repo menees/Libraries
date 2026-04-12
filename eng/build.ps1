@@ -12,12 +12,13 @@ $ErrorActionPreference = "Stop"
 
 $scriptPath = [IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
 $repoPath = Resolve-Path (Join-Path $scriptPath '..')
+$slnPath = "$repoPath\Libraries.slnx"
 
 if ($build)
 {
     foreach ($configuration in $configurations)
     {
-        dotnet build "$repoPath\Libraries.sln" /p:Configuration=$configuration /v:$msBuildVerbosity
+        dotnet build $slnPath /p:Configuration=$configuration /v:$msBuildVerbosity
     }
 }
 
@@ -25,7 +26,7 @@ if ($test)
 {
     foreach ($configuration in $configurations)
     {
-        dotnet test "$repoPath\Libraries.sln" /p:Configuration=$configuration /v:$msBuildVerbosity
+        dotnet test $slnPath /p:Configuration=$configuration /v:$msBuildVerbosity
     }
 }
 

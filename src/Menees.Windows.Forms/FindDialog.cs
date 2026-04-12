@@ -38,7 +38,7 @@
 		/// <param name="owner">The dialog owner.</param>
 		/// <param name="data">The find data.</param>
 		/// <returns>True if OK was pressed.</returns>
-		public bool Execute(IWin32Window owner, FindData data)
+		public bool Execute(IWin32Window? owner, FindData data)
 		{
 			this.Text = data.Caption;
 			this.findText.Text = data.Text;

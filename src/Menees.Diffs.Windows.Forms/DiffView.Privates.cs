@@ -520,10 +520,7 @@
 
 		private int GetXForColumn(Graphics g, DisplayLine displayLine, string? displayText, int column)
 		{
-			if (displayText == null)
-			{
-				displayText = displayLine.GetDisplayText();
-			}
+			displayText ??= displayLine.GetDisplayText();
 
 			int length = Math.Max(0, Math.Min(displayText.Length, column));
 
@@ -599,11 +596,8 @@
 			// that here and check to see if we still have the caret.  We'll clean it up and recreate it when needed
 			// because that seems safer than trying to reuse an existing caret if it's left over from a weird
 			// intermediate state that shouldn't be happening normally.
-			if (this.caret != null)
-			{
-				this.caret.Dispose();
-				this.caret = null;
-			}
+			this.caret?.Dispose();
+			this.caret = null;
 		}
 
 		private void ScrollHorizontally(int newPos, int originalPos)

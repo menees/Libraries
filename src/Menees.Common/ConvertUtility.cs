@@ -41,7 +41,7 @@ namespace Menees
 		/// <exception cref="InvalidCastException">If <paramref name="value"/>
 		/// can't be converted into type T.</exception>
 		[return: MaybeNull]
-		[return: NotNullIfNotNull("value")]
+		[return: NotNullIfNotNull(nameof(value))]
 		public static T ConvertValue<T>(object? value)
 		{
 			T? result = (value is T typedValue) ? typedValue : (T?)ConvertValue(value, typeof(T));
@@ -183,7 +183,7 @@ namespace Menees
 		/// <param name="value">The sequence of bytes to convert.</param>
 		/// <param name="options">Options affecting a "0x" prefix and whether to use lowercase hex characters.</param>
 		/// <returns>The encoded hex bytes.</returns>
-		[return: NotNullIfNotNull("value")]
+		[return: NotNullIfNotNull(nameof(value))]
 		public static string? ToHex(IEnumerable<byte>? value, ToHexOptions options = ToHexOptions.None)
 		{
 			string? result = null;
@@ -217,7 +217,7 @@ namespace Menees
 		/// <paramref name="throwOnError"/> is true.</exception>
 		/// <returns>A byte array if <paramref name="value"/> can be parsed.
 		/// Or null if <paramref name="value"/>can't be parsed and <paramref name="throwOnError"/> is false.</returns>
-		[return: NotNullIfNotNull("value")]
+		[return: NotNullIfNotNull(nameof(value))]
 		public static byte[]? FromHex(string? value, bool throwOnError = true)
 		{
 			byte[]? result = null;

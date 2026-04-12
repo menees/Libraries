@@ -73,7 +73,7 @@ namespace Menees.Diffs
 
 			if (this.hashType == HashType.Unique)
 			{
-				this.uniqueTable = new Dictionary<string, int>();
+				this.uniqueTable = [];
 			}
 		}
 

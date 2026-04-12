@@ -27,7 +27,7 @@ namespace Menees.Diffs
 		#region Constructors
 
 		internal EditScript(double similarity)
-			: base(new List<Edit>())
+			: base([])
 		{
 			this.Similarity = similarity;
 		}

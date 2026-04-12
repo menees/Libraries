@@ -20,7 +20,7 @@ namespace Menees.Diagnostics
 		#region Private Data Members
 
 		// This will create a dictionary for each thread that requests one.
-		private readonly ThreadLocal<Dictionary<string, object>> entries = new(() => new Dictionary<string, object>());
+		private readonly ThreadLocal<Dictionary<string, object>> entries = new(() => []);
 
 		#endregion
 

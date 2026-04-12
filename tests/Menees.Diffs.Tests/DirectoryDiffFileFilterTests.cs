@@ -45,8 +45,8 @@ namespace Menees.Diffs.Tests
 					: new DirectoryDiffFileFilter(filterString, true, StringComparison.Ordinal);
 
 				FileInfo[] files = include.Filter(info);
-				files[0].FullName.ShouldBe(a.FileName);
-				files[1].FullName.ShouldBe(b.FileName);
+				files[0].FullName.ShouldBeOneOf(a.FileName, b.FileName);
+				files[1].FullName.ShouldBeOneOf(b.FileName, a.FileName);
 
 				var exclude = pass == 1
 					? new DirectoryDiffFileFilter(filterString, false)

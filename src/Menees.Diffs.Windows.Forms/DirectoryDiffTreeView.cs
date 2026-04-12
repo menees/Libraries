@@ -57,7 +57,7 @@ namespace Menees.Diffs.Windows.Forms
 			{
 				bool result = false;
 
-				TreeNode node = this.SelectedNode;
+				TreeNode? node = this.SelectedNode;
 				if (node != null)
 				{
 					DirectoryDiffEntry? entry = GetEntryForNode(node);
@@ -105,9 +105,12 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			if (this.CanView)
 			{
-				TreeNode node = this.SelectedNode;
-				string fullName = this.GetFullNameForNode(node);
-				WindowsUtility.ShellExecute(this, fullName);
+				TreeNode? node = this.SelectedNode;
+				if (node is not null)
+				{
+					string fullName = this.GetFullNameForNode(node);
+					WindowsUtility.ShellExecute(this, fullName);
+				}
 			}
 		}
 
@@ -153,7 +156,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			base.OnMouseDown(e);
 
-			TreeNode node = this.GetNodeAt(e.X, e.Y);
+			TreeNode? node = this.GetNodeAt(e.X, e.Y);
 			if (node != null)
 			{
 				this.SelectedNode = node;

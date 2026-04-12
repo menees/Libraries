@@ -87,7 +87,7 @@ namespace Menees.Diffs.Windows.Forms
 		}
 
 		private DiffViewLines()
-			: base(new List<DiffViewLine>())
+			: base([])
 		{
 			// Called by the other constructors.
 			this.diffStartLines = CollectionUtility.EmptyArray<int>();

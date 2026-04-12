@@ -43,7 +43,7 @@
 
 		public IList<Segment> GetChangeSegments(EditScript changeEditScript, bool useA)
 		{
-			List<Segment> result = new();
+			List<Segment> result = [];
 
 			int previousOriginalTextIndex = 0;
 			int previousDisplayTextIndex = 0;

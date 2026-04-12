@@ -56,11 +56,13 @@ namespace Menees.Common.Tests
 			//I'm intentionally using a case-sensitive dictionary here.
 			//Most places I use case-insensitive, so I want to test
 			//with a mix of comparers.
-			Dictionary<string, object> properties = new();
-			properties.Add("abc", 123);
-			properties.Add("Even Digits", new int[] { 2, 4, 6, 8 });
-			properties.Add("Company", new TestData("Menees Software"));
-			properties.Add("Context Level", "Message Level Context");
+			Dictionary<string, object> properties = new()
+			{
+				{ "abc", 123 },
+				{ "Even Digits", new int[] { 2, 4, 6, 8 } },
+				{ "Company", new TestData("Menees Software") },
+				{ "Context Level", "Message Level Context" }
+			};
 			return properties;
 		}
 
@@ -108,7 +110,7 @@ namespace Menees.Common.Tests
 
 			if (!finalMessage.Contains(category))
 			{
-				Assert.Fail("The category information was not logged: {0}", category);
+				Assert.Fail($"The category information was not logged: {category}");
 			}
 
 			TraceEventType eventType;
@@ -143,7 +145,7 @@ namespace Menees.Common.Tests
 
 			if (finalMessage.IndexOf(" " + eventType.ToString() + ": ") < 0)
 			{
-				Assert.Fail("The level information was not logged: {0}", level);
+				Assert.Fail($"The level information was not logged: {level}");
 			}
 
 			if (ex != null && !finalMessage.Contains(ex.Message))
@@ -537,7 +539,7 @@ namespace Menees.Common.Tests
 			Log actual = Log.GetLog(category);
 			Assert.AreEqual(category, actual.CategoryName);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(actual, Log.GetLog(category));
+			Assert.AreEqual(Log.GetLog(category), actual);
 		}
 
 		[TestMethod()]
@@ -547,7 +549,7 @@ namespace Menees.Common.Tests
 			Log actual = Log.GetLog(category);
 			Assert.AreEqual(category.FullName, actual.CategoryName);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(actual, Log.GetLog(category));
+			Assert.AreEqual(Log.GetLog(category), actual);
 		}
 
 		[TestMethod()]
@@ -604,7 +606,7 @@ namespace Menees.Common.Tests
 			GlobalLogContext actual = Log.GlobalContext;
 			Assert.IsNotNull(actual);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(actual, Log.GlobalContext);
+			Assert.AreEqual(Log.GlobalContext, actual);
 		}
 
 		[TestMethod()]
@@ -613,7 +615,7 @@ namespace Menees.Common.Tests
 			ThreadLogContext actual = Log.ThreadContext;
 			Assert.IsNotNull(actual);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(actual, Log.ThreadContext);
+			Assert.AreEqual(Log.ThreadContext, actual);
 		}
 	}
 }

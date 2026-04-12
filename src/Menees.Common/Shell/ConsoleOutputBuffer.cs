@@ -19,7 +19,7 @@ namespace Menees.Shell
 	{
 		#region Private Data Members
 
-		private readonly List<string> lines = new();
+		private readonly List<string> lines = [];
 		private readonly bool includeErrorStream;
 		private readonly int processExitCode;
 		private readonly bool hasProcessExited;

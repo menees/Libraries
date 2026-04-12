@@ -27,8 +27,8 @@
 		private const string DefaultFindCaption = "Find In Output";
 		private const int RichTextBoxDefaultTabStopWidth = 36; // From ITextDocument.DefaultTabStop
 
-		private readonly List<int> highlights = new();
-		private readonly Dictionary<Guid, int> outputIdToOffsetMap = new();
+		private readonly List<int> highlights = [];
+		private readonly Dictionary<Guid, int> outputIdToOffsetMap = [];
 		private int indentWidth;
 
 		#endregion
@@ -108,17 +108,17 @@
 		/// </summary>
 		[Browsable(false)]
 		[DefaultValue(null)]
-		public IWin32Window OwnerWindow
+		public IWin32Window? OwnerWindow
 		{
 			get
 			{
-				Form result = this.output.FindForm();
+				Form? result = this.output.FindForm();
 				return result;
 			}
 
 			set
 			{
-				IWin32Window currentOwner = this.OwnerWindow;
+				IWin32Window? currentOwner = this.OwnerWindow;
 
 				// Don't let a caller try to change it to something else.
 				if (currentOwner != null && currentOwner != value)
@@ -179,6 +179,7 @@
 		/// Gets or sets a delegate that can remove a custom line prefix after a line is double-clicked
 		/// and before the line's file reference is parsed and opened.
 		/// </summary>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Func<string, string>? RemoveLinePrefix { get; set; }
 
 		/// <summary>
@@ -331,7 +332,7 @@
 
 		#region Internal Methods
 
-		internal static bool OpenLineFileReference(IWin32Window owner, string currentLine)
+		internal static bool OpenLineFileReference(IWin32Window? owner, string currentLine)
 		{
 			bool result = false;
 

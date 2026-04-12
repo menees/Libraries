@@ -143,6 +143,7 @@ namespace Menees.Windows.Forms
 		[Browsable(false)]
 		[Description("The 0-based line and column for the current caret position.")]
 		[ReadOnly(true)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Point CaretPoint
 		{
 			get
@@ -357,7 +358,11 @@ namespace Menees.Windows.Forms
 				try
 				{
 					Guid textDocumentIid = new("8CC497C0-A1DF-11CE-8098-00AA0047BE5D"); // IID_ITextDocument
+#if NETFRAMEWORK
 					int hresult = Marshal.QueryInterface(ptrOleInterface, ref textDocumentIid, out IntPtr textDocumentPtr);
+#else
+					int hresult = Marshal.QueryInterface(ptrOleInterface, in textDocumentIid, out IntPtr textDocumentPtr);
+#endif
 					Marshal.ThrowExceptionForHR(hresult);
 					try
 					{
@@ -390,7 +395,7 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		#endregion
+#endregion
 
 		#region Protected Methods
 

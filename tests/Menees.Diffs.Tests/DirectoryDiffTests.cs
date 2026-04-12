@@ -25,7 +25,7 @@ namespace Menees.Diffs.Tests
 		{
 			context.ShouldNotBeNull();
 
-			string rootDir = context.TestRunDirectory;
+			string? rootDir = context.TestRunDirectory;
 			rootDir.ShouldNotBeEmpty();
 
 			DataDir = new DirectoryInfo(Path.Combine(rootDir, "Data"));

@@ -59,7 +59,7 @@ namespace Menees.Diffs
 			{
 				if (this.subentries == null && !this.isFile)
 				{
-					this.subentries = new DirectoryDiffEntryCollection();
+					this.subentries = [];
 				}
 
 				return this.subentries;

@@ -75,7 +75,7 @@ namespace Menees.Diffs
 
 		public static IList<string> GetTextLines(TextReader reader)
 		{
-			IList<string> result = new List<string>();
+			IList<string> result = [];
 
 			while (reader.Peek() > -1)
 			{

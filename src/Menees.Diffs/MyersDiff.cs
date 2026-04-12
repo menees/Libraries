@@ -59,7 +59,7 @@ namespace Menees.Diffs
 		/// </summary>
 		public EditScript Execute()
 		{
-			List<Point> matchPoints = new();
+			List<Point> matchPoints = [];
 
 			SubArray<T> subArrayA = new(this.listA);
 			SubArray<T> subArrayB = new(this.listB);
@@ -82,7 +82,7 @@ namespace Menees.Diffs
 			Justification = "This performs a long, complex calculation.")]
 		public IList<T> GetLongestCommonSubsequence()
 		{
-			List<T> result = new();
+			List<T> result = [];
 
 			this.GetLcs(new SubArray<T>(this.listA), new SubArray<T>(this.listB), result);
 

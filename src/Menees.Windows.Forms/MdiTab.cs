@@ -4,6 +4,7 @@ namespace Menees.Windows.Forms
 
 	using System;
 	using System.Collections.Generic;
+	using System.ComponentModel;
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Linq;
@@ -51,6 +52,7 @@ namespace Menees.Windows.Forms
 		/// <summary>
 		/// Gets the form associated with the current tab.
 		/// </summary>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Form? AssociatedForm
 		{
 			get;
@@ -71,7 +73,7 @@ namespace Menees.Windows.Forms
 			// Draw the Close "button" if necessary.
 			Rectangle closeRect = this.GetCloseButtonRect();
 			bool clipIncludesCloseRect = e.ClipRectangle.IntersectsWith(closeRect);
-			if (clipIncludesCloseRect && (this.Selected || this.Checked))
+			if (clipIncludesCloseRect && (this.Selected || this.Checked) && this.Owner is not null)
 			{
 				Graphics graph = e.Graphics;
 
@@ -208,7 +210,7 @@ namespace Menees.Windows.Forms
 			closeBorderColor = MdiTabStripColorTable.SelectedTabBorder;
 
 			// Try to use the colors from the renderer's color table (if we can find one).
-			ToolStrip tabStrip = this.Owner;
+			ToolStrip? tabStrip = this.Owner;
 			if (tabStrip != null)
 			{
 				if (tabStrip.Renderer is ToolStripProfessionalRenderer renderer)

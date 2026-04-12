@@ -88,7 +88,7 @@
 			| FrameworkPropertyMetadataOptions.AffectsArrange
 			| FrameworkPropertyMetadataOptions.AffectsRender;
 
-		private static readonly List<(Type DependencyObjectType, Action<DependencyObject, bool> OnIsMonitoringChanged)> CustomChangeMonitors = new();
+		private static readonly List<(Type DependencyObjectType, Action<DependencyObject, bool> OnIsMonitoringChanged)> CustomChangeMonitors = [];
 
 		#endregion
 

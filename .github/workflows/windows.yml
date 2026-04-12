@@ -1,6 +1,6 @@
 name: windows build & test
 
-# Controls when the action will run. Triggers the workflow on push or pull request 
+# Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
   push:
@@ -13,25 +13,25 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
-    runs-on: windows-2022
+    runs-on: windows-2025-vs2026 # DOTNET_VERSION: Ensure required build tools are available.
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v4.1.5
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4.0.0
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 10.0.x # DOTNET_VERSION: Update YAML pipeline target.
 
     - name: Build everything
       run: |
         & .\eng\build.ps1 -build $true
-      
+
     - name: Run unit tests
       run: |
         & .\eng\build.ps1 -build $false -test $true
-      
+
     - name: Test artifact publishing
       run: |
         & .\eng\build.ps1 -build $false -publish $true

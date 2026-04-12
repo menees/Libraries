@@ -52,10 +52,13 @@
 
 			if (owner is Control control)
 			{
-				Form form = control.FindForm();
+				Form? form = control.FindForm();
 				if (form != null)
 				{
-					this.icon.Image = form.Icon.ToBitmap();
+					if (form.Icon is Icon icon)
+					{
+						this.icon.Image = icon.ToBitmap();
+					}
 
 					// This is important for tray icon apps where the main form may be hidden.
 					useDesktopAsOwner = !form.Visible;

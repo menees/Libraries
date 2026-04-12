@@ -274,7 +274,7 @@ namespace Menees
 			Conditions.RequireReference(xml, nameof(xml));
 			Conditions.RequireReference(schemas, "schema");
 
-			List<ValidationEventArgs> result = new();
+			List<ValidationEventArgs> result = [];
 
 			XmlReaderSettings settings = new()
 			{

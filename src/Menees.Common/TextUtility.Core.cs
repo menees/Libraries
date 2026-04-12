@@ -47,7 +47,7 @@
 			// https://github.com/Microsoft/referencesource/blob/master/System.Data.Entity.Design/...
 			//  ... System/Data/Entity/Design/PluralizationService/EnglishPluralizationService.cs
 			[SuppressMessage("Design", "MEN010:Avoid magic numbers", Justification = "The length values are clear in context.")]
-			[return: NotNullIfNotNull("word")]
+			[return: NotNullIfNotNull(nameof(word))]
 			public static string? MakePlural(string? word)
 			{
 				string? result = word;

@@ -45,7 +45,7 @@ namespace Menees.Windows.Forms
 
 				try
 				{
-					IDataObject data = Clipboard.GetDataObject();
+					IDataObject? data = Clipboard.GetDataObject();
 					if (data != null)
 					{
 						result = data.GetDataPresent(DataFormats.Text);

@@ -916,7 +916,7 @@ namespace Menees
 			}
 			else
 			{
-				entryProperties = new Dictionary<string, object>();
+				entryProperties = [];
 			}
 
 			GlobalContextValue.MergeEntriesInto(entryProperties);
@@ -940,7 +940,7 @@ namespace Menees
 
 		private static object[] GetEventData(object? messageData, Exception? ex, IDictionary<string, object> eventProperties)
 		{
-			List<object> result = new();
+			List<object> result = [];
 
 			if (messageData != null)
 			{

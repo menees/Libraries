@@ -58,10 +58,7 @@ namespace Menees
 				}
 			}
 
-			if (this.root == null)
-			{
-				this.root = FileSettingsNode.CreateNodeElement(ApplicationInfo.ApplicationName);
-			}
+			this.root ??= FileSettingsNode.CreateNodeElement(ApplicationInfo.ApplicationName);
 
 			this.RootNode = new FileSettingsNode(this.root, null);
 		}
@@ -78,7 +75,7 @@ namespace Menees
 		public void Save()
 		{
 			bool saved = false;
-			Dictionary<string, object> errorLogProperties = new();
+			Dictionary<string, object> errorLogProperties = [];
 
 			foreach (string fileName in GetPotentialFileNames())
 			{
@@ -130,7 +127,7 @@ namespace Menees
 		{
 			string fileName = ApplicationInfo.ApplicationName + "-" + Environment.UserDomainName + "-" + Environment.UserName + ".stgx";
 
-			List<string> result = new();
+			List<string> result = [];
 
 			// First, try the application's base directory.  That gives the best isolation for side-by-side app usage,
 			// but a non-admin user may not have permissions to write to this directory.  Side-by-side isolation is
@@ -297,10 +294,7 @@ namespace Menees
 			public void DeleteSetting(string settingName)
 			{
 				XElement? settingElement = this.GetSettingElement(settingName, false);
-				if (settingElement != null)
-				{
-					settingElement.Remove();
-				}
+				settingElement?.Remove();
 			}
 
 			public IList<string> GetSubNodeNames()
@@ -312,10 +306,7 @@ namespace Menees
 			public void DeleteSubNode(string nodeNameOrPath)
 			{
 				XElement? subElement = this.GetSubNodeElement(nodeNameOrPath, false);
-				if (subElement != null)
-				{
-					subElement.Remove();
-				}
+				subElement?.Remove();
 			}
 
 			public ISettingsNode GetSubNode(string nodeNameOrPath)

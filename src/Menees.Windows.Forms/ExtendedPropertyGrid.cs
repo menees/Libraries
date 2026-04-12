@@ -85,7 +85,7 @@
 			string? selectedPropertyName = null;
 			if (selection != null && selection.Length > 0)
 			{
-				GridItem gridItem = this.SelectedGridItem;
+				GridItem? gridItem = this.SelectedGridItem;
 				if (gridItem != null && gridItem.GridItemType == GridItemType.Property)
 				{
 					selectedPropertyName = gridItem.PropertyDescriptor?.Name;

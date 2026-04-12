@@ -138,7 +138,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			get
 			{
-				TreeNode selectedNode = this.TreeB.Focused ? this.TreeB.SelectedNode : this.TreeA.SelectedNode;
+				TreeNode? selectedNode = this.TreeB.Focused ? this.TreeB.SelectedNode : this.TreeA.SelectedNode;
 				DirectoryDiffEntry? result = DirectoryDiffTreeView.GetEntryForNode(selectedNode);
 				return result;
 			}

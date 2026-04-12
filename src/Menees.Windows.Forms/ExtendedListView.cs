@@ -42,8 +42,8 @@ namespace Menees.Windows.Forms
 		private const int LvmFirst = 0x1000;
 
 		private readonly Sorter sorter;
-		private readonly Dictionary<int, HeaderData> columnNumberToHeaderDataMap = new();
-		private readonly Dictionary<int, ListViewColumnType> columnNumberToTypeMap = new();
+		private readonly Dictionary<int, HeaderData> columnNumberToHeaderDataMap = [];
+		private readonly Dictionary<int, ListViewColumnType> columnNumberToTypeMap = [];
 		private IComparer? previousSorter;
 		private int sorterUpdateLevel;
 		private int capacity;
@@ -652,8 +652,7 @@ namespace Menees.Windows.Forms
 			switch (columnType)
 			{
 				case ListViewColumnType.Number:
-					double doubleX, doubleY;
-					if (double.TryParse(textX, out doubleX) && double.TryParse(textY, out doubleY))
+					if (double.TryParse(textX, out double doubleX) && double.TryParse(textY, out double doubleY))
 					{
 						result = Math.Sign(doubleX - doubleY);
 						break;
@@ -664,8 +663,7 @@ namespace Menees.Windows.Forms
 					}
 
 				case ListViewColumnType.DateTime:
-					DateTime dateTimeX, dateTimeY;
-					if (DateTime.TryParse(textX, out dateTimeX) && DateTime.TryParse(textY, out dateTimeY))
+					if (DateTime.TryParse(textX, out DateTime dateTimeX) && DateTime.TryParse(textY, out DateTime dateTimeY))
 					{
 						result = dateTimeX.CompareTo(dateTimeY);
 						break;
@@ -807,9 +805,9 @@ namespace Menees.Windows.Forms
 				// Only allow a mouse click to change multiple checks
 				// if they clicked on one item.  If they changed items,
 				// this works around a ListView bug.
-				ListViewItem mouseDownItem = this.GetItemAt(this.mouseDownPoint.X, this.mouseDownPoint.Y);
+				ListViewItem? mouseDownItem = this.GetItemAt(this.mouseDownPoint.X, this.mouseDownPoint.Y);
 				Point currentPoint = this.PointToClient(Control.MousePosition);
-				ListViewItem currentMouseItem = this.GetItemAt(currentPoint.X, currentPoint.Y);
+				ListViewItem? currentMouseItem = this.GetItemAt(currentPoint.X, currentPoint.Y);
 
 				// The list view also has a bug where it will do item checks
 				// during multi-selection with Ctrl+Click.

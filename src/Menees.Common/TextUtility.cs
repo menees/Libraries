@@ -190,7 +190,7 @@ namespace Menees
 		/// <param name="text">The text to update.</param>
 		/// <param name="replacement">The character to substitute for control characters.</param>
 		/// <returns>The text with the control characters replaced.</returns>
-		[return: NotNullIfNotNull("text")]
+		[return: NotNullIfNotNull(nameof(text))]
 		public static string? ReplaceControlCharacters(string? text, char replacement)
 		{
 			string? result = text;
@@ -218,7 +218,7 @@ namespace Menees
 		/// </summary>
 		/// <param name="text">The text to update.</param>
 		/// <returns>The text with the control characters replaced.</returns>
-		[return: NotNullIfNotNull("text")]
+		[return: NotNullIfNotNull(nameof(text))]
 		public static string? ReplaceControlCharacters(string? text)
 		{
 			string? result = text;
@@ -273,7 +273,7 @@ namespace Menees
 		/// <returns>A list of tokens.</returns>
 		public static IList<string> SplitIntoTokens(string text, char separator, char? delimiter, bool trimTokens)
 		{
-			List<string> result = new();
+			List<string> result = [];
 			SplitIntoTokens(text, separator, delimiter, trimTokens, result);
 			return result;
 		}

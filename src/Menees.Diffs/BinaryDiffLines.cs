@@ -27,10 +27,10 @@ namespace Menees.Diffs
 
 		#region Private Data Members
 
-		private readonly IList<string> baseLines = new List<string>();
+		private readonly IList<string> baseLines = [];
 		private readonly int basePosition;
 		private readonly int bytesPerLine;
-		private readonly IList<string> versionLines = new List<string>();
+		private readonly IList<string> versionLines = [];
 		private readonly int versionPosition;
 
 		#endregion

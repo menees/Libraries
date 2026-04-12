@@ -141,6 +141,7 @@ namespace Menees.Diffs.Windows.Forms
 		}
 
 		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int CenterVisibleLine
 		{
 			get
@@ -157,6 +158,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 		public ChangeDiffOptions ChangeDiffOptions
 		{
 			get;
@@ -164,6 +166,7 @@ namespace Menees.Diffs.Windows.Forms
 		}
 
 		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int FirstVisibleLine
 		{
 			get
@@ -180,6 +183,7 @@ namespace Menees.Diffs.Windows.Forms
 		public bool HasSelection => this.selectionStart != DiffViewPosition.Empty;
 
 		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int HScrollPos
 		{
 			get
@@ -203,6 +207,7 @@ namespace Menees.Diffs.Windows.Forms
 		public DiffViewLines? Lines => this.lines;
 
 		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DiffViewPosition Position
 		{
 			get
@@ -294,6 +299,7 @@ namespace Menees.Diffs.Windows.Forms
 		public int VisibleLineCount => this.ClientSize.Height / this.lineHeight;
 
 		[Browsable(false)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int VScrollPos
 		{
 			get

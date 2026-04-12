@@ -14,7 +14,7 @@ namespace Menees.Diffs
 		#region Constructors
 
 		internal DirectoryDiffEntryCollection()
-			: base(new List<DirectoryDiffEntry>())
+			: base([])
 		{
 		}
 

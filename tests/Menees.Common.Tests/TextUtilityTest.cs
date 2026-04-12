@@ -127,7 +127,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void SplitIntoTokensCollectionTest()
 		{
-			List<string> tokens = new();
+			List<string> tokens = [];
 			bool result = TextUtility.SplitIntoTokens("A,B,\"C,D\",E", ',', '"', false, tokens);
 			Assert.AreEqual(true, result);
 			CollectionAssert.AreEqual(new[] { "A", "B", "C,D", "E" }, tokens.ToArray());
@@ -217,7 +217,7 @@ namespace Menees.Common.Tests
 		[DataRow("Woman", "Women")]
 		[DataRow("Toy", "Toys")]
 		[DataRow("Cherry", "Cherries")]
-		[DataTestMethod]
+		[TestMethod]
 		public void MakePluralTest(string mixedWord, string mixedExpected)
 		{
 			string mixedActual = TextUtility.MakePlural(mixedWord);

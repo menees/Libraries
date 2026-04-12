@@ -45,10 +45,7 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		public FormSaver(IContainer container)
 		{
-			if (container != null)
-			{
-				container.Add(this);
-			}
+			container?.Add(this);
 
 			this.InitializeComponent();
 		}
@@ -201,15 +198,9 @@ namespace Menees.Windows.Forms
 					if (this.form != null)
 					{
 						// Create event handlers
-						if (this.loadHandler == null)
-						{
-							this.loadHandler = this.OnFormLoad;
-						}
+						this.loadHandler ??= this.OnFormLoad;
 
-						if (this.closedHandler == null)
-						{
-							this.closedHandler = this.OnFormClosed;
-						}
+						this.closedHandler ??= this.OnFormClosed;
 
 						// Attach to new form events
 						this.form.Load += this.loadHandler;

@@ -29,7 +29,7 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The dialog owner.</param>
 		/// <param name="data">The find data.</param>
 		/// <returns>True if OK was pressed.</returns>
-		bool Execute(IWin32Window owner, FindData data);
+		bool Execute(IWin32Window? owner, FindData data);
 	}
 
 	#endregion
@@ -74,7 +74,7 @@ namespace Menees.Windows.Forms
 
 		bool IsFocused { get; }
 
-		IWin32Window OwnerWindow { get; set; }
+		IWin32Window? OwnerWindow { get; set; }
 
 		string SelectedText { get; }
 

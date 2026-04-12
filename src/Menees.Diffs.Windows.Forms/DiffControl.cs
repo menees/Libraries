@@ -205,6 +205,7 @@ namespace Menees.Diffs.Windows.Forms
 			}
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
 		public Font ViewFont
 		{
 			get
@@ -419,9 +420,11 @@ namespace Menees.Diffs.Windows.Forms
 				// Draw the image centered.  (I should probably check the
 				// item's ImageAlign property here, but I know I'm always
 				// using MiddleCenter for all the passed-in items.)
-				Image image = item.Image;
-				Rectangle imageRect = new(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
-				g.DrawImage(image, imageRect);
+				if (item.Image is Image image)
+				{
+					Rectangle imageRect = new(r.X + ((r.Width - image.Width) / 2), r.Y + ((r.Height - image.Height) / 2), image.Width, image.Height);
+					g.DrawImage(image, imageRect);
+				}
 			}
 		}
 

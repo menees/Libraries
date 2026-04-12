@@ -24,7 +24,7 @@ namespace Menees.Windows.Forms
 
 		private const string DefaultSettingsNodeName = "Recent Items";
 
-		private readonly List<string> items = new();
+		private readonly List<string> items = [];
 		private readonly Dictionary<string, IEnumerable<string>?> itemToValuesMap =
 			new(StringComparer.OrdinalIgnoreCase);
 
@@ -148,15 +148,9 @@ namespace Menees.Windows.Forms
 					if (this.formSaver != null)
 					{
 						// Create event handlers
-						if (this.loadHandler == null)
-						{
-							this.loadHandler = new EventHandler<SettingsEventArgs>(this.OnLoadSettings);
-						}
+						this.loadHandler ??= new EventHandler<SettingsEventArgs>(this.OnLoadSettings);
 
-						if (this.saveHandler == null)
-						{
-							this.saveHandler = new EventHandler<SettingsEventArgs>(this.OnSaveSettings);
-						}
+						this.saveHandler ??= new EventHandler<SettingsEventArgs>(this.OnSaveSettings);
 
 						// Attach to the internal events so we're assured of getting
 						// called before the public events.  This ensures that normal
@@ -238,12 +232,13 @@ namespace Menees.Windows.Forms
 		/// </summary>
 		[Browsable(false)]
 		[Description("Gets or sets the list of items as a collection of strings.")]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public IEnumerable<string> Items
 		{
 			get
 			{
 				// Return a copy, so the caller can't muck with our internal list.
-				string[] result = this.items.ToArray();
+				string[] result = [.. this.items];
 				return result;
 			}
 

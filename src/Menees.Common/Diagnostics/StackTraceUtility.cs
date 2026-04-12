@@ -16,10 +16,10 @@ namespace Menees.Diagnostics
 	{
 		#region Private Data Members
 
-		private static readonly HashSet<Type> SkipTypes = new()
-		{
+		private static readonly HashSet<Type> SkipTypes =
+		[
 			typeof(StackTraceUtility), typeof(Conditions), typeof(Log), typeof(Exceptions),
-		};
+		];
 
 		#endregion
 

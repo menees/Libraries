@@ -114,7 +114,7 @@ namespace Menees.Common.Tests
 			public bool prompt;
 			public bool verify;
 			public string? source;
-			public List<string> targets = new();
+			public List<string> targets = [];
 		}
 
 		private static CommandLine CreateTester(TestData data)
@@ -208,8 +208,8 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ParseStaticTest()
 		{
-			List<string> values = new();
-			Dictionary<string, string> switches = new();
+			List<string> values = [];
+			Dictionary<string, string> switches = [];
 			CommandLine.Parse(new[] { "a", "/b=c d" }, values, switches);
 			values.Count.ShouldBe(1);
 			values[0].ShouldBe("a");

@@ -351,7 +351,7 @@
 		/// </summary>
 		/// <param name="value">The value to encode.</param>
 		/// <returns>The encoded value.</returns>
-		[return: NotNullIfNotNull("value")]
+		[return: NotNullIfNotNull(nameof(value))]
 		public static string? EncodeValue(object? value)
 		{
 			string? result = null;
@@ -544,7 +544,7 @@
 		{
 			// Note: I'm not calling RequireUnparsed because they can add header lines
 			// after parsing if they want to (e.g., only if help needs to be displayed).
-			this.header ??= new List<string>();
+			this.header ??= [];
 			this.header.AddRange(lines);
 			return this;
 		}
@@ -633,7 +633,7 @@
 			// only valid if /Y also appears)
 			if (this.finalValidationHandler != null)
 			{
-				List<string> errors = new(0);
+				List<string> errors = [];
 				this.finalValidationHandler(errors);
 				this.AddErrors(errors);
 			}
@@ -785,7 +785,7 @@
 		private static List<string> WrapText(string text, int maxSegmentLength, string newLine)
 		{
 			// First, split text into lines based on existing hard line breaks.
-			List<string> originalLines = new();
+			List<string> originalLines = [];
 			int startPos = 0;
 			while (startPos < text.Length)
 			{
@@ -803,10 +803,10 @@
 			}
 
 			// Now, split each line into "words" and then wrap them appropriately.
-			List<string> result = new();
+			List<string> result = [];
 			foreach (string originalLine in originalLines)
 			{
-				List<string> words = new();
+				List<string> words = [];
 				int wordStart = 0;
 				for (int i = 0; i < originalLine.Length; i++)
 				{
@@ -1002,10 +1002,7 @@
 						// If we currently have a pending switch, then we need to process it.
 						// That means we have a switch with no associated value, but we'll
 						// let the handler decide if that's ok.
-						if (pendingSwitch != null)
-						{
-							pendingSwitch.SetValue(null, this);
-						}
+						pendingSwitch?.SetValue(null, this);
 
 						pendingSwitch = this.ParseSwitchArg(arg);
 					}
@@ -1017,7 +1014,7 @@
 					}
 					else if (this.valueValidationHandler != null)
 					{
-						List<string> errors = new(0);
+						List<string> errors = [];
 						this.valueValidationHandler(arg, errors);
 						this.AddErrors(errors);
 					}
@@ -1030,10 +1027,7 @@
 
 			// If we finished with a pending switch, then it has no associated value,
 			// but we'll let the handler decide if that's ok.
-			if (pendingSwitch != null)
-			{
-				pendingSwitch.SetValue(null, this);
-			}
+			pendingSwitch?.SetValue(null, this);
 		}
 
 		private Switch? ParseSwitchArg(string originalArg)
@@ -1128,7 +1122,7 @@
 
 		private void AddError(string errorFormat, params object[] formatArgs)
 		{
-			this.errors ??= new List<string>();
+			this.errors ??= [];
 
 			string error = string.Format(CultureInfo.CurrentCulture, errorFormat, formatArgs);
 			this.errors.Add(error);
@@ -1149,7 +1143,7 @@
 
 		private void AddArgHelp(KeyValuePair<string, string> entry)
 		{
-			this.argHelp ??= new List<KeyValuePair<string, string>>();
+			this.argHelp ??= [];
 			this.argHelp.Add(entry);
 		}
 
@@ -1275,7 +1269,7 @@
 				else
 				{
 					var handler = (Action<string, IList<string>>)this.Handler;
-					List<string> errors = new(0);
+					List<string> errors = [];
 					handler(argValue ?? string.Empty, errors);
 					cmd.AddErrors(errors);
 				}

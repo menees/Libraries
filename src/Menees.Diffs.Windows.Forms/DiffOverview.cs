@@ -58,6 +58,7 @@ namespace Menees.Diffs.Windows.Forms
 
 		#region Public Properties
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public DiffView? DiffView
 		{
 			get
@@ -150,10 +151,7 @@ namespace Menees.Diffs.Windows.Forms
 		{
 			if (disposing)
 			{
-				if (this.image != null)
-				{
-					this.image.Dispose();
-				}
+				this.image?.Dispose();
 
 				DiffOptions.OptionsChanged -= this.DiffOptionsChanged;
 			}
@@ -376,11 +374,8 @@ namespace Menees.Diffs.Windows.Forms
 
 		private void RenderImage()
 		{
-			if (this.image != null)
-			{
-				this.image.Dispose();
-				this.image = null;
-			}
+			this.image?.Dispose();
+			this.image = null;
 
 			int width = this.ClientSize.Width;
 			int height = this.ClientSize.Height;

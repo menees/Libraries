@@ -39,7 +39,7 @@ namespace Menees.Windows.Presentation
 
 				try
 				{
-					IDataObject data = Clipboard.GetDataObject();
+					IDataObject? data = Clipboard.GetDataObject();
 					if (data != null)
 					{
 						result = data.GetDataPresent(DataFormats.Text);
@@ -265,10 +265,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
 		public static void ShowError(Window? owner, string message, string? caption = null)
 		{
-			if (caption == null)
-			{
-				caption = ApplicationInfo.ApplicationName;
-			}
+			caption ??= ApplicationInfo.ApplicationName;
 
 			// WPF's stupid MessageBox implementation throws an ArgumentNullException if we pass it a null owner.
 			if (owner != null)
@@ -301,10 +298,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="caption">The caption to use as the dialog's title. If null, the application name is used.</param>
 		public static void ShowInfo(Window? owner, string message, string? caption = null)
 		{
-			if (caption == null)
-			{
-				caption = ApplicationInfo.ApplicationName;
-			}
+			caption ??= ApplicationInfo.ApplicationName;
 
 			// WPF's stupid MessageBox implementation throws an ArgumentNullException if we pass it a null owner.
 			if (owner != null)
@@ -326,10 +320,7 @@ namespace Menees.Windows.Presentation
 		/// <param name="defaultYes">Whether the default button should be Yes (instead of No).</param>
 		public static bool ShowQuestion(Window? owner, string yesNoQuestion, string? caption = null, bool defaultYes = true)
 		{
-			if (caption == null)
-			{
-				caption = ApplicationInfo.ApplicationName;
-			}
+			caption ??= ApplicationInfo.ApplicationName;
 
 			MessageBoxResult defaultResult = defaultYes ? MessageBoxResult.Yes : MessageBoxResult.No;
 
@@ -397,7 +388,7 @@ namespace Menees.Windows.Presentation
 		public static ISet<ValidationError> GetValidationErrors(DependencyObject dependencyObject)
 		{
 			Conditions.RequireReference(dependencyObject, nameof(dependencyObject));
-			HashSet<ValidationError> result = new();
+			HashSet<ValidationError> result = [];
 			GetValidationErrors(dependencyObject, result);
 			return result;
 		}

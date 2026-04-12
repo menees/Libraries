@@ -26,15 +26,17 @@ namespace Menees
 		private static readonly HashSet<char> InvalidNameCharacters = new(
 			Path.GetInvalidFileNameChars().Union(Path.GetInvalidPathChars()));
 
-		private static readonly HashSet<string> ReservedNames = new(StringComparer.OrdinalIgnoreCase)
+		private static readonly HashSet<string> ReservedNames = ApplicationInfo.IsWindows
+			? new(StringComparer.OrdinalIgnoreCase)
 			{
 				"AUX", "CLOCK$", "CON", "NUL", "PRN",
 				"COM0", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9",
 				"LPT0", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
-			};
+			}
+			: [];
 
-		private static readonly char[] NormalPathSeparators = new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-		private static readonly char[] LongPathSeparators = new[] { Path.DirectorySeparatorChar };
+		private static readonly char[] NormalPathSeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
+		private static readonly char[] LongPathSeparators = [Path.DirectorySeparatorChar];
 
 		#endregion
 
@@ -228,7 +230,7 @@ namespace Menees
 			DirectoryInfo directory = new(path);
 			if (File.Exists(path) || directory.Exists)
 			{
-				List<string> parts = new();
+				List<string> parts = [];
 
 				DirectoryInfo? parentDirectory = directory.Parent;
 				while (parentDirectory != null)
@@ -254,7 +256,7 @@ namespace Menees
 
 				parts.Add(root);
 				parts.Reverse();
-				exactPath = Path.Combine(parts.ToArray());
+				exactPath = Path.Combine([.. parts]);
 				result = true;
 			}
 

@@ -118,6 +118,7 @@ namespace Menees.Windows.Forms
 		/// </remarks>
 		[Browsable(false)]
 		[EditorBrowsable(EditorBrowsableState.Never)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new ToolStripRenderMode RenderMode
 		{
 			get { return base.RenderMode; }
@@ -177,7 +178,7 @@ namespace Menees.Windows.Forms
 			{
 				IList<Form> result;
 
-				Form ownerForm = this.FindForm();
+				Form? ownerForm = this.FindForm();
 				if (ownerForm != null)
 				{
 					result = ownerForm.MdiChildren;
@@ -227,10 +228,7 @@ namespace Menees.Windows.Forms
 		public void CloseActiveTab()
 		{
 			Form? child = this.ActiveMdiChild;
-			if (child != null)
-			{
-				child.Close();
-			}
+			child?.Close();
 		}
 
 		/// <summary>
@@ -359,11 +357,8 @@ namespace Menees.Windows.Forms
 		{
 			base.OnParentChanged(e);
 
-			Form form = this.FindForm();
-			if (form != null)
-			{
-				form.MdiChildActivate += this.Form_MdiChildActivate;
-			}
+			Form? form = this.FindForm();
+			form?.MdiChildActivate += this.Form_MdiChildActivate;
 		}
 
 		/// <summary>
@@ -394,10 +389,7 @@ namespace Menees.Windows.Forms
 
 			if (form != null)
 			{
-				if (tabs == null)
-				{
-					tabs = this.GetTabs();
-				}
+				tabs ??= this.GetTabs();
 
 				result = tabs.FirstOrDefault(tab => tab.AssociatedForm == form);
 			}
@@ -405,7 +397,7 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private IList<MdiTab> GetTabs()
+		private List<MdiTab> GetTabs()
 		{
 			// Call ToList() to create a snapshot because callers may need to modify the this.Items collection.
 			// Restrict to MdiTabs in case a caller has added other controls to the tool strip (e.g., a right-aligned,
@@ -414,7 +406,7 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private IList<MdiTab> GetDisplayedTabs()
+		private List<MdiTab> GetDisplayedTabs()
 		{
 			// See comments in GetTabs about why ToList is used.
 			var result = this.DisplayedItems.OfType<MdiTab>().ToList();
@@ -427,7 +419,7 @@ namespace Menees.Windows.Forms
 			if (this.updateLevel == 0 && this.Enabled)
 			{
 				// Remove tabs for closed forms.
-				HashSet<Form> skipForms = new();
+				HashSet<Form> skipForms = [];
 				IList<MdiTab> tabs = this.RemoveClosedTabs(sender, senderActivating, skipForms);
 
 				// Add tabs for new forms.
@@ -637,10 +629,7 @@ namespace Menees.Windows.Forms
 			if (sender is MdiTab tab)
 			{
 				Form? form = tab.AssociatedForm;
-				if (form != null)
-				{
-					form.Close();
-				}
+				form?.Close();
 			}
 		}
 
@@ -655,14 +644,7 @@ namespace Menees.Windows.Forms
 			if (sender is Form form)
 			{
 				MdiTab? tab = this.FindTab(form);
-				if (tab != null)
-				{
-					tab.Text = form.Text;
-
-					// Note: There's no need to call UpdateUI because changing
-					// the form's text only changes the tab caption.  It doesn't
-					// show, hide, activate, or do anything else to it.
-				}
+				tab?.Text = form.Text;
 			}
 		}
 

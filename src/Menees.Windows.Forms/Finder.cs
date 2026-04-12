@@ -30,10 +30,7 @@ namespace Menees.Windows.Forms
 		{
 			get
 			{
-				if (this.findData == null)
-				{
-					this.findData = new FindData();
-				}
+				this.findData ??= new FindData();
 
 				return this.findData;
 			}
@@ -55,7 +52,7 @@ namespace Menees.Windows.Forms
 		/// <param name="findData">The data to find.</param>
 		/// <param name="findMode">Whether to find next, previous, or display a dialog.</param>
 		/// <returns>True if the find text was found and selected.  False otherwise.</returns>
-		public bool Find(IWin32Window owner, FindData findData, FindMode findMode)
+		public bool Find(IWin32Window? owner, FindData findData, FindMode findMode)
 		{
 			this.Data = findData;
 
@@ -94,7 +91,7 @@ namespace Menees.Windows.Forms
 		/// <param name="owner">The dialog owner.</param>
 		/// <param name="findData">The find data.</param>
 		/// <returns>True if OK was pressed.</returns>
-		protected virtual bool OnDialogExecute(IFindDialog findDialog, IWin32Window owner, FindData findData)
+		protected virtual bool OnDialogExecute(IFindDialog findDialog, IWin32Window? owner, FindData findData)
 		{
 			bool result = findDialog.Execute(owner, findData);
 			return result;
@@ -114,7 +111,7 @@ namespace Menees.Windows.Forms
 
 		#region Private Methods
 
-		private bool Find(IWin32Window owner, IFindDialog findDialog)
+		private bool Find(IWin32Window? owner, IFindDialog findDialog)
 		{
 			Conditions.RequireReference(findDialog, nameof(findDialog));
 
@@ -135,7 +132,7 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private bool FindNext(IWin32Window owner, IFindDialog findDialog)
+		private bool FindNext(IWin32Window? owner, IFindDialog findDialog)
 		{
 			bool result;
 
@@ -155,7 +152,7 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private bool FindPrevious(IWin32Window owner, IFindDialog findDialog)
+		private bool FindPrevious(IWin32Window? owner, IFindDialog findDialog)
 		{
 			bool result;
 
