@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(MeneesTargetNetCoreWindows);$(MeneesTargetNetFramework)</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\Menees.Windows.Forms\Menees.Windows.Forms.csproj" />
+	</ItemGroup>
+</Project>

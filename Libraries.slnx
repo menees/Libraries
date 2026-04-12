@@ -24,6 +24,7 @@
     <File Path="tests/Directory.Build.props" />
     <Project Path="tests/Menees.Common.Tests/Menees.Common.Tests.csproj" />
     <Project Path="tests/Menees.Diffs.Tests/Menees.Diffs.Tests.csproj" />
+    <Project Path="tests/Menees.Windows.Forms.Tests/Menees.Windows.Forms.Tests.csproj" Id="71f9f7e9-2082-4bae-9aa8-47f1bc21a24e" />
     <Project Path="tests/Menees.Windows.Tests/Menees.Windows.Tests.csproj" />
   </Folder>
 </Solution>

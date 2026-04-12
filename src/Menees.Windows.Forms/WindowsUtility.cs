@@ -8,6 +8,7 @@ namespace Menees.Windows.Forms
 	using System.Diagnostics;
 	using System.Drawing;
 	using System.Drawing.Drawing2D;
+	using System.IO;
 	using System.Linq;
 	using System.Reflection;
 	using System.Runtime.InteropServices;
@@ -316,11 +317,194 @@ namespace Menees.Windows.Forms
 			}
 		}
 
+		/// <summary>
+		/// Attempts to find the path to the Windows Terminal executable.
+		/// </summary>
+		/// <returns>The path to the Windows Terminal executable if found, or null otherwise.</returns>
+		public static string? FindWindowsTerminal()
+		{
+			// If Windows Terminal Preview is installed, this will find it as long as
+			// "Manage App Execution Aliases" is still enabled in Windows settings for it.
+			// https://stackoverflow.com/a/68006153/1882616
+			string? result = ShellUtility.SearchPath("wt.exe");
+			return result;
+		}
+
+		/// <summary>
+		/// Attempts to open Windows Explorer with the specified file selected.
+		/// </summary>
+		/// <param name="path">The path to the file to select in Windows Explorer.</param>
+		/// <returns>True if Windows Explorer was successfully opened with the file selected; otherwise, false.</returns>
+		public static bool TryOpenExplorerForFile(string? path)
+		{
+			bool result = false;
+
+			path = GetFullyQualifiedPath(path);
+			if (path.IsNotEmpty())
+			{
+				if (File.Exists(path))
+				{
+					// Start Explorer with the file selected.
+					// https://stackoverflow.com/a/13680458/1882616
+					result = TryOpenExplorer("/select,", path);
+				}
+				else
+				{
+					ShowError(null, $"The file '{path}' does not exist.");
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Attempts to open Windows Explorer at the specified folder.
+		/// </summary>
+		/// <param name="path">The path to the folder to open in Windows Explorer.</param>
+		/// <returns>True if Windows Explorer was successfully opened at the folder; otherwise, false.</returns>
+		public static bool TryOpenExplorerForFolder(string? path)
+		{
+			bool result = false;
+
+			path = GetFullyQualifiedPath(path);
+			if (path.IsNotEmpty())
+			{
+				if (Directory.Exists(path))
+				{
+					result = TryOpenExplorer(path);
+				}
+				else
+				{
+					ShowError(null, $"The folder '{path}' does not exist.");
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Attempts to open a terminal window at the folder containing the specified file.
+		/// </summary>
+		/// <param name="path">The path to the file whose containing folder should be opened in the terminal.</param>
+		/// <returns>True if the terminal was successfully opened; otherwise, false.</returns>
+		public static bool TryOpenTerminalForFile(string? path)
+		{
+			bool result = false;
+
+			path = GetFullyQualifiedPath(path);
+			if (path.IsNotEmpty())
+			{
+				if (File.Exists(path))
+				{
+					string? folder = Path.GetDirectoryName(path);
+					if (folder.IsNotEmpty())
+					{
+						result = TryOpenTerminalForFolder(folder);
+					}
+				}
+				else
+				{
+					ShowError(null, $"The file '{path}' does not exist.");
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Attempts to open a terminal window at the specified folder.
+		/// </summary>
+		/// <param name="path">The path to the folder to open in the terminal.</param>
+		/// <returns>True if the terminal was successfully opened; otherwise, false.</returns>
+		public static bool TryOpenTerminalForFolder(string? path)
+		{
+			bool result = false;
+
+			path = GetFullyQualifiedPath(path);
+			if (path.IsNotEmpty())
+			{
+				if (Directory.Exists(path))
+				{
+					string? terminal = FindWindowsTerminal();
+					if (terminal.IsNotEmpty())
+					{
+						// https://learn.microsoft.com/en-us/windows/terminal/command-line-arguments?tabs=windows#new-tab-command
+						result = TryStartProcess(terminal, "--startingDirectory", path);
+					}
+					else
+					{
+						// https://en.wikipedia.org/wiki/COMSPEC
+						string cmdExe = Environment.GetEnvironmentVariable("ComSpec") ?? "cmd.exe";
+						result = TryStartProcess(cmdExe, "/K", "cd", "/d", path);
+					}
+				}
+				else
+				{
+					ShowError(null, $"The folder '{path}' does not exist.");
+				}
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Attempts to open the specified file using the default shell action.
+		/// </summary>
+		/// <param name="filePath">The path to the file to open.</param>
+		/// <returns>True if the file was successfully opened; otherwise, false.</returns>
+		public static bool TryOpenFile(string? filePath)
+		{
+			bool result = false;
+
+			filePath = GetFullyQualifiedPath(filePath);
+			if (filePath.IsNotEmpty())
+			{
+				if (File.Exists(filePath))
+				{
+					result = ShellExecute(null, filePath);
+				}
+				else
+				{
+					ShowError(null, $"The file '{filePath}' does not exist.");
+				}
+			}
+
+			return result;
+		}
+
 		#endregion
 
 		#region Private Methods
 
 		static partial void SetHighDpiMode();
+
+		private static string? GetFullyQualifiedPath(string? path)
+		{
+			// If the path is rooted but doesn't exist, we want to return the rooted path as is.
+			// If the path is relative or just a file name, then we need to fully qualify it to
+			// safely pass it to external processes (e.g., explorer.exe).
+			string? result = string.IsNullOrEmpty(path) || Path.IsPathRooted(path) ? path : Path.GetFullPath(path);
+			return result;
+		}
+
+		private static bool TryOpenExplorer(params string[] arguments)
+			=> TryStartProcess("explorer.exe", arguments);
+
+		private static bool TryStartProcess(string fileName, params string[] arguments)
+		{
+#if NETFRAMEWORK
+			ProcessStartInfo processStartInfo = new(fileName, CommandLine.Build(arguments));
+#else
+			// Use the overload that takes IEnumerable<string> so it will quote and escape each arg correctly.
+			ProcessStartInfo processStartInfo = new(fileName, arguments);
+#endif
+
+			using (Process? process = Process.Start(processStartInfo))
+			{
+				bool result = process != null;
+				return result;
+			}
+		}
 
 		#endregion
 	}
