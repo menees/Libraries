@@ -83,7 +83,7 @@ namespace Menees.Diffs.Windows.Forms
 			if (this.results != null)
 			{
 				string basePath = this.useA ? this.results.DirectoryA.FullName : this.results.DirectoryB.FullName;
-				if (!basePath.EndsWith("\\"))
+				if (!basePath.EndsWith('\\'))
 				{
 					basePath += "\\";
 				}

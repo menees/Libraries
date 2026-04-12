@@ -113,7 +113,6 @@
 
 		#region Private Event Handlers
 
-		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void EmailLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			// UriBuilder always adds a '/' after the email address, which shows up in the opened
@@ -127,7 +126,6 @@
 			e.Handled = true;
 		}
 
-		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void WebLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			Uri uri = new("http://www.menees.com");
@@ -144,7 +142,6 @@
 			e.Handled = true;
 		}
 
-		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private async void ExtendedDialog_LoadedAsync(object sender, RoutedEventArgs e)
 		{
 			string repository = this.repository;
@@ -161,7 +158,6 @@
 			}
 		}
 
-		[SuppressMessage("Usage", "CC0068:Unused Method", Justification = "Invoked via XAML reflection.")]
 		private void UpdateLink_Clicked(object sender, RoutedEventArgs e)
 		{
 			if (this.updateLink.Tag is Release latest && WindowsUtility.ShellExecute(this, latest.HtmlUri.ToString()))

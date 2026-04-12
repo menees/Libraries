@@ -5,9 +5,8 @@ using System.Diagnostics;
 
 namespace Menees.Common.Tests
 {
-
-
 	[TestClass()]
+	[DoNotParallelize]
 	public class ConsoleOutputBufferTest
 	{
 		private static readonly TimeSpan defaultWaitTime = TimeSpan.MaxValue;
@@ -27,7 +26,7 @@ namespace Menees.Common.Tests
 		{
 			ConsoleOutputBuffer target = Create(defaultWaitTime);
 			string[] actual = target.GetLines();
-			Assert.IsTrue(actual.Length > 0, "Number of lines > 0");
+			Assert.IsNotEmpty(actual, "Number of lines > 0");
 
 			// Sometimes there will be an extra blank line at the beginning of the DIR output.
 			string? firstNonEmptyLine = null;
@@ -48,9 +47,9 @@ namespace Menees.Common.Tests
 		{
 			ConsoleOutputBuffer target = Create(defaultWaitTime);
 			string actual = target.GetText();
-			Assert.IsTrue(!string.IsNullOrEmpty(actual), "Text is non-empty.");
-			Assert.IsTrue(actual.StartsWith(" Volume in drive "), "Starts with ' Volume in drive '");
-			Assert.IsTrue(actual.Contains(" Directory of "), "Contains ' Directory of '");
+			Assert.IsFalse(string.IsNullOrEmpty(actual), "Text is non-empty.");
+			Assert.StartsWith(" Volume in drive ", actual, "Starts with ' Volume in drive '");
+			Assert.Contains(" Directory of ", actual, "Contains ' Directory of '");
 		}
 
 		[TestMethod()]
@@ -68,7 +67,7 @@ namespace Menees.Common.Tests
 		{
 			ConsoleOutputBuffer target = Create(defaultWaitTime);
 			Assert.AreEqual(0, target.ProcessExitCode);
-			Assert.AreEqual(true, target.HasProcessExited);
+			Assert.IsTrue(target.HasProcessExited);
 		}
 	}
 }

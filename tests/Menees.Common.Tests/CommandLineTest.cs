@@ -30,7 +30,7 @@ namespace Menees.Common.Tests
 		public void AddHeaderTest()
 		{
 			CommandLine target = new(false);
-			string[] lines = new[] { "First line", "Second line" };
+			string[] lines = ["First line", "Second line"];
 
 			CommandLine actual = target.AddHeader(lines);
 			Assert.AreEqual(target, actual);
@@ -49,7 +49,7 @@ namespace Menees.Common.Tests
 				Debug.WriteLine(arg);
 			}
 
-			string[] actual = CommandLine.Arguments.ToArray();
+			string[] actual = [.. CommandLine.Arguments];
 
 			// In VS 2015 and .NET 4.6, sometimes the unit test process is launched with a path containing
 			// spaces but not surrounded by quotes.  The Environment.GetCommandLineArgs() method won't
@@ -167,12 +167,12 @@ namespace Menees.Common.Tests
 		{
 			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
-			CommandLineParseResult result = cmdLine.Parse(new[] { "/Binary" });
+			CommandLineParseResult result = cmdLine.Parse(["/Binary"]);
 			Assert.AreEqual(CommandLineParseResult.Invalid, result);
 			string message = GetMessage(cmdLine);
 			Assert.IsNotNull(message);
-			Assert.IsTrue(message.Contains("A source file is required."), "Contains 'A source file is required.'");
-			Assert.IsTrue(message.Contains("/Target"), "Contains '/Target'");
+			Assert.Contains("A source file is required.", message, "Contains 'A source file is required.'");
+			Assert.Contains("/Target", message, "Contains '/Target'");
 		}
 
 		[TestMethod]
@@ -180,16 +180,16 @@ namespace Menees.Common.Tests
 		{
 			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
-			CommandLineParseResult result = cmdLine.Parse(new[] { "/Prompt", "/V", "/bin", @"C:\Input.txt", 
-				@"/t:D:\ColonSeparated.txt", @"/Target", @"E:\SpaceSeparated.txt", @"/Targ=F:\EqualSeparated.txt" });
+			CommandLineParseResult result = cmdLine.Parse([ "/Prompt", "/V", "/bin", @"C:\Input.txt", 
+				@"/t:D:\ColonSeparated.txt", @"/Target", @"E:\SpaceSeparated.txt", @"/Targ=F:\EqualSeparated.txt" ]);
 			Assert.AreEqual(CommandLineParseResult.Valid, result);
-			Assert.AreEqual(true, data.prompt);
-			Assert.AreEqual(true, data.verify);
-			Assert.AreEqual(true, data.isBinary);
+			Assert.IsTrue(data.prompt);
+			Assert.IsTrue(data.verify);
+			Assert.IsTrue(data.isBinary);
 			Assert.AreEqual(@"C:\Input.txt", data.source);
-			Assert.IsTrue(data.targets.Contains(@"D:\ColonSeparated.txt"), "Contains ColonSeparated");
-			Assert.IsTrue(data.targets.Contains(@"E:\SpaceSeparated.txt"), "Contains SpaceSeparated");
-			Assert.IsTrue(data.targets.Contains(@"F:\EqualSeparated.txt"), "Contains EqualSeparated");
+			Assert.Contains(@"D:\ColonSeparated.txt", data.targets, "Contains ColonSeparated");
+			Assert.Contains(@"E:\SpaceSeparated.txt", data.targets, "Contains SpaceSeparated");
+			Assert.Contains(@"F:\EqualSeparated.txt", data.targets, "Contains EqualSeparated");
 		}
 
 		[TestMethod]
@@ -197,12 +197,12 @@ namespace Menees.Common.Tests
 		{
 			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
-			CommandLineParseResult result = cmdLine.Parse(new[] { "/?" });
+			CommandLineParseResult result = cmdLine.Parse(["/?"]);
 			Assert.AreEqual(CommandLineParseResult.HelpRequested, result);
 			string message = GetMessage(cmdLine);
 			Assert.IsNotNull(message);
-			Assert.IsTrue(message.StartsWith("Copies a source file to one or more target locations."), "Starts with 'Copies...'");
-			Assert.IsTrue(message.EndsWith(Environment.NewLine), "Ends with newline.");
+			Assert.StartsWith("Copies a source file to one or more target locations.", message, "Starts with 'Copies...'");
+			Assert.EndsWith(Environment.NewLine, message, "Ends with newline.");
 		}
 
 		[TestMethod]
@@ -210,7 +210,7 @@ namespace Menees.Common.Tests
 		{
 			List<string> values = [];
 			Dictionary<string, string> switches = [];
-			CommandLine.Parse(new[] { "a", "/b=c d" }, values, switches);
+			CommandLine.Parse(["a", "/b=c d"], values, switches);
 			values.Count.ShouldBe(1);
 			values[0].ShouldBe("a");
 			switches.Count.ShouldBe(1);
@@ -232,7 +232,7 @@ namespace Menees.Common.Tests
 			hasProgramName = CommandLine.Split(commandLine, true);
 			missingProgramName = CommandLine.Split(commandLine, false);
 			CollectionAssert.AreEqual(missingProgramName.ToArray(), hasProgramName.Skip(1).ToArray());
-			string[] args = hasProgramName.ToArray();
+			string[] args = [.. hasProgramName];
 			args.Length.ShouldBe(5);
 			args[0].ShouldBe("Testing.exe");
 			args[1].ShouldBe("/name:Application Testing");
@@ -244,15 +244,15 @@ namespace Menees.Common.Tests
 			// http://msdn.microsoft.com/en-us/library/17w5ykft.aspx
 			// Note: Win32's CommandLineToArgvW always treats the first argument
 			// as a file name, so it doesn't allow escapes or double quotes within it.
-			VerifySplit(@"test.exe ""abc"" d e", new[] { @"abc", "d", "e" });
-			VerifySplit(@"test.exe a\\b d""e f""g h", new[] { @"a\\b", "de fg", "h" });
-			VerifySplit(@"test.exe a\\\""b c d", new[] { @"a\""b", "c", "d" });
-			VerifySplit(@"test.exe a\\\\""b c"" d e", new[] { @"a\\b c", "d", "e" });
+			VerifySplit(@"test.exe ""abc"" d e", [@"abc", "d", "e"]);
+			VerifySplit(@"test.exe a\\b d""e f""g h", [@"a\\b", "de fg", "h"]);
+			VerifySplit(@"test.exe a\\\""b c d", [@"a\""b", "c", "d"]);
+			VerifySplit(@"test.exe a\\\\""b c"" d e", [@"a\\b c", "d", "e"]);
 		}
 
 		private static void VerifySplit(string commandLine, string[] expected)
 		{
-			string[] actual = CommandLine.Split(commandLine, false).ToArray();
+			string[] actual = [.. CommandLine.Split(commandLine, false)];
 			actual.Length.ShouldBe(expected.Length);
 			for (int i = 0; i < actual.Length; i++)
 			{

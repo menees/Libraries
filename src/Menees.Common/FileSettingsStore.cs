@@ -123,7 +123,7 @@ namespace Menees
 
 		#region Private Methods
 
-		private static IEnumerable<string> GetPotentialFileNames()
+		private static List<string> GetPotentialFileNames()
 		{
 			string fileName = ApplicationInfo.ApplicationName + "-" + Environment.UserDomainName + "-" + Environment.UserName + ".stgx";
 

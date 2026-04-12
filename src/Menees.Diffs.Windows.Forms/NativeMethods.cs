@@ -35,10 +35,10 @@ namespace Menees.Diffs.Windows.Forms
 		public const int WM_VSCROLL = 0x0115;
 		public const int WM_MOUSEWHEEL = 0x020A;
 
-		public const int WS_EX_CLIENTEDGE = 0x00000200;
-		public const int WS_VSCROLL = 0x00200000;
-		public const int WS_HSCROLL = 0x00100000;
-		public const int WS_BORDER = 0x00800000;
+		public const int WS_EX_CLIENTEDGE = 0x_0000_0200;
+		public const int WS_VSCROLL = 0x_0020_0000;
+		public const int WS_HSCROLL = 0x_0010_0000;
+		public const int WS_BORDER = 0x_0080_0000;
 
 		#endregion
 
@@ -203,14 +203,12 @@ namespace Menees.Diffs.Windows.Forms
 			public int nMax;
 			public uint nPage;
 			public int nPos;
-#pragma warning disable CC0074 // Make field readonly
 			public int nTrackPos;
-#pragma warning restore CC0074 // Make field readonly
 
 			public static ScrollInfo Create(uint uiMask)
 			{
 				ScrollInfo Info = default;
-				Info.cbSize = (uint)Marshal.SizeOf(typeof(ScrollInfo));
+				Info.cbSize = (uint)Marshal.SizeOf<ScrollInfo>();
 				Info.fMask = uiMask;
 				return Info;
 			}

@@ -262,7 +262,6 @@ namespace Menees.Diffs.Windows.Forms
 			this.View();
 		}
 
-		[SuppressMessage("Design", "CC0091:Use static method", Justification = "Windows Forms designer prefers non-static.")]
 		private void ColorLegend_Paint(object? sender, PaintEventArgs e)
 		{
 			DiffControl.PaintColorLegendItem(sender as ToolStripItem, e);
@@ -358,7 +357,6 @@ namespace Menees.Diffs.Windows.Forms
 			this.UpdateButtons();
 		}
 
-		[SuppressMessage("Design", "CC0091:Use static method", Justification = "Windows Forms designer prefers non-static.")]
 		private void TreeNode_StateChange(object sender, TreeViewEventArgs e)
 		{
 			DirectoryDiffEntry? entry = DirectoryDiffTreeView.GetEntryForNode(e.Node);

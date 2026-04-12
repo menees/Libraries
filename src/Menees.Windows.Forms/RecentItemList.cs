@@ -523,9 +523,7 @@ namespace Menees.Windows.Forms
 				else
 				{
 					// Add a disabled dummy item with no Click handler.
-#pragma warning disable CC0022 // Should dispose object. The new item's lifetime is managed by menuItems.
 					menuItems.Add(new NoneMenuItem());
-#pragma warning restore CC0022 // Should dispose object
 				}
 			}
 		}

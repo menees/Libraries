@@ -76,10 +76,6 @@ namespace Menees.Diffs
 		/// <summary>
 		/// Returns the longest common subsequence from A and B.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This performs a long, complex calculation.")]
 		public IList<T> GetLongestCommonSubsequence()
 		{
 			List<T> result = [];
@@ -93,10 +89,6 @@ namespace Menees.Diffs
 		/// Calculates the length that the LCS should be without
 		/// actually determining the LCS.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This performs a long, complex calculation.")]
 		public int GetLongestCommonSubsequenceLength()
 			/* Per Myers's paper, we should always have D+2L == N+M.  So L == (N+M-D)/2. */
 			=> (this.listA.Count + this.listB.Count - this.GetShortestEditScriptLength()) / 2;
@@ -106,10 +98,6 @@ namespace Menees.Diffs
 		/// by running the algorithm in reverse.  We should
 		/// always have GetSESLength() == GetReverseSESLength().
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This performs a long, complex calculation.")]
 		[SuppressMessage(nameof(Menees), "MEN007:UseSingleReturn", Justification = "Coded like Myers algorithm.")]
 		public int GetReverseShortestEditScriptLength()
 		{
@@ -158,10 +146,6 @@ namespace Menees.Diffs
 		/// Change should be thought of as a combined Delete and
 		/// Insert for the specified Length.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This performs a long, complex calculation.")]
 		[SuppressMessage(nameof(Menees), "MEN007:UseSingleReturn", Justification = "Coded like Myers algorithm.")]
 		public int GetShortestEditScriptLength()
 		{
@@ -204,10 +188,6 @@ namespace Menees.Diffs
 		/// calculated as twice the length of the LCS divided
 		/// by the sum of A and B's lengths.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1024:UsePropertiesWhereAppropriate",
-			Justification = "This performs a long, complex calculation.")]
 		public double GetSimilarity()
 		{
 			double result = GetSimilarity(this.listA.Count, this.listB.Count, this.GetLongestCommonSubsequenceLength());
@@ -543,7 +523,7 @@ namespace Menees.Diffs
 		#region Private Types
 
 		// Declare this so we don't have to reference System.Drawing.dll, which shouldn't be used in Windows services.
-		private struct Point
+		private readonly struct Point
 		{
 			#region Constructors
 

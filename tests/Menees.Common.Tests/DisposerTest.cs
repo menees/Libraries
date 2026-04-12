@@ -15,7 +15,7 @@ namespace Menees.Common.Tests
 			{
 				Assert.AreEqual(target.IsDisposed, isDisposed);
 			}
-			Assert.AreEqual(true, isDisposed);
+			Assert.IsTrue(isDisposed);
 		}
 
 		[TestMethod()]

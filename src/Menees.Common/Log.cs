@@ -879,7 +879,7 @@ namespace Menees
 			return result;
 		}
 
-		private static void AddSourceProperty(LogLevel level, IDictionary<string, object> properties)
+		private static void AddSourceProperty(LogLevel level, Dictionary<string, object> properties)
 		{
 			// For fatal errors, try to report the entire stack trace.
 			// For normal errors, try to report the source method name.
@@ -925,7 +925,7 @@ namespace Menees
 			return entryProperties;
 		}
 
-		private static int GetEventId(IDictionary<string, object> eventProperties)
+		private static int GetEventId(Dictionary<string, object> eventProperties)
 		{
 			int result = 0;
 
@@ -970,7 +970,7 @@ namespace Menees
 				result.Add(sb.ToString());
 			}
 
-			return result.ToArray();
+			return [.. result];
 		}
 
 		private bool IsWriteEnabled(LogLevel level, out TraceEventType eventType)

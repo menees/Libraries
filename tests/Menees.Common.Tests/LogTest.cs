@@ -51,7 +51,7 @@ namespace Menees.Common.Tests
 			private readonly string message;
 		}
 
-		private static IDictionary<string, object> CreateTestProperties()
+		private static Dictionary<string, object> CreateTestProperties()
 		{
 			//I'm intentionally using a case-sensitive dictionary here.
 			//Most places I use case-insensitive, so I want to test
@@ -565,7 +565,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = GetLog();
 			bool actual = target.IsDebugEnabled;
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]
@@ -573,7 +573,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = GetLog();
 			bool actual = target.IsErrorEnabled;
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]
@@ -581,7 +581,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = GetLog();
 			bool actual= target.IsFatalEnabled;
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]
@@ -589,7 +589,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = GetLog();
 			bool actual = target.IsInfoEnabled;
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]
@@ -597,7 +597,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = GetLog();
 			bool actual = target.IsWarningEnabled;
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]

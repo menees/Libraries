@@ -24,8 +24,8 @@ namespace Menees.Common.Tests
 		public void ContainsTest()
 		{
 			ISet<string> target = CreateInstance();
-			Assert.IsTrue(target.Contains("B"));
-			Assert.IsFalse(target.Contains("X"));
+			Assert.Contains("B", target);
+			Assert.DoesNotContain("X", target);
 		}
 
 		[TestMethod()]
@@ -52,7 +52,7 @@ namespace Menees.Common.Tests
 		public void IsProperSubsetOfTest()
 		{
 			ISet<string> target = CreateInstance();
-			bool actual = target.IsProperSubsetOf(new[] { "A", "B", "C", "D" });
+			bool actual = target.IsProperSubsetOf(["A", "B", "C", "D"]);
 			Assert.IsTrue(actual);
 		}
 
@@ -60,7 +60,7 @@ namespace Menees.Common.Tests
 		public void IsProperSupersetOfTest()
 		{
 			ISet<string> target = CreateInstance();
-			bool actual = target.IsProperSupersetOf(new[] { "A", "B" });
+			bool actual = target.IsProperSupersetOf(["A", "B"]);
 			Assert.IsTrue(actual);
 		}
 
@@ -68,7 +68,7 @@ namespace Menees.Common.Tests
 		public void IsSubsetOfTest()
 		{
 			ISet<string> target = CreateInstance();
-			bool actual = target.IsSubsetOf(new[] { "A", "B", "C" });
+			bool actual = target.IsSubsetOf(["A", "B", "C"]);
 			Assert.IsTrue(actual);
 		}
 
@@ -76,7 +76,7 @@ namespace Menees.Common.Tests
 		public void IsSupersetOfTest()
 		{
 			ISet<string> target = CreateInstance();
-			bool actual = target.IsSupersetOf(new[] { "A", "B", "C" });
+			bool actual = target.IsSupersetOf(["A", "B", "C"]);
 			Assert.IsTrue(actual);
 		}
 
@@ -84,7 +84,7 @@ namespace Menees.Common.Tests
 		public void OverlapsTest()
 		{
 			ISet<string> target = CreateInstance();
-			bool actual = target.Overlaps(new[] { "B", "C", "D" });
+			bool actual = target.Overlaps(["B", "C", "D"]);
 			Assert.IsTrue(actual);
 		}
 
@@ -93,7 +93,7 @@ namespace Menees.Common.Tests
 		{
 			ISet<string> target = CreateInstance();
 
-			string[] other = new[] { "B", "A", "C" };
+			string[] other = ["B", "A", "C"];
 			bool actual = target.SetEquals(other);
 			Assert.IsTrue(actual);
 

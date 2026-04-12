@@ -13,20 +13,20 @@ namespace Menees.Common.Tests
 		[TestMethod()]
 		public void ToBooleanTest()
 		{
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("Y"));
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("Yes"));
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("T"));
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("True"));
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("1"));
+			Assert.IsTrue(ConvertUtility.ToBoolean("Y"));
+			Assert.IsTrue(ConvertUtility.ToBoolean("Yes"));
+			Assert.IsTrue(ConvertUtility.ToBoolean("T"));
+			Assert.IsTrue(ConvertUtility.ToBoolean("True"));
+			Assert.IsTrue(ConvertUtility.ToBoolean("1"));
 
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("N"));
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("No"));
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("F"));
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("False"));
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("0"));
-			Assert.AreEqual(false, ConvertUtility.ToBoolean("Testing"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("N"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("No"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("F"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("False"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("0"));
+			Assert.IsFalse(ConvertUtility.ToBoolean("Testing"));
 
-			Assert.AreEqual(true, ConvertUtility.ToBoolean("Testing", true));
+			Assert.IsTrue(ConvertUtility.ToBoolean("Testing", true));
 		}
 
 		[TestMethod()]
@@ -42,7 +42,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ConvertValueTest()
 		{
-			object? actualObject = ConvertUtility.ConvertValue("1, 2", typeof(Point));
+			object? actualObject = ConvertUtility.ConvertValue<Point>("1, 2");
 			actualObject.ShouldNotBeNull();
 			Point actual = (Point)actualObject!;
 			Point expected = new(1, 2);
@@ -57,12 +57,12 @@ namespace Menees.Common.Tests
 		public void IsNullTest()
 		{
 			int? nullInt = null;
-			Assert.AreEqual(true, ConvertUtility.IsNull(nullInt));
-			Assert.AreEqual(true, ConvertUtility.IsNull(null));
-			Assert.AreEqual(true, ConvertUtility.IsNull(DBNull.Value));
+			Assert.IsTrue(ConvertUtility.IsNull(nullInt));
+			Assert.IsTrue(ConvertUtility.IsNull(null));
+			Assert.IsTrue(ConvertUtility.IsNull(DBNull.Value));
 
-			Assert.AreEqual(false, ConvertUtility.IsNull(0));
-			Assert.AreEqual(false, ConvertUtility.IsNull("Test"));
+			Assert.IsFalse(ConvertUtility.IsNull(0));
+			Assert.IsFalse(ConvertUtility.IsNull("Test"));
 		}
 
 		[TestMethod]
@@ -103,8 +103,8 @@ namespace Menees.Common.Tests
 		public void ToHexTest()
 		{
 			ConvertUtility.ToHex(null).ShouldBeNull();
-			ConvertUtility.ToHex(Enumerable.Empty<byte>()).ShouldBe(string.Empty);
-			byte[] ateBadBeef = new byte[] { 0x8B, 0xAD, 0xBE, 0xEF};
+			ConvertUtility.ToHex([]).ShouldBe(string.Empty);
+			byte[] ateBadBeef = [0x8B, 0xAD, 0xBE, 0xEF];
 			ConvertUtility.ToHex(ateBadBeef).ShouldBe("8BADBEEF");
 			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.None).ShouldBe("8BADBEEF");
 			ConvertUtility.ToHex(ateBadBeef, ToHexOptions.Lowercase).ShouldBe("8badbeef");

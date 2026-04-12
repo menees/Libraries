@@ -199,16 +199,16 @@ namespace Menees.Windows.Presentation
 
 		private static RowDefinition[] GetTargetRows(GridSplitter splitter)
 		{
-			RowDefinition[] result = Array.Empty<RowDefinition>();
+			RowDefinition[] result = [];
 
 			if (splitter.Parent is Grid grid)
 			{
 				int splitterRow = Grid.GetRow(splitter);
-				result = new[]
-				{
+				result =
+				[
 					grid.RowDefinitions[splitterRow - 1],
 					grid.RowDefinitions[splitterRow + 1],
-				};
+				];
 			}
 
 			return result;

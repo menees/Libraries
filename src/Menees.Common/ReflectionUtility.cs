@@ -116,7 +116,7 @@ namespace Menees
 
 			if (assembly != null)
 			{
-				var configuration = (AssemblyConfigurationAttribute?)assembly.GetCustomAttribute(typeof(AssemblyConfigurationAttribute));
+				var configuration = assembly.GetCustomAttribute<AssemblyConfigurationAttribute>();
 				result = configuration?.Configuration?.Contains("Debug") ?? false;
 			}
 

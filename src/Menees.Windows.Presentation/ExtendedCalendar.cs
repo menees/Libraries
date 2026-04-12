@@ -43,7 +43,6 @@
 
 		#region Constructors
 
-		[SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "WPF requires static constructors.")]
 		static ExtendedCalendar()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ExtendedCalendar), new FrameworkPropertyMetadata(typeof(ExtendedCalendar)));

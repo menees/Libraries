@@ -18,7 +18,7 @@ namespace Menees.Common.Tests
 			var values = CsvUtility.ReadLine("A, B, C").ToArray();
 			CollectionAssert.AreEqual(new[] { "A", "B", "C" }, values);
 
-			values = CsvUtility.ReadLine("A, B, C", false).ToArray();
+			values = [.. CsvUtility.ReadLine("A, B, C", false)];
 			CollectionAssert.AreEqual(new[] { "A", " B", " C" }, values);
 		}
 
@@ -30,10 +30,10 @@ namespace Menees.Common.Tests
 				var values = CsvUtility.ReadLine(reader)!.ToArray();
 				CollectionAssert.AreEqual(new[] { "A", "B", "C" }, values);
 
-				values = CsvUtility.ReadLine(reader)!.ToArray();
+				values = [.. CsvUtility.ReadLine(reader)!];
 				CollectionAssert.AreEqual(new[] { "D", "E", "F" }, values);
 
-				values = CsvUtility.ReadLine(reader)!.ToArray();
+				values = [.. CsvUtility.ReadLine(reader)!];
 				CollectionAssert.AreEqual(new[] { "G", "H\r\nh", "I\r\ni" }, values);
 
 				var nullValue = CsvUtility.ReadLine(reader);
@@ -183,11 +183,11 @@ namespace Menees.Common.Tests
 			StringBuilder buffer = new();
 			using (StringWriter writer = new(buffer))
 			{
-				CsvUtility.WriteLine(writer, new object[] { 1, "A", "B", "C", 4.2m });
+				CsvUtility.WriteLine(writer, [1, "A", "B", "C", 4.2m]);
 				buffer.ToString().ShouldBe("1,A,B,C,4.2\r\n");
 				buffer.Clear();
 
-				CsvUtility.WriteLine(writer, new object[] { 1, "A, \"B A\", C", 4.2m });
+				CsvUtility.WriteLine(writer, [1, "A, \"B A\", C", 4.2m]);
 				buffer.ToString().ShouldBe("1,\"A, \"\"B A\"\", C\",4.2\r\n");
 				buffer.Clear();
 			}
@@ -267,7 +267,7 @@ namespace Menees.Common.Tests
 							preLoadTable.Columns[i].DataType = TestData[1, i].GetType();
 						}
 
-						preLoadTable.PrimaryKey = new[] { preLoadTable.Columns[0] };
+						preLoadTable.PrimaryKey = [preLoadTable.Columns[0]];
 					});
 
 				TestReadTable(table, newTable, treatAsStrings: false);

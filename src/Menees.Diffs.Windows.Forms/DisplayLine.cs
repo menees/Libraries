@@ -11,7 +11,7 @@
 	#endregion
 
 	[DebuggerDisplay("DisplayText = {GetDisplayText()}")]
-	internal struct DisplayLine
+	internal readonly struct DisplayLine
 	{
 		#region Private Data Members
 

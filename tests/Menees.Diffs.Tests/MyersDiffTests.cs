@@ -28,7 +28,7 @@ namespace Menees.Diffs.Tests
 			{
 				var diff = Diff(a, b);
 				IList<char> sequence = diff.GetLongestCommonSubsequence();
-				string result = new(sequence.ToArray());
+				string result = new([.. sequence]);
 				return result;
 			}
 

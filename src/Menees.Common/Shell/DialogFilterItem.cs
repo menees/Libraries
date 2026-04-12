@@ -40,7 +40,7 @@ namespace Menees.Shell
 		public DialogFilterItem(string extension, bool pluralize)
 		{
 			string mask = GetMask(extension);
-			this.Masks = new[] { mask };
+			this.Masks = [mask];
 
 			this.ItemName = (ShellUtility.GetFileTypeInfo(mask, false, IconOptions.None, null) ?? string.Empty).Trim();
 			if (string.IsNullOrEmpty(this.ItemName))

@@ -51,6 +51,13 @@
 		<AssemblyMetadata Condition="'$(BuildTime)' != ''" Include="BuildTime" Value="$(BuildTime)" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<PackageReference Include="Meziantou.Polyfill" Version="1.0.110">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UseCustomCodeAnalyzers)">
 		<PackageReference Include="Menees.Analyzers" Version="4.0.0">
 			<PrivateAssets>all</PrivateAssets>

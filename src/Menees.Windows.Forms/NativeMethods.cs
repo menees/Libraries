@@ -99,8 +99,8 @@ namespace Menees.Windows.Forms
 			// http://www.codeproject.com/Articles/8489/Getting-a-quot-Handle-quot-on-the-MDI-Client
 			const int GWL_STYLE = -16;
 			const int GWL_EXSTYLE = -20;
-			const int WS_BORDER = 0x00800000;
-			const int WS_EX_CLIENTEDGE = 0x00000200;
+			const int WS_BORDER = 0x_0080_0000;
+			const int WS_EX_CLIENTEDGE = 0x_0000_0200;
 
 			// Get styles using Win32 calls
 			int style = GetWindowLong(handle, GWL_STYLE);
@@ -195,7 +195,6 @@ namespace Menees.Windows.Forms
 		[StructLayout(LayoutKind.Sequential)]
 		private struct ScrollInfo
 		{
-#pragma warning disable CC0074 // Make field readonly
 			public uint size;
 			public uint mask;
 			public int min;
@@ -203,12 +202,11 @@ namespace Menees.Windows.Forms
 			public uint page;
 			public int pos;
 			public int trackPos;
-#pragma warning restore CC0074 // Make field readonly
 
 			public static ScrollInfo Create(uint mask)
 			{
 				ScrollInfo info = default;
-				info.size = (uint)Marshal.SizeOf(typeof(ScrollInfo));
+				info.size = (uint)Marshal.SizeOf<ScrollInfo>();
 				info.mask = mask;
 				return info;
 			}
@@ -217,7 +215,6 @@ namespace Menees.Windows.Forms
 		[StructLayout(LayoutKind.Sequential)]
 		private struct WINDOWPLACEMENT
 		{
-#pragma warning disable CC0074 // Make field readonly
 			public int length;
 			public int flags;
 			public int showCmd;
@@ -229,7 +226,6 @@ namespace Menees.Windows.Forms
 			// into Rectangle's {Left, Top, Width, Height} fields.  So the Rectangle's
 			// size will be skewed by an offset of {Left, Top}.
 			public Rectangle rcNormalPosition;
-#pragma warning restore CC0074 // Make field readonly
 		}
 
 		#endregion

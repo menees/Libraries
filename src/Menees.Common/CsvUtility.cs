@@ -35,7 +35,7 @@ namespace Menees
 
 		#region Private Data Members
 
-		private static readonly char[] SpecialCharacters = new[] { FieldSeparator, FieldDelimiter, '\r', '\n' };
+		private static readonly char[] SpecialCharacters = [FieldSeparator, FieldDelimiter, '\r', '\n'];
 		private static readonly string FieldDelimiterString = new(FieldDelimiter, 1);
 
 		#endregion
@@ -52,12 +52,11 @@ namespace Menees
 		/// If the line contains a quoted field value with embedded newlines,
 		/// then this will keep reading lines until the record is complete.
 		/// </remarks>
-		[SuppressMessage("", "CC0039", Justification = "Concatenation inside the loop should be extremely rare.")]
 		public static IList<string>? ReadLine(TextReader reader)
 		{
 			Conditions.RequireReference(reader, nameof(reader));
 
-			IList<string>? result = null;
+			List<string>? result = null;
 
 			string? line = reader.ReadLine();
 			if (line != null)

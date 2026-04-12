@@ -178,7 +178,7 @@ namespace Menees.Diffs.Tests
 			IList<string> rightLines = DiffUtility.GetStringTextLines(right);
 
 			EditScript? edits = null;
-			foreach (HashType hashType in Enum.GetValues(typeof(HashType)))
+			foreach (HashType hashType in Enum.GetValues<HashType>())
 			{
 				TextDiff diff = new(hashType, ignoreCase, ignoreOuterWhiteSpace, 0, supportChangeEditType);
 				EditScript newEdits = diff.Execute(leftLines, rightLines);

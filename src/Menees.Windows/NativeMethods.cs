@@ -192,11 +192,11 @@ namespace Menees.Windows
 			// The MSDN examples say we should always do GetOptions before SetOptions to avoid overriding default options.
 			dialog.GetOptions(out uint options);
 
-			const uint FOS_PICKFOLDERS = 0x00000020;
-			const uint FOS_FORCEFILESYSTEM = 0x00000040;
-			const uint FOS_NOVALIDATE = 0x00000100;
-			const uint FOS_NOTESTFILECREATE = 0x00010000;
-			const uint FOS_DONTADDTORECENT = 0x02000000;
+			const uint FOS_PICKFOLDERS = 0x_0000_0020;
+			const uint FOS_FORCEFILESYSTEM = 0x_0000_0040;
+			const uint FOS_NOVALIDATE = 0x_0000_0100;
+			const uint FOS_NOTESTFILECREATE = 0x_0001_0000;
+			const uint FOS_DONTADDTORECENT = 0x_0200_0000;
 			options |= FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM | FOS_NOVALIDATE | FOS_NOTESTFILECREATE | FOS_DONTADDTORECENT;
 			dialog.SetOptions(options);
 
@@ -225,13 +225,13 @@ namespace Menees.Windows
 			}
 
 			uint showResult = dialog.Show(ownerHandle.GetValueOrDefault());
-			const uint ERROR_CANCELLED = 0x800704C7; // For when the user clicks Cancel.
+			const uint ERROR_CANCELLED = 0x_8007_04C7; // For when the user clicks Cancel.
 			string? result = null;
 			if (showResult == S_OK)
 			{
 				if (dialog.GetResult(out IShellItem shellItem) == S_OK)
 				{
-					const uint SIGDN_FILESYSPATH = 0x80058000;
+					const uint SIGDN_FILESYSPATH = 0x_8005_8000;
 					if (shellItem.GetDisplayName(SIGDN_FILESYSPATH, out IntPtr pszString) == S_OK)
 					{
 						if (pszString != IntPtr.Zero)
@@ -307,7 +307,6 @@ namespace Menees.Windows
 
 		[DllImport("user32.dll")]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		[SuppressMessage("", "CC0072", Justification = "The Async suffix comes from the Win32 API.")]
 		private static extern bool ShowWindowAsync(IntPtr hWnd, int commandShow);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, SetLastError = true)]

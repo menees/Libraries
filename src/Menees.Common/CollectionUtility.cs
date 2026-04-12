@@ -110,7 +110,7 @@ namespace Menees
 		/// This method is similar to <see cref="Enumerable.Empty{TResult}"/> but this returns
 		/// an array instead of just an <see cref="IEnumerable{TResult}"/>.
 		/// </remarks>
-		public static TResult[] EmptyArray<TResult>() => Array.Empty<TResult>();
+		public static TResult[] EmptyArray<TResult>() => [];
 
 		/// <summary>
 		/// Gets whether the specified collection is null or empty.

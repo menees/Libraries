@@ -36,10 +36,12 @@ namespace Menees.Diffs.Tests
 			int tableSize = 97,
 			bool favorLastMatch = false)
 		{
-			BinaryDiff diff = new();
-			diff.FavorLastMatch = favorLastMatch;
-			diff.FootprintLength = footprintLength;
-			diff.TableSize = tableSize;
+			BinaryDiff diff = new()
+			{
+				FavorLastMatch = favorLastMatch,
+				FootprintLength = footprintLength,
+				TableSize = tableSize
+			};
 
 			using Stream aStream = new MemoryStream(Encoding.UTF8.GetBytes(aContent));
 			using Stream bStream = new MemoryStream(Encoding.UTF8.GetBytes(bContent));

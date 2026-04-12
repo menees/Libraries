@@ -200,7 +200,7 @@ namespace Menees.Diagnostics
 			if (type != null)
 			{
 				sb.Append(GetFullName(type, true));
-				sb.Append(".");
+				sb.Append('.');
 			}
 
 			sb.Append(baseMethod.Name);
@@ -214,7 +214,7 @@ namespace Menees.Diagnostics
 			}
 
 			// Append the method parameters.
-			sb.Append("(");
+			sb.Append('(');
 			ParameterInfo[] methodArgs = baseMethod.GetParameters();
 			for (int i = 0; i < methodArgs.Length; i++)
 			{
@@ -234,24 +234,24 @@ namespace Menees.Diagnostics
 				sb.Append(argTypeName + " " + arg.Name);
 			}
 
-			sb.Append(")");
+			sb.Append(')');
 		}
 
 		private static void AppendGenericArguments(StringBuilder sb, Type[] genericArgs)
 		{
 			// StackTrace.ToString uses [T] delimiters here rather than <T>.  I'll use <T> to be more C#-like.
-			sb.Append("<");
+			sb.Append('<');
 			for (int i = 0; i < genericArgs.Length; i++)
 			{
 				if (i > 0)
 				{
-					sb.Append(",");
+					sb.Append(',');
 				}
 
 				sb.Append(genericArgs[i].Name);
 			}
 
-			sb.Append(">");
+			sb.Append('>');
 		}
 
 		private static StackFrame?[] CaptureSourceStack(bool needFileInfo, bool topFrameOnly)

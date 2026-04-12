@@ -12,19 +12,19 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void ConstructorTest()
 		{
-			DialogFilterItem item = new DialogFilterItem("exe", false);
+			DialogFilterItem item = new("exe", false);
 			item.ItemName.ShouldBe("Application", StringCompareShould.IgnoreCase);
-			item.Masks.SequenceEqual(new[] { "*.exe" }).ShouldBeTrue();
+			item.Masks.SequenceEqual(["*.exe"]).ShouldBeTrue();
 			item.ToString().ShouldBe("Application (*.exe)|*.exe", StringCompareShould.IgnoreCase);
 
 			item = new DialogFilterItem("Text Files", "txt");
 			item.ItemName.ShouldBe("Text Files");
-			item.Masks.SequenceEqual(new[] { "*.txt" }).ShouldBeTrue();
+			item.Masks.SequenceEqual(["*.txt"]).ShouldBeTrue();
 			item.ToString().ShouldBe("Text Files (*.txt)|*.txt");
 
 			item = new DialogFilterItem("Testing Files", "txt", ".abc", "*.xyz");
 			item.ItemName.ShouldBe("Testing Files");
-			item.Masks.SequenceEqual(new[] { "*.txt", "*.abc", "*.xyz" }).ShouldBeTrue();
+			item.Masks.SequenceEqual(["*.txt", "*.abc", "*.xyz"]).ShouldBeTrue();
 			item.ToString().ShouldBe("Testing Files (*.txt;*.abc;*.xyz)|*.txt;*.abc;*.xyz");
 		}
 

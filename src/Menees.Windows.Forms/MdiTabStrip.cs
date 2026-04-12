@@ -623,7 +623,6 @@ namespace Menees.Windows.Forms
 			this.UpdateTabStrip(sender as MdiTab);
 		}
 
-		[SuppressMessage("Design", "CC0091:Use static method", Justification = "WinForms designer expects instance level.")]
 		private void Tab_CloseClicked(object? sender, EventArgs e)
 		{
 			if (sender is MdiTab tab)
@@ -657,7 +656,6 @@ namespace Menees.Windows.Forms
 			this.UpdateTabStrip(tab);
 		}
 
-		[SuppressMessage("Design", "CC0091:Use static method", Justification = "WinForms designer expects instance level.")]
 		private void MdiTabStrip_DragEnter(object? sender, DragEventArgs e)
 		{
 			// Don't allow ToolStripItems from other ToolStrips to be dragged into this ToolStrip.

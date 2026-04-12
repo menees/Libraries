@@ -205,12 +205,10 @@ namespace Menees.Windows.Presentation
 					result = true;
 				}
 			}
-#pragma warning disable CC0004 // Catch block cannot be empty
 			catch (Win32Exception)
 			{
 				// The core ShellExecute logic already displays an error dialog if a Win32Exception occurs.
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 
 			return result;
 		}

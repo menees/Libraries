@@ -23,7 +23,6 @@ namespace Menees.Windows.Presentation
 		/// <summary>
 		/// The DialogResult dependency property.
 		/// </summary>
-		[SuppressMessage("", "SA1118", Justification = "Dependency property initialization is best with parameters defined inline.")]
 		public static readonly DependencyProperty DialogResultProperty = DependencyProperty.RegisterAttached(
 			"DialogResult",
 			typeof(bool?),
@@ -33,7 +32,7 @@ namespace Menees.Windows.Presentation
 				// Idea came from: http://stackoverflow.com/questions/1759372/where-is-button-dialogresult-in-wpf/1759505#1759505
 				PropertyChangedCallback = (obj, e) =>
 				{
-					if (!(obj is Button button))
+					if (obj is not Button button)
 					{
 						throw Exceptions.NewInvalidOperationException("DialogResult can only be used on a Button control.");
 					}
@@ -48,7 +47,6 @@ namespace Menees.Windows.Presentation
 		/// <summary>
 		/// The ShowIcon dependency property.
 		/// </summary>
-		[SuppressMessage("", "SA1118", Justification = "Dependency property initialization is best with parameters defined inline.")]
 		public static readonly DependencyProperty ShowIconProperty = DependencyProperty.Register(
 			"ShowIcon",
 			typeof(bool),
@@ -57,7 +55,7 @@ namespace Menees.Windows.Presentation
 				false,
 				new PropertyChangedCallback((obj, e) =>
 					{
-						if (!(obj is ExtendedDialog dialog))
+						if (obj is not ExtendedDialog dialog)
 						{
 							throw Exceptions.NewInvalidOperationException("ShowIcon can only be used on an ExtendedDialog.");
 						}
@@ -67,10 +65,6 @@ namespace Menees.Windows.Presentation
 
 		#region Constructors
 
-		[SuppressMessage(
-			"Microsoft.Performance",
-			"CA1810:InitializeReferenceTypeStaticFieldsInline",
-			Justification = "Changing WPF's static property metadata requires a static constructor.")]
 		static ExtendedDialog()
 		{
 			// Tell WPF that we're changing some default property values from their Window settings to better values for modal dialogs.
@@ -94,21 +88,11 @@ namespace Menees.Windows.Presentation
 		/// <summary>
 		/// Gets the DialogResult dependency property value for the specified button.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1011:ConsiderPassingBaseTypesAsParameters",
-			Justification = "The PropertyChangedCallback requires a Button.")]
-#pragma warning disable CA1721 // Property names should not match get methods
 		public static bool? GetDialogResult(Button button) => (bool?)button.GetValue(DialogResultProperty);
-#pragma warning restore CA1721 // Property names should not match get methods
 
 		/// <summary>
 		/// Sets the DialogResult dependency property value for the specified button.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1011:ConsiderPassingBaseTypesAsParameters",
-			Justification = "The PropertyChangedCallback requires a Button.")]
 		public static void SetDialogResult(Button button, bool? value)
 		{
 			button.SetValue(DialogResultProperty, value);
@@ -117,19 +101,11 @@ namespace Menees.Windows.Presentation
 		/// <summary>
 		/// Gets the ShowIcon dependency property value for the dialog.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1011:ConsiderPassingBaseTypesAsParameters",
-			Justification = "The PropertyChangedCallback requires an ExtendedDialog.")]
 		public static bool GetShowIcon(ExtendedDialog dialog) => (bool)dialog.GetValue(ShowIconProperty);
 
 		/// <summary>
 		/// Sets the ShowIcon dependency property value for the dialog.
 		/// </summary>
-		[SuppressMessage(
-			"Microsoft.Design",
-			"CA1011:ConsiderPassingBaseTypesAsParameters",
-			Justification = "The PropertyChangedCallback requires an ExtendedDialog.")]
 		public static void SetShowIcon(ExtendedDialog dialog, bool value)
 		{
 			dialog.SetValue(ShowIconProperty, value);

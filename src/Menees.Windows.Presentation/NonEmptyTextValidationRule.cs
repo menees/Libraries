@@ -44,7 +44,7 @@
 		{
 			ValidationResult result = ValidationResult.ValidResult;
 
-			if (value == null || !(value is string text) || string.IsNullOrWhiteSpace(text))
+			if (value == null || value is not string text || string.IsNullOrWhiteSpace(text))
 			{
 				result = new ValidationResult(false, this.ErrorMessage);
 			}

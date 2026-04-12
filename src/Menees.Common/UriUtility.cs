@@ -48,7 +48,7 @@ namespace Menees
 					const string Separator = "/";
 					bool pathEndsWithSeparator = path.EndsWith(Separator);
 					bool newPathPartStartsWithSeparator = newPathPart.StartsWith(Separator) ||
-						(builder.Scheme == Uri.UriSchemeFile && newPathPart.StartsWith(@"\"));
+						(builder.Scheme == Uri.UriSchemeFile && newPathPart.StartsWith('\\'));
 					if (pathEndsWithSeparator && newPathPartStartsWithSeparator)
 					{
 						// Leave out a separator rather than have path//part.

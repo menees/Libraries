@@ -40,7 +40,7 @@ namespace Menees.Common.Tests
 		public void ExecutableFileTest()
 		{
 			string actual = ApplicationInfo.ExecutableFile;
-			Assert.IsTrue(!string.IsNullOrEmpty(actual), "The file path is non-empty.");
+			Assert.IsFalse(string.IsNullOrEmpty(actual), "The file path is non-empty.");
 			Assert.AreEqual(".exe", Path.GetExtension(actual), true);
 		}
 

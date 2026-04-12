@@ -39,9 +39,9 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			bool actual = element.GetAttributeValue("flag", false);
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 			actual = element.GetAttributeValue("missing", true);
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 		}
 
 		[TestMethod()]
@@ -85,7 +85,7 @@ namespace Menees.Common.Tests
 		[TestMethod]
 		public void CreateSchemaTest()
 		{
-			XmlSchemaSet schema = XmlUtility.CreateSchemaSet(new[] { schemaElement });
+			XmlSchemaSet schema = XmlUtility.CreateSchemaSet([schemaElement]);
 			Assert.IsNotNull(schema);
 
 			// Switch use='required' to use='unknown', which is not a supported XSD attribute value.
@@ -93,21 +93,21 @@ namespace Menees.Common.Tests
 			XElement badSchemaElement = XElement.Parse(badSchemaText, LoadOptions.SetLineInfo);
 
 			List<ValidationEventArgs> errors = [];
-			schema = XmlUtility.CreateSchemaSet(new[] { badSchemaElement }, errors);
+			schema = XmlUtility.CreateSchemaSet([badSchemaElement], errors);
 			Assert.IsNotNull(schema);
-			Assert.AreEqual(1, errors.Count);
+			Assert.HasCount(1, errors);
 		}
 
 		[TestMethod]
 		public void ValidateTest()
 		{
-			XmlSchemaSet schema = XmlUtility.CreateSchemaSet(new[] { schemaElement });
+			XmlSchemaSet schema = XmlUtility.CreateSchemaSet([schemaElement]);
 			var errors = xmlElement.Validate(schema);
-			Assert.AreEqual(0, errors.Count);
+			Assert.IsEmpty(errors);
 
 			schema = CreateValidationFailureSchema();
 			errors = xmlElement.Validate(schema);
-			Assert.AreEqual(1, errors.Count);
+			Assert.HasCount(1, errors);
 		}
 
 		private static XmlSchemaSet CreateValidationFailureSchema()
@@ -115,14 +115,14 @@ namespace Menees.Common.Tests
 			// Remove support for an attribute that's used by the sample XML, which should cause a validation error.
 			string failingSchemaText = schemaText.Replace("<xs:attribute name='empty' type='xs:string' use='required' />", "");
 			XElement failingSchemaElement = XElement.Parse(failingSchemaText, LoadOptions.SetLineInfo);
-			XmlSchemaSet schema = XmlUtility.CreateSchemaSet(new[] { failingSchemaElement });
+			XmlSchemaSet schema = XmlUtility.CreateSchemaSet([failingSchemaElement]);
 			return schema;
 		}
 
 		[TestMethod]
 		public void RequireValidationTest()
 		{
-			XmlSchemaSet schema = XmlUtility.CreateSchemaSet(new[] { schemaElement });
+			XmlSchemaSet schema = XmlUtility.CreateSchemaSet([schemaElement]);
 			xmlElement.RequireValidation(schema);
 
 			try
@@ -133,7 +133,9 @@ namespace Menees.Common.Tests
 			}
 			catch (XmlSchemaValidationException ex)
 			{
-				Assert.IsTrue(!string.IsNullOrEmpty(ex.Message));
+#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
+				Assert.IsFalse(string.IsNullOrEmpty(ex.Message));
+#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 		}
 	}

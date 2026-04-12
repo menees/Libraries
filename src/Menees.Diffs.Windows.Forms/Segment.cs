@@ -11,7 +11,7 @@
 	#endregion
 
 	[DebuggerDisplay("Start = {Start}, Length = {Length}")]
-	internal struct Segment
+	internal readonly struct Segment
 	{
 		#region Constructors
 

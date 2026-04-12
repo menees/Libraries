@@ -5,6 +5,7 @@ root = true
 [*]
 indent_style = tab
 
+[*.cs]
 # IDE0063: Use simple 'using' statement
 csharp_prefer_simple_using_statement = false:silent
 
@@ -18,3 +19,9 @@ csharp_style_prefer_range_operator = true:silent
 csharp_style_prefer_switch_expression = false:silent
 
 csharp_using_directive_placement = inside_namespace
+
+# I don't prefer primary constructors in general.
+dotnet_diagnostic.IDE0290.severity = none
+
+# Using LibraryImportAttribute requires unsafe code to be allowed for the whole assembly.
+dotnet_diagnostic.SYSLIB1054.severity = none

@@ -110,9 +110,9 @@
 
 		#region Private Data Members
 
-		private static readonly char[] SwitchPrefixes = new[] { '/', '-' };
-		private static readonly char[] SwitchValueSeparators = new[] { ':', '=' };
-		private static readonly char[] QuotableCharacters = new[] { ' ', '\t', '\r', '\n', '\v', '"' };
+		private static readonly char[] SwitchPrefixes = ['/', '-'];
+		private static readonly char[] SwitchValueSeparators = [':', '='];
+		private static readonly char[] QuotableCharacters = [' ', '\t', '\r', '\n', '\v', '"'];
 
 		private readonly bool useConsole;
 		private readonly Dictionary<string, Switch> nameToSwitchMap;
@@ -339,7 +339,7 @@
 				}
 			}
 
-			return result ?? Enumerable.Empty<string>();
+			return result ?? [];
 		}
 
 		#endregion
@@ -459,7 +459,7 @@
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <returns>The current instance.</returns>
 		public CommandLine AddSwitch(string name, string description, Action<bool> handler)
-			=> this.InternalAddSwitch(new[] { name }, description, handler, CommandLineSwitchOptions.None);
+			=> this.InternalAddSwitch([name], description, handler, CommandLineSwitchOptions.None);
 
 		/// <summary>
 		/// Adds a flag switch using the specified options.
@@ -470,7 +470,7 @@
 		/// <param name="options">Options that affect the switch's behavior.</param>
 		/// <returns>The current instance.</returns>
 		public CommandLine AddSwitch(string name, string description, Action<bool> handler, CommandLineSwitchOptions options)
-			=> this.InternalAddSwitch(new[] { name }, description, handler, options);
+			=> this.InternalAddSwitch([name], description, handler, options);
 
 		/// <summary>
 		/// Adds a flag switch with multiple names.
@@ -501,7 +501,7 @@
 		/// <param name="handler">The action to execute to handle the switch value.</param>
 		/// <returns>The current instance.</returns>
 		public CommandLine AddSwitch(string name, string description, Action<string, IList<string>> handler)
-			=> this.InternalAddSwitch(new[] { name }, description, handler, CommandLineSwitchOptions.None);
+			=> this.InternalAddSwitch([name], description, handler, CommandLineSwitchOptions.None);
 
 		/// <summary>
 		/// Adds an associated value switch using the specified options.
@@ -512,7 +512,7 @@
 		/// <param name="options">Options that affect the switch's behavior.</param>
 		/// <returns>The current instance.</returns>
 		public CommandLine AddSwitch(string name, string description, Action<string, IList<string>> handler, CommandLineSwitchOptions options)
-			=> this.InternalAddSwitch(new[] { name }, description, handler, options);
+			=> this.InternalAddSwitch([name], description, handler, options);
 
 		/// <summary>
 		/// Adds an associated value switch with multiple names.
@@ -613,7 +613,7 @@
 			if (!this.nameToSwitchMap.ContainsKey("?"))
 			{
 				// Use a blank description, so this switch won't show up in the help message.
-				this.AddSwitch(new[] { "?", "help" }, string.Empty, value => { this.currentState = State.HelpRequested; });
+				this.AddSwitch(["?", "help"], string.Empty, value => { this.currentState = State.HelpRequested; });
 			}
 
 			// Process the arguments we were given.
@@ -818,10 +818,10 @@
 					}
 				}
 
-				words.Add(originalLine.Substring(wordStart, originalLine.Length - wordStart));
+				words.Add(originalLine.Substring(wordStart));
 
 				// Trim off leading whitespace from words and remove empty entries.
-				words = words.Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s)).ToList();
+				words = [.. words.Select(s => s.Trim()).Where(s => !string.IsNullOrEmpty(s))];
 
 				StringBuilder currentLine = new();
 				foreach (string word in words)
@@ -1064,12 +1064,12 @@
 						this.AddError("Unsupported switch format: {0}", originalArg);
 					}
 				}
-				else if (arg.EndsWith("+", StringComparison.Ordinal) || arg.EndsWith("-", StringComparison.Ordinal))
+				else if (arg.EndsWith('+') || arg.EndsWith('-'))
 				{
 					Switch? sw = this.FindSwitch(arg.Substring(0, arg.Length - 1), prefix);
 					if (sw != null)
 					{
-						bool flagValue = !arg.EndsWith("-", StringComparison.Ordinal);
+						bool flagValue = !arg.EndsWith('-');
 						sw.SetFlag(flagValue, this);
 					}
 				}

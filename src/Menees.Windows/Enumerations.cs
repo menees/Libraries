@@ -41,11 +41,6 @@
 		ShowMaximized = 3,
 
 		/// <summary>
-		/// Maximizes the specified window.
-		/// </summary>
-		Maximize = 3,
-
-		/// <summary>
 		/// Displays a window in its most recent size and position. This value is similar to <see cref="ShowNormal"/>,
 		/// except that the window is not activated.
 		/// </summary>

@@ -4,7 +4,6 @@
 	<!-- https://docs.microsoft.com/en-us/visualstudio/test/configure-unit-tests-by-using-a-dot-runsettings-file?view=vs-2019#elements-of-a-runsettings-file -->
 	<RunConfiguration>
 		<ResultsDirectory>%temp%\TestResults</ResultsDirectory>
-		<TargetPlatform>x64</TargetPlatform>
 	</RunConfiguration>
 
 	<MSTest>

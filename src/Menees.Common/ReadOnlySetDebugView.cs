@@ -16,7 +16,7 @@ namespace Menees
 	{
 		#region Private Data Members
 
-		private readonly ISet<T> set;
+		private readonly ReadOnlySet<T> set;
 
 		#endregion
 

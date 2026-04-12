@@ -153,7 +153,7 @@ namespace Menees.Shell
 		{
 			lock (this.lines)
 			{
-				string[] result = this.lines.ToArray();
+				string[] result = [.. this.lines];
 				return result;
 			}
 		}

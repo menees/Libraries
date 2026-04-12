@@ -17,6 +17,9 @@
 		<!-- Don't run code analyzers on test code. This was a historically bad decision. -->
 		<UseCustomCodeAnalyzers>false</UseCustomCodeAnalyzers>
 		<CodeAnalysisRuleSet></CodeAnalysisRuleSet>
+
+		<!-- CA1861: It's ok to use constant array args in unit test methods. -->
+		<NoWarn>$(NoWarn);CA1861</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -30,5 +33,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Shouldly" Version="4.3.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.Shared.cs" Link="Properties\AssemblyInfo.Shared.cs" />
 	</ItemGroup>
 </Project>

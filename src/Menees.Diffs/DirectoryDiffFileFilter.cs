@@ -87,7 +87,7 @@ namespace Menees.Diffs
 			FileInfo[] result;
 			if (this.include)
 			{
-				result = files.ToArray();
+				result = [.. files];
 			}
 			else
 			{
@@ -119,7 +119,7 @@ namespace Menees.Diffs
 					}
 				}
 
-				result = filesToInclude.ToArray();
+				result = [.. filesToInclude];
 			}
 
 			return result;

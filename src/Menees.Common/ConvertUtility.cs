@@ -23,10 +23,10 @@ namespace Menees
 		#region Private Data Members
 
 		private static readonly HashSet<string> FalseValues = new(
-			new string[] { "false", "f", "no", "n", "0" }, StringComparer.OrdinalIgnoreCase);
+			["false", "f", "no", "n", "0"], StringComparer.OrdinalIgnoreCase);
 
 		private static readonly HashSet<string> TrueValues = new(
-			new string[] { "true", "t", "yes", "y", "1" }, StringComparer.OrdinalIgnoreCase);
+			["true", "t", "yes", "y", "1"], StringComparer.OrdinalIgnoreCase);
 
 		#endregion
 
@@ -227,7 +227,7 @@ namespace Menees
 				string? errorMessage = null;
 
 				// Ignore leading and trailing whitespace, embedded whitespace, and colon separators (used in certificate hashes).
-				List<char> chars = value.Where(ch => !char.IsWhiteSpace(ch) && ch != ':').ToList();
+				List<char> chars = [.. value.Where(ch => !char.IsWhiteSpace(ch) && ch != ':')];
 
 				// Skip a "0x" prefix.
 				int charCount = chars.Count;

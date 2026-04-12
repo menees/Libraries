@@ -8,11 +8,11 @@ namespace Menees.Diffs.Windows.Forms
 	#endregion
 
 	[DebuggerDisplay("Line = {Line}, Column = {Column}")]
-	internal struct DiffViewPosition : IEquatable<DiffViewPosition>
+	internal readonly struct DiffViewPosition : IEquatable<DiffViewPosition>
 	{
 		#region Public Fields
 
-		public static readonly DiffViewPosition Empty = new(-100000, -100000);
+		public static readonly DiffViewPosition Empty = new(-100_000, -100_000);
 
 		#endregion
 

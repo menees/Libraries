@@ -487,7 +487,6 @@ namespace Menees.Diffs.Windows.Forms
 			this.ViewFile();
 		}
 
-		[SuppressMessage("Design", "CC0091:Use static method", Justification = "Windows Forms designer prefers non-static.")]
 		private void ColorLegend_Paint(object sender, PaintEventArgs e)
 		{
 			PaintColorLegendItem(sender as ToolStripItem, e);

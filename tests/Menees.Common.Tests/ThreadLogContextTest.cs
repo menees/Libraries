@@ -14,7 +14,7 @@ namespace Menees.Common.Tests
 			string key = "ClearTest";
 			target[key] = 1;
 			target.Clear();
-			Assert.AreEqual(false, target.ContainsKey(key));
+			Assert.IsFalse(target.ContainsKey(key));
 		}
 
 		[TestMethod()]
@@ -23,9 +23,9 @@ namespace Menees.Common.Tests
 			ThreadLogContext target = Log.ThreadContext;
 			string key = "ContainsKeyTest";
 			target[key] = 1;
-			Assert.AreEqual(true, target.ContainsKey(key));
+			Assert.IsTrue(target.ContainsKey(key));
 			target.Remove(key);
-			Assert.AreEqual(false, target.ContainsKey(key));
+			Assert.IsFalse(target.ContainsKey(key));
 		}
 
 		[TestMethod()]
@@ -34,9 +34,9 @@ namespace Menees.Common.Tests
 			ThreadLogContext target = Log.ThreadContext;
 			string key = "RemoveTest";
 			target[key] = 1;
-			Assert.AreEqual(true, target.ContainsKey(key));
+			Assert.IsTrue(target.ContainsKey(key));
 			target.Remove(key);
-			Assert.AreEqual(false, target.ContainsKey(key));
+			Assert.IsFalse(target.ContainsKey(key));
 		}
 
 		[TestMethod()]

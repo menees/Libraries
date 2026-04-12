@@ -188,7 +188,7 @@ namespace Menees.Windows.Presentation
 			public static WINDOWPLACEMENT Create()
 			{
 				WINDOWPLACEMENT result = default;
-				result.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
+				result.length = Marshal.SizeOf<WINDOWPLACEMENT>();
 				return result;
 			}
 
@@ -206,7 +206,7 @@ namespace Menees.Windows.Presentation
 				this.normalPosition.Bottom = node.GetValue("NormalPosition.Bottom", 0);
 			}
 
-			public void Save(ISettingsNode node)
+			public readonly void Save(ISettingsNode node)
 			{
 				// The length and flags fields should not be saved.
 				node.SetValue("ShowCmd", this.showCmd);

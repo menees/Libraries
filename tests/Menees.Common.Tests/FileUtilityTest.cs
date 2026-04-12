@@ -48,11 +48,11 @@ namespace Menees.Common.Tests
 			string fileName = CreateTempFile();
 
 			bool actual = FileUtility.TryDeleteFile(fileName);
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 
 			// It shouldn't be there now.
 			actual = FileUtility.TryDeleteFile(fileName);
-			Assert.AreEqual(false, actual);
+			Assert.IsFalse(actual);
 		}
 
 		[TestMethod()]
@@ -61,12 +61,12 @@ namespace Menees.Common.Tests
 			string fileName = CreateTempFile();
 
 			bool actual = FileUtility.TryDeleteFile(fileName, out int errorCode);
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 			Assert.AreEqual(0, errorCode);
 
 			// It shouldn't be there now.
 			actual = FileUtility.TryDeleteFile(fileName, out errorCode);
-			Assert.AreEqual(false, actual);
+			Assert.IsFalse(actual);
 			Assert.AreEqual(ERROR_FILE_NOT_FOUND, errorCode);
 		}
 
@@ -79,7 +79,7 @@ namespace Menees.Common.Tests
 
 			string? directory = Path.GetDirectoryName(actual);
 			string tempDir = Path.GetTempPath();
-			if (!string.IsNullOrEmpty(tempDir) && tempDir.EndsWith(@"\"))
+			if (!string.IsNullOrEmpty(tempDir) && tempDir.EndsWith('\\'))
 			{
 				tempDir = tempDir.Substring(0, tempDir.Length-1);
 			}
@@ -101,20 +101,20 @@ namespace Menees.Common.Tests
 		{
 			string fileName = CreateTempFile();
 			bool actual = FileUtility.IsReadOnlyFile(fileName);
-			Assert.AreEqual(false, actual);
+			Assert.IsFalse(actual);
 
 			File.SetAttributes(fileName, FileAttributes.ReadOnly);
 			actual = FileUtility.IsReadOnlyFile(fileName);
-			Assert.AreEqual(true, actual);
+			Assert.IsTrue(actual);
 
 			// Try to delete it while it is read-only, so we can test DeleteFile too.
 			actual = FileUtility.TryDeleteFile(fileName, out int errorCode);
-			Assert.AreEqual(false, actual);
+			Assert.IsFalse(actual);
 			Assert.AreEqual(ERROR_ACCESS_DENIED, errorCode);
 
 			File.SetAttributes(fileName, FileAttributes.Normal);
 			actual = FileUtility.IsReadOnlyFile(fileName);
-			Assert.AreEqual(false, actual);
+			Assert.IsFalse(actual);
 
 			FileUtility.TryDeleteFile(fileName);
 		}
@@ -139,8 +139,8 @@ namespace Menees.Common.Tests
 		public void TryGetExactPathNameTest()
 		{
 			string machineName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(Environment.MachineName.ToLower());
-			string[] testPaths = new[]
-				{
+			string[] testPaths =
+				[
 					@"C:\Users\Public\desktop.ini",
 					@"C:\pagefile.sys",
 					@"C:\Windows\System32\cmd.exe",
@@ -152,7 +152,7 @@ namespace Menees.Common.Tests
 					@"\\Nas\Main\Setups\Microsoft\Visual Studio\VS 2015\vssdk_full.exe",
 					@"\\" + machineName + @"\C$\Windows\System32\ActionCenter.dll",
 					@"..",
-				};
+				];
 			Dictionary<string, string> expectedExactPaths = new()
 				{
 					{ @"..", Path.GetDirectoryName(Environment.CurrentDirectory) ?? string.Empty },

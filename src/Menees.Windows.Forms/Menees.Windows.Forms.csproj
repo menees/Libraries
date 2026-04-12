@@ -45,10 +45,6 @@
 	</Choose>
 
 	<ItemGroup>
-		<PackageReference Include="Meziantou.Polyfill" Version="1.0.110">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-		</PackageReference>
 		<PackageReference Include="System.Resources.Extensions" Version="10.0.5" />
 	</ItemGroup>
 </Project>

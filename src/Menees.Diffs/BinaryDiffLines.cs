@@ -92,11 +92,6 @@ namespace Menees.Diffs
 
 		#region Public Properties
 
-		[SuppressMessage(
-			"Microsoft.Naming",
-			"CA1702:CompoundWordsShouldBeCasedCorrectly",
-			MessageId = "BaseLines",
-			Justification = "This does not refer to graphical 'baselines'.")]
 		public IList<string> BaseLines => this.baseLines;
 
 		public IList<string> VersionLines => this.versionLines;

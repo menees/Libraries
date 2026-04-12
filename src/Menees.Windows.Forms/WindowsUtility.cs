@@ -102,13 +102,11 @@ namespace Menees.Windows.Forms
 				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.Automatic, true);
 				Application.SetUnhandledExceptionMode(UnhandledExceptionMode.Automatic, false);
 			}
-#pragma warning disable CC0004 // Catch block cannot be empty
 			catch (InvalidOperationException)
 			{
 				// If the process is running in the Visual Studio hosting process (e.g., *.vshost.exe),
 				// then on subsequent runs the mode can't be set again.
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 
 			// Set some style settings that all Windows Forms apps should use now.
 			SetHighDpiMode();
@@ -147,12 +145,10 @@ namespace Menees.Windows.Forms
 					result = true;
 				}
 			}
-#pragma warning disable CC0004 // Catch block cannot be empty
 			catch (Win32Exception)
 			{
 				// The core ShellExecute logic already displays an error dialog if a Win32Exception occurs.
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 
 			return result;
 		}

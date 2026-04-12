@@ -70,7 +70,6 @@ namespace Menees.Windows
 					result = true;
 				}
 			}
-#pragma warning disable CC0004 // Catch block cannot be empty
 			catch (COMException)
 			{
 				// Treat any COM exception as "can't open" (i.e., false result).
@@ -79,7 +78,6 @@ namespace Menees.Windows
 			{
 				// Treat any argument exception as "can't open" (i.e., false result).
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 
 			return result;
 		}
@@ -107,7 +105,7 @@ namespace Menees.Windows
 			// https://blogs.msdn.microsoft.com/vcblog/2017/03/06/finding-the-visual-c-compiler-tools-in-visual-studio-2017/#comment-273625
 			// https://github.com/Microsoft/vswhere - A redistributable .exe for enumerating the VS instances from the command line.
 			// https://blogs.msdn.microsoft.com/heaths/2016/09/15/changes-to-visual-studio-15-setup/
-			const int REGDB_E_CLASSNOTREG = -2147221164; // 0x80040154
+			const int REGDB_E_CLASSNOTREG = -2_147_221_164; // 0x80040154
 			try
 			{
 				// From MS example: https://github.com/Microsoft/vs-setup-samples/blob/master/Setup.Configuration.CS/Program.cs
@@ -153,7 +151,6 @@ namespace Menees.Windows
 				}
 				while (fetched > 0);
 			}
-#pragma warning disable CC0004 // Catch block cannot be empty
 			catch (COMException ex) when (ex.HResult == REGDB_E_CLASSNOTREG)
 			{
 				// The SetupConfiguration API is not registered, so assume no instances are installed.
@@ -163,7 +160,6 @@ namespace Menees.Windows
 				// Heath Stewart (MSFT), the author of the SetupConfiguration API, says to treat any exception as "no instances installed."
 				// https://code.msdn.microsoft.com/windowsdesktop/Visual-Studio-Setup-0cedd331/view/Discussions#content
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 
 			return result;
 		}
