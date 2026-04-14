@@ -15,7 +15,7 @@ namespace Menees.Diffs.Tests
 		[TestMethod]
 		public void DirectoryDiffFileFilterTest()
 		{
-			var filter = new DirectoryDiffFileFilter("*.txt;*.xml", true);
+			DirectoryDiffFileFilter filter = new("*.txt;*.xml", true);
 			filter.Filters.ShouldBe("*.txt;*.xml");
 			filter.Include.ShouldBeTrue();
 

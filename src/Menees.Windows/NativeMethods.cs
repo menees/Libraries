@@ -276,7 +276,7 @@ namespace Menees.Windows
 
 		private static IShellItem? GetShellItemForPath(string path)
 		{
-			var riid = new Guid(IID_IShellItem);
+			Guid riid = new(IID_IShellItem);
 			if (SHCreateItemFromParsingName(path, IntPtr.Zero, ref riid, out IShellItem? result) != S_OK)
 			{
 				// If the user types an invalid "path" into an input box, we don't want to raise an exception.

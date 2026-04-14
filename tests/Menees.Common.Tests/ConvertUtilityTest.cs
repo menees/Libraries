@@ -33,10 +33,10 @@ namespace Menees.Common.Tests
 		public void ToInt32Test()
 		{
 			int actual = ConvertUtility.ToInt32("Invalid", 37);
-			Assert.AreEqual(37, actual);
+			actual.ShouldBe(37);
 
 			actual = ConvertUtility.ToInt32("1234", 37);
-			Assert.AreEqual(1234, actual);
+			actual.ShouldBe(1234);
 		}
 
 		[TestMethod]
@@ -46,11 +46,11 @@ namespace Menees.Common.Tests
 			actualObject.ShouldNotBeNull();
 			Point actual = (Point)actualObject!;
 			Point expected = new(1, 2);
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 
 			actual = ConvertUtility.ConvertValue<Point>("3, 4");
 			expected = new Point(3, 4);
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 		}
 
 		[TestMethod]

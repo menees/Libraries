@@ -13,7 +13,7 @@ namespace Menees.Common.Tests
 			bool isDisposed = false;
 			using (Disposer target = new(() => isDisposed = true))
 			{
-				Assert.AreEqual(target.IsDisposed, isDisposed);
+				isDisposed.ShouldBe(target.IsDisposed);
 			}
 			Assert.IsTrue(isDisposed);
 		}
@@ -23,9 +23,9 @@ namespace Menees.Common.Tests
 		{
 			bool isDisposed = false;
 			Disposer target = new(() => isDisposed = true);
-			Assert.AreEqual(target.IsDisposed, isDisposed);
+			isDisposed.ShouldBe(target.IsDisposed);
 			target.Dispose();
-			Assert.AreEqual(target.IsDisposed, isDisposed);
+			isDisposed.ShouldBe(target.IsDisposed);
 		}
 	}
 }

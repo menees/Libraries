@@ -33,7 +33,7 @@ namespace Menees.Common.Tests
 		{
 			string expected = AppDomain.CurrentDomain.BaseDirectory;
 			string actual = ApplicationInfo.BaseDirectory;
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 		}
 
 		[TestMethod()]
@@ -51,7 +51,7 @@ namespace Menees.Common.Tests
 			{
 				int expected = current.Id;
 				int actual = ApplicationInfo.ProcessId;
-				Assert.AreEqual(expected, actual);
+				actual.ShouldBe(expected);
 			}
 		}
 	}

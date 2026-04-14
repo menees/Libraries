@@ -22,7 +22,7 @@ namespace Menees.Common.Tests
 			{
 				ExceptionsTest.RequireArgumentException(ex, "False", "None");
 #pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
-				Assert.AreEqual("None", ex.ParamName);
+				ex.ParamName.ShouldBe("None");
 #pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 
@@ -39,7 +39,7 @@ namespace Menees.Common.Tests
 			{
 				ExceptionsTest.RequireArgumentException(ex, "False", "state");
 #pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
-				Assert.AreEqual("state", ex.ParamName);
+				ex.ParamName.ShouldBe("state");
 #pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 		}
@@ -57,7 +57,7 @@ namespace Menees.Common.Tests
 			catch (ArgumentException ex)
 			{
 #pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
-				Assert.AreEqual("False", ex.Message);
+				ex.Message.ShouldBe("False");
 #pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 				ex.ParamName.ShouldBeNullOrEmpty();
 			}
@@ -111,7 +111,7 @@ namespace Menees.Common.Tests
 			catch (InvalidOperationException ex)
 			{
 #pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
-				Assert.AreEqual("Invalid", ex.Message);
+				ex.Message.ShouldBe("Invalid");
 #pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 		}

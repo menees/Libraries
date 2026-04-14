@@ -20,7 +20,7 @@ namespace Menees.Common.Tests
 		{
 			string message = "Testing";
 			ArgumentException actual = Exceptions.NewArgumentException(message);
-			Assert.AreEqual(message, actual.Message);
+			actual.Message.ShouldBe(message);
 
 			actual = Exceptions.NewArgumentException(message, CreateProperties());
 			actual.Message.ShouldBe(message);
@@ -61,11 +61,11 @@ namespace Menees.Common.Tests
 		{
 			string message = "Out of range";
 			IndexOutOfRangeException ex = Exceptions.Log(new IndexOutOfRangeException(message));
-			Assert.AreEqual(message, ex.Message);
+			ex.Message.ShouldBe(message);
 
 			// The category parameter is only for logging.
 			InvalidCastException castEx = Exceptions.Log(new InvalidCastException(message), typeof(ExceptionsTest));
-			Assert.AreEqual(message, castEx.Message);
+			castEx.Message.ShouldBe(message);
 
 			ObjectDisposedException disposedEx = Exceptions.Log(new ObjectDisposedException("Testing"));
 			disposedEx.ObjectName.ShouldBe("Testing");
@@ -82,7 +82,7 @@ namespace Menees.Common.Tests
 		{
 			string message = "Invalid";
 			InvalidOperationException actual = Exceptions.NewInvalidOperationException(message);
-			Assert.AreEqual(message, actual.Message);
+			actual.Message.ShouldBe(message);
 
 			actual = Exceptions.NewInvalidOperationException(message, CreateProperties());
 			actual.Message.ShouldBe(message);

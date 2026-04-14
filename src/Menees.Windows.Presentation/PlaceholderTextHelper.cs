@@ -228,9 +228,9 @@
 			{
 				// This gets the text length of the first line. RichTextBox always adds a final NewLine.
 				// From https://github.com/MahApps/MahApps.Metro/blob/develop/src/MahApps.Metro/Controls/Helper/TextBoxHelper.cs
-				var textRange = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
-				var text = textRange.Text;
-				var lastIndexOfNewLine = text.LastIndexOf(Environment.NewLine, StringComparison.InvariantCulture);
+				TextRange textRange = new(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd);
+				string text = textRange.Text;
+				int lastIndexOfNewLine = text.LastIndexOf(Environment.NewLine, StringComparison.InvariantCulture);
 				if (lastIndexOfNewLine >= 0)
 				{
 					text = text.Remove(lastIndexOfNewLine);

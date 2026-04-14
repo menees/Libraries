@@ -47,7 +47,7 @@ namespace Menees.Common.Tests
 			target[key] = 1;
 			if (target.TryGetValue(key, out int value))
 			{
-				Assert.AreEqual(1, value);
+				value.ShouldBe(1);
 			}
 			else
 			{
@@ -68,7 +68,7 @@ namespace Menees.Common.Tests
 			int expected = 123;
 			target[key] = expected;
 			int actual = (int)target[key];
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 			target.Remove(key);
 		}
 
@@ -81,7 +81,7 @@ namespace Menees.Common.Tests
 			using (target.Push(key, value))
 			{
 				object actual = target[key];
-				Assert.AreEqual(value, actual);
+				actual.ShouldBe(value);
 			}
 			Assert.IsFalse(target.ContainsKey(key));
 		}

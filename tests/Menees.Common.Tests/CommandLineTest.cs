@@ -16,14 +16,14 @@ namespace Menees.Common.Tests
 		public void ConstructorTest()
 		{
 			CommandLine target = new();
-			Assert.AreEqual(Environment.UserInteractive, target.UseConsole);
+			target.UseConsole.ShouldBe(Environment.UserInteractive);
 
 			target = new CommandLine(false);
 			Assert.IsFalse(target.UseConsole);
 
 			target = new CommandLine(false, StringComparer.CurrentCulture);
 			Assert.IsFalse(target.UseConsole);
-			Assert.AreEqual(StringComparer.CurrentCulture, target.Comparer);
+			target.Comparer.ShouldBe(StringComparer.CurrentCulture);
 		}
 
 		[TestMethod()]
@@ -33,7 +33,7 @@ namespace Menees.Common.Tests
 			string[] lines = ["First line", "Second line"];
 
 			CommandLine actual = target.AddHeader(lines);
-			Assert.AreEqual(target, actual);
+			actual.ShouldBe(target);
 
 			string output = GetMessage(target, CommandLineWriteOptions.Header);
 			Assert.AreEqual(string.Join(Environment.NewLine, lines)+Environment.NewLine, output);
@@ -77,7 +77,7 @@ namespace Menees.Common.Tests
 
 			string expected = Path.GetFileName(ApplicationInfo.ExecutableFile);
 			string actual = CommandLine.ExecutableFileName;
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 		}
 
 		[TestMethod]
@@ -88,7 +88,7 @@ namespace Menees.Common.Tests
 
 			string expected = GetMessage(target, CommandLineWriteOptions.Header);
 			string actual = target.CreateMessage();
-			Assert.AreEqual(expected, actual);
+			actual.ShouldBe(expected);
 		}
 
 		private static string GetMessage(CommandLine target, CommandLineWriteOptions? options = null)
@@ -168,9 +168,9 @@ namespace Menees.Common.Tests
 			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(["/Binary"]);
-			Assert.AreEqual(CommandLineParseResult.Invalid, result);
+			result.ShouldBe(CommandLineParseResult.Invalid);
 			string message = GetMessage(cmdLine);
-			Assert.IsNotNull(message);
+			message.ShouldNotBeNull();
 			Assert.Contains("A source file is required.", message, "Contains 'A source file is required.'");
 			Assert.Contains("/Target", message, "Contains '/Target'");
 		}
@@ -182,11 +182,11 @@ namespace Menees.Common.Tests
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse([ "/Prompt", "/V", "/bin", @"C:\Input.txt", 
 				@"/t:D:\ColonSeparated.txt", @"/Target", @"E:\SpaceSeparated.txt", @"/Targ=F:\EqualSeparated.txt" ]);
-			Assert.AreEqual(CommandLineParseResult.Valid, result);
+			result.ShouldBe(CommandLineParseResult.Valid);
 			Assert.IsTrue(data.prompt);
 			Assert.IsTrue(data.verify);
 			Assert.IsTrue(data.isBinary);
-			Assert.AreEqual(@"C:\Input.txt", data.source);
+			data.source.ShouldBe(@"C:\Input.txt");
 			Assert.Contains(@"D:\ColonSeparated.txt", data.targets, "Contains ColonSeparated");
 			Assert.Contains(@"E:\SpaceSeparated.txt", data.targets, "Contains SpaceSeparated");
 			Assert.Contains(@"F:\EqualSeparated.txt", data.targets, "Contains EqualSeparated");
@@ -198,9 +198,9 @@ namespace Menees.Common.Tests
 			TestData data = new();
 			CommandLine cmdLine = CreateTester(data);
 			CommandLineParseResult result = cmdLine.Parse(["/?"]);
-			Assert.AreEqual(CommandLineParseResult.HelpRequested, result);
+			result.ShouldBe(CommandLineParseResult.HelpRequested);
 			string message = GetMessage(cmdLine);
-			Assert.IsNotNull(message);
+			message.ShouldNotBeNull();
 			Assert.StartsWith("Copies a source file to one or more target locations.", message, "Starts with 'Copies...'");
 			Assert.EndsWith(Environment.NewLine, message, "Ends with newline.");
 		}

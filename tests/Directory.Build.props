@@ -37,4 +37,8 @@
 	<ItemGroup>
 		<Compile Include="$(MSBuildThisFileDirectory)AssemblyInfo.Shared.cs" Link="Properties\AssemblyInfo.Shared.cs" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<Using Include="Shouldly"/>
+	</ItemGroup>
 </Project>

@@ -39,7 +39,7 @@
 	/// string source = null;
 	/// List&lt;string> targets = new List&lt;string>();
 	///
-	/// CommandLine cmdLine = new CommandLine(useConsole: true);
+	/// CommandLine cmdLine = new(useConsole: true);
 	/// cmdLine.AddHeader(string.Format(CultureInfo.CurrentCulture, "Usage: {0} [/B] source /T:target [/T:...]", CommandLine.ExecutableFileName));
 	/// cmdLine.AddSwitch("Binary", "Indicates a binary file (or a text file if the flag is disabled).", flag => isBinary = flag);
 	/// cmdLine.AddSwitch("Target", "A target location to copy the source into.  Multiple target locations can be specified.",

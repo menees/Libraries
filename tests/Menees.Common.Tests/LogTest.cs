@@ -538,9 +538,9 @@ namespace Menees.Common.Tests
 		{
 			string category = "Menees.Testing";
 			Log actual = Log.GetLog(category);
-			Assert.AreEqual(category, actual.CategoryName);
+			actual.CategoryName.ShouldBe(category);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(Log.GetLog(category), actual);
+			actual.ShouldBe(Log.GetLog(category));
 		}
 
 		[TestMethod()]
@@ -548,9 +548,9 @@ namespace Menees.Common.Tests
 		{
 			Type category = typeof(ApplicationInfo);
 			Log actual = Log.GetLog(category);
-			Assert.AreEqual(category.FullName, actual.CategoryName);
+			actual.CategoryName.ShouldBe(category.FullName);
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(Log.GetLog(category), actual);
+			actual.ShouldBe(Log.GetLog(category));
 		}
 
 		[TestMethod()]
@@ -558,7 +558,7 @@ namespace Menees.Common.Tests
 		{
 			Log target = Log.GetLog(typeof(Disposer));
 			string actual = target.CategoryName;
-			Assert.AreEqual(typeof(Disposer).FullName, actual);
+			actual.ShouldBe(typeof(Disposer).FullName);
 		}
 
 		[TestMethod()]
@@ -605,18 +605,18 @@ namespace Menees.Common.Tests
 		public void GlobalContextTest()
 		{
 			GlobalLogContext actual = Log.GlobalContext;
-			Assert.IsNotNull(actual);
+			actual.ShouldNotBeNull();
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(Log.GlobalContext, actual);
+			actual.ShouldBe(Log.GlobalContext);
 		}
 
 		[TestMethod()]
 		public void ThreadContextTest()
 		{
 			ThreadLogContext actual = Log.ThreadContext;
-			Assert.IsNotNull(actual);
+			actual.ShouldNotBeNull();
 			// Pulling it again should return the same instance.
-			Assert.AreEqual(Log.ThreadContext, actual);
+			actual.ShouldBe(Log.ThreadContext);
 		}
 	}
 }

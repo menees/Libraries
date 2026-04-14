@@ -44,7 +44,7 @@ namespace Menees.Common.Tests
 			ISet<string> target = CreateInstance();
 			foreach (var item in target)
 			{
-				Assert.IsNotNull(item);
+				item.ShouldNotBeNull();
 			}
 		}
 
@@ -107,7 +107,7 @@ namespace Menees.Common.Tests
 		{
 			ISet<string> target = CreateInstance();
 			int actual = target.Count;
-			Assert.AreEqual(3, actual);
+			actual.ShouldBe(3);
 		}
 
 		[TestMethod()]

@@ -62,12 +62,12 @@ namespace Menees.Common.Tests
 
 			bool actual = FileUtility.TryDeleteFile(fileName, out int errorCode);
 			Assert.IsTrue(actual);
-			Assert.AreEqual(0, errorCode);
+			errorCode.ShouldBe(0);
 
 			// It shouldn't be there now.
 			actual = FileUtility.TryDeleteFile(fileName, out errorCode);
 			Assert.IsFalse(actual);
-			Assert.AreEqual(ERROR_FILE_NOT_FOUND, errorCode);
+			errorCode.ShouldBe(ERROR_FILE_NOT_FOUND);
 		}
 
 		[TestMethod()]
@@ -75,7 +75,7 @@ namespace Menees.Common.Tests
 		{
 			string extension = ".tmp";
 			string actual = FileUtility.GetTempFileName(extension);
-			Assert.AreEqual(extension, Path.GetExtension(actual));
+			Path.GetExtension(actual).ShouldBe(extension);
 
 			string? directory = Path.GetDirectoryName(actual);
 			string tempDir = Path.GetTempPath();
@@ -83,7 +83,7 @@ namespace Menees.Common.Tests
 			{
 				tempDir = tempDir.Substring(0, tempDir.Length-1);
 			}
-			Assert.AreEqual(tempDir, directory);
+			directory.ShouldBe(tempDir);
 		}
 
 		[TestMethod()]
@@ -92,8 +92,8 @@ namespace Menees.Common.Tests
 			string extension = ".txt";
 			string directory = @"C:\";
 			string actual = FileUtility.GetTempFileName(extension, directory);
-			Assert.AreEqual(extension, Path.GetExtension(actual));
-			Assert.AreEqual(directory, Path.GetDirectoryName(actual));
+			Path.GetExtension(actual).ShouldBe(extension);
+			Path.GetDirectoryName(actual).ShouldBe(directory);
 		}
 
 		[TestMethod()]
@@ -110,7 +110,7 @@ namespace Menees.Common.Tests
 			// Try to delete it while it is read-only, so we can test DeleteFile too.
 			actual = FileUtility.TryDeleteFile(fileName, out int errorCode);
 			Assert.IsFalse(actual);
-			Assert.AreEqual(ERROR_ACCESS_DENIED, errorCode);
+			errorCode.ShouldBe(ERROR_ACCESS_DENIED);
 
 			File.SetAttributes(fileName, FileAttributes.Normal);
 			actual = FileUtility.IsReadOnlyFile(fileName);
@@ -132,7 +132,7 @@ namespace Menees.Common.Tests
 
 			string fixedfileName = @"C:\Test\" + fileName;
 			actual = FileUtility.ExpandFileName(fixedfileName);
-			Assert.AreEqual(fixedfileName, actual);
+			actual.ShouldBe(fixedfileName);
 		}
 
 		[TestMethod]

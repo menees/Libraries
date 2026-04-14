@@ -66,7 +66,7 @@ namespace Menees.Common.Tests
 		public void ProcessExitedTest()
 		{
 			ConsoleOutputBuffer target = Create(defaultWaitTime);
-			Assert.AreEqual(0, target.ProcessExitCode);
+			target.ProcessExitCode.ShouldBe(0);
 			Assert.IsTrue(target.HasProcessExited);
 		}
 	}

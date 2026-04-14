@@ -120,7 +120,7 @@ namespace Menees.Windows.Presentation
 
 		public static IntPtr GetHandle(Window window)
 		{
-			var helper = new WindowInteropHelper(window);
+			WindowInteropHelper helper = new(window);
 			helper.EnsureHandle();
 			IntPtr result = helper.Handle;
 			return result;

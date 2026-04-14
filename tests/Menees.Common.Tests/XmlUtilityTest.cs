@@ -29,9 +29,9 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			int actual = element.GetAttributeValue("num", 0);
-			Assert.AreEqual(1, actual);
+			actual.ShouldBe(1);
 			actual = element.GetAttributeValue("missing", 2);
-			Assert.AreEqual(2, actual);
+			actual.ShouldBe(2);
 		}
 
 		[TestMethod()]
@@ -49,9 +49,9 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			FileMode actual = element.GetAttributeValue("fileMode", FileMode.CreateNew);
-			Assert.AreEqual(FileMode.OpenOrCreate, actual);
+			actual.ShouldBe(FileMode.OpenOrCreate);
 			actual = element.GetAttributeValue("missing", FileMode.CreateNew);
-			Assert.AreEqual(FileMode.CreateNew, actual);
+			actual.ShouldBe(FileMode.CreateNew);
 		}
 
 		[TestMethod()]
@@ -59,7 +59,7 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			string actual = element.GetAttributeValue("text");
-			Assert.AreEqual("Testing", actual);
+			actual.ShouldBe("Testing");
 		}
 
 		[TestMethod()]
@@ -67,9 +67,9 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			string actual = element.GetAttributeValue("text", "");
-			Assert.AreEqual("Testing", actual);
+			actual.ShouldBe("Testing");
 			actual = element.GetAttributeValue("missing", "Default");
-			Assert.AreEqual("Default", actual);
+			actual.ShouldBe("Default");
 		}
 
 		[TestMethod()]
@@ -77,16 +77,16 @@ namespace Menees.Common.Tests
 		{
 			XElement element = GetXElement();
 			string? actual = element.GetAttributeValueN("empty", "Default", true);
-			Assert.AreEqual("Default", actual);
+			actual.ShouldBe("Default");
 			actual = element.GetAttributeValueN("empty", "Default", false);
-			Assert.AreEqual("", actual);
+			actual.ShouldBe("");
 		}
 
 		[TestMethod]
 		public void CreateSchemaTest()
 		{
 			XmlSchemaSet schema = XmlUtility.CreateSchemaSet([schemaElement]);
-			Assert.IsNotNull(schema);
+			schema.ShouldNotBeNull();
 
 			// Switch use='required' to use='unknown', which is not a supported XSD attribute value.
 			string badSchemaText = schemaText.Replace("<xs:attribute name='empty' type='xs:string' use='required' />", "<xs:attribute name='empty' type='xs:string' use='unknown' />");
@@ -94,7 +94,7 @@ namespace Menees.Common.Tests
 
 			List<ValidationEventArgs> errors = [];
 			schema = XmlUtility.CreateSchemaSet([badSchemaElement], errors);
-			Assert.IsNotNull(schema);
+			schema.ShouldNotBeNull();
 			Assert.HasCount(1, errors);
 		}
 

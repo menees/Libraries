@@ -14,51 +14,51 @@ namespace Menees.Common.Tests
 		public void GetPrintableCharacterTest()
 		{
 			char actual = TextUtility.GetPrintableCharacter('\r');
-			Assert.AreEqual('\u2190', actual); // Left arrow
+			actual.ShouldBe('\u2190'); // Left arrow
 			actual = TextUtility.GetPrintableCharacter('\n');
-			Assert.AreEqual('\u2193', actual); // Down arrow
+			actual.ShouldBe('\u2193'); // Down arrow
 			actual = TextUtility.GetPrintableCharacter('\0');
-			Assert.AreEqual('\u03D5', actual); // Phi/nil
+			actual.ShouldBe('\u03D5'); // Phi/nil
 
 			actual = TextUtility.GetPrintableCharacter('A');
-			Assert.AreEqual('A', actual);
+			actual.ShouldBe('A');
 		}
 
 		[TestMethod()]
 		public void EnsureQuotesTest()
 		{
 			string actual = TextUtility.EnsureQuotes("Test");
-			Assert.AreEqual("\"Test\"", actual);
+			actual.ShouldBe("\"Test\"");
 			actual = TextUtility.EnsureQuotes("Test", "'");
-			Assert.AreEqual("'Test'", actual);
+			actual.ShouldBe("'Test'");
 			actual = TextUtility.EnsureQuotes("Test", "[", "]");
-			Assert.AreEqual("[Test]", actual);
+			actual.ShouldBe("[Test]");
 			actual = TextUtility.EnsureQuotes(actual, "[", "]");
-			Assert.AreEqual("[Test]", actual);
+			actual.ShouldBe("[Test]");
 		}
 
 		[TestMethod()]
 		public void ReplaceTest()
 		{
 			string actual = TextUtility.Replace("Testing tester TESTED tests.", "Test", "Record", StringComparison.CurrentCultureIgnoreCase);
-			Assert.AreEqual("Recording Recorder RecordED Records.", actual);
+			actual.ShouldBe("Recording Recorder RecordED Records.");
 
 			actual = TextUtility.Replace("Testing tester TESTED tests.", "Test", "Buy", StringComparison.CurrentCultureIgnoreCase);
-			Assert.AreEqual("Buying Buyer BuyED Buys.", actual);
+			actual.ShouldBe("Buying Buyer BuyED Buys.");
 
 			string text = "This has no matches.";
 			actual = TextUtility.Replace(text, "ABCD", "wxyz", StringComparison.OrdinalIgnoreCase);
-			Assert.AreEqual(text, actual);
+			actual.ShouldBe(text);
 		}
 
 		[TestMethod()]
 		public void ReplaceControlCharactersTest()
 		{
 			string actual = TextUtility.ReplaceControlCharacters("Line one\r\nLine two\0", ' ');
-			Assert.AreEqual("Line one  Line two ", actual);
+			actual.ShouldBe("Line one  Line two ");
 
 			actual = TextUtility.ReplaceControlCharacters("Line one\r\nLine two\0");
-			Assert.AreEqual("Line one\u2190\u2193Line two\u03D5", actual);
+			actual.ShouldBe("Line one\u2190\u2193Line two\u03D5");
 		}
 
 		[TestMethod]
@@ -185,13 +185,13 @@ namespace Menees.Common.Tests
 		public void StripQuotesTest()
 		{
 			string actual = TextUtility.StripQuotes("\"Test Case\"");
-			Assert.AreEqual("Test Case", actual);
+			actual.ShouldBe("Test Case");
 			actual = TextUtility.StripQuotes("'Test Case'", "'");
-			Assert.AreEqual("Test Case", actual);
+			actual.ShouldBe("Test Case");
 			actual = TextUtility.StripQuotes("[Test Case]", "[", "]");
-			Assert.AreEqual("Test Case", actual);
+			actual.ShouldBe("Test Case");
 			actual = TextUtility.StripQuotes("Non-quoted", "[", "]");
-			Assert.AreEqual("Non-quoted", actual);
+			actual.ShouldBe("Non-quoted");
 		}
 
 		[DataRow("Application", "Applications")]
