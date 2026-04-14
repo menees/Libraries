@@ -8,6 +8,7 @@ namespace Menees
 	using System.Diagnostics.CodeAnalysis;
 	using System.Linq;
 	using System.Linq.Expressions;
+	using System.Runtime.CompilerServices;
 	using System.Text;
 	using Menees.Diagnostics;
 
@@ -29,7 +30,7 @@ namespace Menees
 		/// <exception cref="ArgumentException">If <paramref name="argState"/> is false.</exception>
 		public static void RequireArgument([DoesNotReturnIf(false)] bool argState, string explanation)
 		{
-			RequireArgument(argState, explanation, string.Empty);
+			RequireArgument(argState, explanation, null);
 		}
 
 		/// <summary>
@@ -39,7 +40,7 @@ namespace Menees
 		/// <param name="explanation">The explanation to put in the exception.</param>
 		/// <param name="argName">The name of the arg to put in the exception.</param>
 		/// <exception cref="ArgumentException">If <paramref name="argState"/> is false.</exception>
-		public static void RequireArgument([DoesNotReturnIf(false)] bool argState, string explanation, string argName)
+		public static void RequireArgument([DoesNotReturnIf(false)] bool argState, string explanation, string? argName)
 		{
 			if (!argState)
 			{
@@ -52,10 +53,11 @@ namespace Menees
 		/// </summary>
 		/// <typeparam name="T">The type of item in the collection.</typeparam>
 		/// <param name="arg">The collection to check.</param>
-		/// <param name="paramName">The name of the argument to put in the exception.</param>
-		public static void RequireCollection<T>([NotNull] IEnumerable<T>? arg, string paramName)
+		/// <param name="argName">The name of the argument to put in the exception.</param>
+		public static IEnumerable<T> RequireCollection<T>([NotNull] IEnumerable<T>? arg, [CallerArgumentExpression(nameof(arg))] string? argName = null)
 		{
-			RequireArgument(!CollectionUtility.IsNullOrEmpty(arg), paramName, "The collection must be non-empty.");
+			RequireArgument(!CollectionUtility.IsNullOrEmpty(arg), "The collection must be non-empty.", argName);
+			return arg;
 		}
 
 		/// <summary>
@@ -64,13 +66,17 @@ namespace Menees
 		/// <param name="reference">The reference to check.</param>
 		/// <param name="argName">The arg name to put in the exception.</param>
 		/// <exception cref="ArgumentNullException">If <paramref name="reference"/> is null.</exception>
-		public static void RequireReference<T>([NotNull] T? reference, string argName)
-			where T : class
+		[return: NotNull]
+		public static T RequireReference<T>([NotNull] T? reference, [CallerArgumentExpression(nameof(reference))] string? argName = null)
 		{
+			// Note: This method doesn't use a "where T : class" constraint because we need to allow generic methods
+			// and types to call Conditions.RequireReference even if they aren't constrained to just classes.
 			if (reference == null)
 			{
-				throw Exceptions.NewArgumentNullException(argName);
+				throw Exceptions.NewArgumentNullException(argName!);
 			}
+
+			return reference;
 		}
 
 		/// <summary>
@@ -93,12 +99,11 @@ namespace Menees
 		/// <param name="arg">The string to check.</param>
 		/// <param name="argName">The name of the arg to put in the exception.</param>
 		/// <exception cref="ArgumentException">If <paramref name="arg"/> is null or empty.</exception>
-		public static void RequireString([NotNull] string? arg, string argName)
+		public static string RequireString([NotNull] string? arg, [CallerArgumentExpression(nameof(arg))] string? argName = null)
 		{
-			RequireArgument(!string.IsNullOrEmpty(arg), "The string must be non-empty.", argName);
-#pragma warning disable CS8777 // Parameter must have a non-null value when exiting. Code ensures arg is non-null.
+			RequireArgument(arg.IsNotEmpty(), "The string must be non-empty.", argName);
+			return arg;
 		}
-#pragma warning restore CS8777 // Parameter must have a non-null value when exiting.
 
 		#endregion
 	}

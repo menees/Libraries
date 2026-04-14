@@ -63,37 +63,42 @@ namespace Menees.Common.Tests
 			}
 		}
 
-		[TestMethod()]
-		public void RequireReferenceTest()
+		[TestMethod]
+		public void RequireCollectionTest()
 		{
-			Conditions.RequireReference("Valid", "test");
+			string[] array = ["X "];
+			Conditions.RequireCollection(array, "test").ShouldBe(array);
 
-			try
-			{
-				Conditions.RequireReference((string?)null, "test");
-				Assert.Fail("An exception should have been thrown before this.");
-			}
-			catch (ArgumentNullException ex)
-			{
-				ex.ParamName.ShouldBe("test");
-			}
+			Should.Throw<ArgumentException>(() => Conditions.RequireCollection<int>(null, "test"))
+				.ParamName.ShouldBe("test");
 
-			string? testRef = "Valid";
-			Conditions.RequireReference(testRef, nameof(testRef));
-
-			try
-			{
-				testRef = null;
-				Conditions.RequireReference(testRef, nameof(testRef));
-				Assert.Fail("An exception should have been thrown before this.");
-			}
-			catch (ArgumentNullException ex)
-			{
-				ex.ParamName.ShouldBe("testRef");
-			}
+			Should.Throw<ArgumentException>(() => Conditions.RequireCollection(Array.Empty<int>(), "test"))
+				.ParamName.ShouldBe("test");
 		}
 
-		[TestMethod()]
+
+	[TestMethod]
+	public void RequireReferenceTest()
+	{
+		Conditions.RequireReference("Valid", "test");
+
+		Should.Throw<ArgumentNullException>(() => Conditions.RequireReference((string?)null, "test")).ParamName.ShouldBe("test");
+
+		string? testRef = "Valid";
+		Conditions.RequireReference(testRef, nameof(testRef)).ShouldBe(testRef);
+
+		testRef = null;
+		Should.Throw<ArgumentNullException>(() => Conditions.RequireReference(testRef, nameof(testRef))).ParamName.ShouldBe("testRef");
+
+		int? testValue = 123;
+		Conditions.RequireReference(testValue, nameof(testValue)).ShouldBe(123);
+
+		// Depends on C# 10's [CallerArgumentExpression] support.
+		Should.Throw<ArgumentNullException>(() => Conditions.RequireReference(testRef)).ParamName.ShouldBe("testRef");
+	}
+
+
+		[TestMethod]
 		public void RequireStateTest()
 		{
 			Conditions.RequireState(true, "Valid");
@@ -111,35 +116,21 @@ namespace Menees.Common.Tests
 			}
 		}
 
-		[TestMethod()]
+		[TestMethod]
 		public void RequireStringTest()
 		{
 			string test = "Valid";
-			Conditions.RequireString(test, "test");
+			Conditions.RequireString(test, nameof(test)).ShouldBe(test);
 
-			try
-			{
-				Conditions.RequireString("", "test");
-				Assert.Fail("An exception should have been thrown before this.");
-			}
-			catch (ArgumentException ex)
-			{
-				ex.ParamName.ShouldBe("test");
-			}
+			Should.Throw<ArgumentException>(() => Conditions.RequireString(null, "test")).ParamName.ShouldBe("test");
+			Should.Throw<ArgumentException>(() => Conditions.RequireString(string.Empty, "test")).ParamName.ShouldBe("test");
 
-			test = "Valid";
-			Conditions.RequireString(test, nameof(test));
+			test = string.Empty;
+			Should.Throw<ArgumentException>(() => Conditions.RequireString(test, nameof(test))).ParamName.ShouldBe("test");
 
-			try
-			{
-				test = string.Empty;
-				Conditions.RequireString(test, nameof(test));
-				Assert.Fail("An exception should have been thrown before this.");
-			}
-			catch (ArgumentException ex)
-			{
-				ex.ParamName.ShouldBe("test");
-			}
+			// Depends on C# 10's [CallerArgumentExpression] support.
+			Should.Throw<ArgumentException>(() => Conditions.RequireString(test)).ParamName.ShouldBe("test");
 		}
+
 	}
 }
