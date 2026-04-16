@@ -94,10 +94,6 @@
 				if (displayVersion.Revision == 0)
 				{
 					versionFieldsToDisplay--;
-					if (displayVersion.Build == 0)
-					{
-						versionFieldsToDisplay--;
-					}
 				}
 
 				sb.Append(displayVersion.ToString(versionFieldsToDisplay));
