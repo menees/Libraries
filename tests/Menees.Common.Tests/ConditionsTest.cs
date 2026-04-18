@@ -21,9 +21,7 @@ namespace Menees.Common.Tests
 			catch (ArgumentException ex)
 			{
 				ExceptionsTest.RequireArgumentException(ex, "False", "None");
-#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
 				ex.ParamName.ShouldBe("None");
-#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 
 			bool state = true;
@@ -38,9 +36,7 @@ namespace Menees.Common.Tests
 			catch (ArgumentException ex)
 			{
 				ExceptionsTest.RequireArgumentException(ex, "False", "state");
-#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
 				ex.ParamName.ShouldBe("state");
-#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 		}
 
@@ -56,9 +52,7 @@ namespace Menees.Common.Tests
 			}
 			catch (ArgumentException ex)
 			{
-#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
 				ex.Message.ShouldBe("False");
-#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 				ex.ParamName.ShouldBeNullOrEmpty();
 			}
 		}
@@ -110,9 +104,7 @@ namespace Menees.Common.Tests
 			}
 			catch (InvalidOperationException ex)
 			{
-#pragma warning disable MSTEST0058 // Do not use asserts in catch blocks. This tests the exception we raised.
 				ex.Message.ShouldBe("Invalid");
-#pragma warning restore MSTEST0058 // Do not use asserts in catch blocks
 			}
 		}
 

@@ -75,8 +75,10 @@ namespace Menees.Shell
 
 			this.ItemName = itemName;
 
-			List<string> masks = new(1 + (otherExtensions != null ? otherExtensions.Length : 0));
-			masks.Add(GetMask(firstExtension));
+			List<string> masks = new(1 + (otherExtensions?.Length ?? 0))
+			{
+				GetMask(firstExtension),
+			};
 			if (otherExtensions != null)
 			{
 				foreach (string extension in otherExtensions)

@@ -78,8 +78,10 @@
 			this.MaxItemCount = maxItemCount;
 			this.menuItemToItemMap = new(maxItemCount);
 
-			this.menus = new(2);
-			this.menus.Add(mainMenuItem);
+			this.menus = new(2)
+			{
+				mainMenuItem,
+			};
 			if (toolbarDropDownMenu != null)
 			{
 				this.menus.Add(toolbarDropDownMenu);

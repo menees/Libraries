@@ -32,10 +32,14 @@
 		#region Private Methods
 
 		[DllImport("ole32.dll", PreserveSig = false)]
+#pragma warning disable MEN015 // Use preferred terms. The Win32 API name uses "ID".
 		private static extern void CLSIDFromProgID([MarshalAs(UnmanagedType.LPWStr)] string progId, out Guid clsid);
+#pragma warning restore MEN015 // Use preferred terms
 
 		[DllImport("ole32.dll", PreserveSig = true)]
+#pragma warning disable MEN015 // Use preferred terms. The Win32 API name uses "ID".
 		private static extern int CLSIDFromProgIDEx([MarshalAs(UnmanagedType.LPWStr)] string progId, out Guid clsid);
+#pragma warning restore MEN015 // Use preferred terms
 
 		[DllImport("oleaut32.dll", PreserveSig = false)]
 		private static extern void GetActiveObject(ref Guid rclsid, IntPtr reserved, [MarshalAs(UnmanagedType.Interface)] out object ppunk);

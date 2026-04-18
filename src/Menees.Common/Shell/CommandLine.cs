@@ -158,7 +158,7 @@
 		{
 			this.useConsole = useConsole;
 			this.nameToSwitchMap = new Dictionary<string, Switch>(comparer);
-			this.distinctSwitches = new List<Switch>();
+			this.distinctSwitches = [];
 		}
 
 		#endregion
@@ -881,7 +881,9 @@
 			// http://msdn.microsoft.com/en-us/library/17w5ykft.aspx
 			//
 			// Don't quote the value unless we have to.
+#pragma warning disable CA1870 // Use a cached 'SearchValues' instance. SearchValues isn't available in net48.
 			if (value.IndexOfAny(QuotableCharacters) < 0)
+#pragma warning restore CA1870 // Use a cached 'SearchValues' instance.
 			{
 				builder.Append(value);
 			}

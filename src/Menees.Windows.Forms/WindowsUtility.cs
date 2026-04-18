@@ -334,8 +334,9 @@ namespace Menees.Windows.Forms
 		/// Attempts to open Windows Explorer with the specified file selected.
 		/// </summary>
 		/// <param name="path">The path to the file to select in Windows Explorer.</param>
+		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <returns>True if Windows Explorer was successfully opened with the file selected; otherwise, false.</returns>
-		public static bool TryOpenExplorerForFile(string? path)
+		public static bool TryOpenExplorerForFile(string? path, IWin32Window? owner = null)
 		{
 			bool result = false;
 
@@ -346,11 +347,11 @@ namespace Menees.Windows.Forms
 				{
 					// Start Explorer with the file selected.
 					// https://stackoverflow.com/a/13680458/1882616
-					result = TryOpenExplorer("/select,", path);
+					result = TryOpenExplorer(owner, "/select,", path);
 				}
 				else
 				{
-					ShowError(null, $"The file '{path}' does not exist.");
+					ShowError(owner, $"The file '{path}' does not exist.");
 				}
 			}
 
@@ -361,8 +362,11 @@ namespace Menees.Windows.Forms
 		/// Attempts to open Windows Explorer at the specified folder.
 		/// </summary>
 		/// <param name="path">The path to the folder to open in Windows Explorer.</param>
+		/// <param name="select">If false, then Explorer is opened to show the contents of the folder.
+		/// If true, then Explorer is opened with the folder's node selected in its parent folder.</param>
+		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <returns>True if Windows Explorer was successfully opened at the folder; otherwise, false.</returns>
-		public static bool TryOpenExplorerForFolder(string? path)
+		public static bool TryOpenExplorerForFolder(string? path, bool select = false, IWin32Window? owner = null)
 		{
 			bool result = false;
 
@@ -371,11 +375,11 @@ namespace Menees.Windows.Forms
 			{
 				if (Directory.Exists(path))
 				{
-					result = TryOpenExplorer(path);
+					result = TryOpenExplorer(owner, select ? ["/select,", path] : [path]);
 				}
 				else
 				{
-					ShowError(null, $"The folder '{path}' does not exist.");
+					ShowError(owner, $"The folder '{path}' does not exist.");
 				}
 			}
 
@@ -386,8 +390,9 @@ namespace Menees.Windows.Forms
 		/// Attempts to open a terminal window at the folder containing the specified file.
 		/// </summary>
 		/// <param name="path">The path to the file whose containing folder should be opened in the terminal.</param>
+		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <returns>True if the terminal was successfully opened; otherwise, false.</returns>
-		public static bool TryOpenTerminalForFile(string? path)
+		public static bool TryOpenTerminalForFile(string? path, IWin32Window? owner = null)
 		{
 			bool result = false;
 
@@ -399,12 +404,12 @@ namespace Menees.Windows.Forms
 					string? folder = Path.GetDirectoryName(path);
 					if (folder.IsNotEmpty())
 					{
-						result = TryOpenTerminalForFolder(folder);
+						result = TryOpenTerminalForFolder(folder, owner);
 					}
 				}
 				else
 				{
-					ShowError(null, $"The file '{path}' does not exist.");
+					ShowError(owner, $"The file '{path}' does not exist.");
 				}
 			}
 
@@ -415,8 +420,9 @@ namespace Menees.Windows.Forms
 		/// Attempts to open a terminal window at the specified folder.
 		/// </summary>
 		/// <param name="path">The path to the folder to open in the terminal.</param>
+		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <returns>True if the terminal was successfully opened; otherwise, false.</returns>
-		public static bool TryOpenTerminalForFolder(string? path)
+		public static bool TryOpenTerminalForFolder(string? path, IWin32Window? owner = null)
 		{
 			bool result = false;
 
@@ -429,18 +435,18 @@ namespace Menees.Windows.Forms
 					if (terminal.IsNotEmpty())
 					{
 						// https://learn.microsoft.com/en-us/windows/terminal/command-line-arguments?tabs=windows#new-tab-command
-						result = TryStartProcess(terminal, "--startingDirectory", path);
+						result = TryStartProcess(owner, terminal, "--startingDirectory", path);
 					}
 					else
 					{
 						// https://en.wikipedia.org/wiki/COMSPEC
 						string cmdExe = Environment.GetEnvironmentVariable("ComSpec") ?? "cmd.exe";
-						result = TryStartProcess(cmdExe, "/K", "cd", "/d", path);
+						result = TryStartProcess(owner, cmdExe, "/K", "cd", "/d", path);
 					}
 				}
 				else
 				{
-					ShowError(null, $"The folder '{path}' does not exist.");
+					ShowError(owner, $"The folder '{path}' does not exist.");
 				}
 			}
 
@@ -451,8 +457,9 @@ namespace Menees.Windows.Forms
 		/// Attempts to open the specified file using the default shell action.
 		/// </summary>
 		/// <param name="filePath">The path to the file to open.</param>
+		/// <param name="owner">The parent window for any error dialogs.</param>
 		/// <returns>True if the file was successfully opened; otherwise, false.</returns>
-		public static bool TryOpenFile(string? filePath)
+		public static bool TryOpenFile(string? filePath, IWin32Window? owner = null)
 		{
 			bool result = false;
 
@@ -461,11 +468,11 @@ namespace Menees.Windows.Forms
 			{
 				if (File.Exists(filePath))
 				{
-					result = ShellExecute(null, filePath);
+					result = ShellExecute(owner, filePath);
 				}
 				else
 				{
-					ShowError(null, $"The file '{filePath}' does not exist.");
+					ShowError(owner, $"The file '{filePath}' does not exist.");
 				}
 			}
 
@@ -487,10 +494,10 @@ namespace Menees.Windows.Forms
 			return result;
 		}
 
-		private static bool TryOpenExplorer(params string[] arguments)
-			=> TryStartProcess("explorer.exe", arguments);
+		private static bool TryOpenExplorer(IWin32Window? owner, params string[] arguments)
+			=> TryStartProcess(owner, "explorer.exe", arguments);
 
-		private static bool TryStartProcess(string fileName, params string[] arguments)
+		private static bool TryStartProcess(IWin32Window? owner, string fileName, params string[] arguments)
 		{
 #if NETFRAMEWORK
 			ProcessStartInfo processStartInfo = new(fileName, CommandLine.Build(arguments));
@@ -498,6 +505,12 @@ namespace Menees.Windows.Forms
 			// Use the overload that takes IEnumerable<string> so it will quote and escape each arg correctly.
 			ProcessStartInfo processStartInfo = new(fileName, arguments);
 #endif
+
+			if (owner is not null)
+			{
+				// Note: This is ignored since ErrorDialog defaults to false.
+				processStartInfo.ErrorDialogParentHandle = owner.Handle;
+			}
 
 			using (Process? process = Process.Start(processStartInfo))
 			{

@@ -23,8 +23,8 @@ namespace Menees
 		#region Private Data Members
 
 		// The GetInvalidPathChars set should be a subset of the GetInvalidFileNameChars set, but this combines them for safety.
-		private static readonly HashSet<char> InvalidNameCharacters = new(
-			Path.GetInvalidFileNameChars().Union(Path.GetInvalidPathChars()));
+		private static readonly HashSet<char> InvalidNameCharacters = [.. Path.GetInvalidFileNameChars()
+			.Union(Path.GetInvalidPathChars())];
 
 		private static readonly HashSet<string> ReservedNames = ApplicationInfo.IsWindows
 			? new(StringComparer.OrdinalIgnoreCase)
