@@ -7,6 +7,7 @@ This repo contains the source code for several .NET libraries used in Menees uti
 |---|---|
 |[Menees.Common](src/Menees.Common)|Helpers for files, text, XML, logging, exceptions, etc.|
 |[Menees.Diffs](src/Menees.Diffs)|Differencing algorithms for text files, binary files, and directories|
+|[Menees.Diffs.Json](src/Menees.Diffs.Json)|RFC 6902 JSON Patch generation using Myers diff|
 |[Menees.Diffs.Windows.Forms](src/Menees.Diffs.Windows.Forms)|Windows Forms controls for showing diffs of text, files, and directories|
 |[Menees.Windows](src/Menees.Windows)|Windows-specific helpers for WMI, shell dialogs, and Visual Studio invocation|
 |[Menees.Windows.Forms](src/Menees.Windows.Forms)|Windows Forms helpers and custom controls|
@@ -18,6 +19,7 @@ This repo contains the source code for several .NET libraries used in Menees uti
 |---|---|---|---|---|
 |[Menees.Common](src/Menees.Common)|4.8|10.0|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Common)](https://www.nuget.org/packages/Menees.Common/)|
 |[Menees.Diffs](src/Menees.Diffs)|4.8|10.0|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs)](https://www.nuget.org/packages/Menees.Diffs/)|
+|[Menees.Diffs.Json](src/Menees.Diffs.Json)|4.8|10.0|2.0|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs.Json)](https://www.nuget.org/packages/Menees.Diffs.Json/)|
 |[Menees.Diffs.Windows.Forms](src/Menees.Diffs.Windows.Forms)|4.8|10.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Diffs.Windows.Forms)](https://www.nuget.org/packages/Menees.Diffs.Windows.Forms/)|
 |[Menees.Windows](src/Menees.Windows)|4.8|10.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows)](https://www.nuget.org/packages/Menees.Windows/)|
 |[Menees.Windows.Forms](src/Menees.Windows.Forms)|4.8|10.0|--|[![Nuget](https://img.shields.io/nuget/v/Menees.Windows.Forms)](https://www.nuget.org/packages/Menees.Windows.Forms/)|

@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Menees.Diffs.Json\Menees.Diffs.Json.csproj" />
+	</ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<!-- https://docs.microsoft.com/en-us/dotnet/standard/frameworks -->
+		<TargetFrameworks>netstandard2.0;$(MeneesTargetNetCoreBase);$(MeneesTargetNetFramework)</TargetFrameworks>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Description>RFC 6902 JSON Patch generation using Myers diff</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Menees.Diffs\Menees.Diffs.csproj" />
+	</ItemGroup>
+
+	<!-- System.Text.Json is inbox on net10.0+ but needs a NuGet reference on older targets. -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net48'">
+		<PackageReference Include="System.Text.Json" Version="10.0.8" />
+	</ItemGroup>
+</Project>

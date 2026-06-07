@@ -29,7 +29,6 @@ namespace Menees.Diffs
 	{
 		HashCode,
 		Crc32,
-
 		Unique,
 	}
 
